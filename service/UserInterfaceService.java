@@ -1,25 +1,32 @@
 package service;
 
+import controller.AnimalController;
+import domain.Animal;
+import domain.UserMenu;
+
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class UserInterfaceService {
-    Scanner sc = new Scanner(System.in);
-    String menu = "\n-------------- MENU --------------\n"  +
-                "1. Register new animal\n" +
-                "2. Edit the data of a registered animal\n" +
-                "3. Delete a registered animal\n" +
-                "4. List all registered animals\n" +
-                "5. List animals by criteria (age, name, breed)\n" +
-                "6. Exit\n" +
-                "Enter the number of your option: ";
-    public void initMenu(){
+    AnimalController animalController;
+    Scanner sc;
+    UserMenu userMenu;
+    Animal animal;
+    public UserInterfaceService(AnimalController animalController, Scanner sc, UserMenu userMenu) {
+        this.animalController = animalController;
+        this.sc = new Scanner(System.in);;
+        this.userMenu = userMenu;
+    }
+
+
+    private int initMenu(){
         int input = -1;
 
         while (true){
-            System.out.println(menu);
+            System.out.println(userMenu);
 
             try {
                 input = sc.nextInt();
@@ -37,9 +44,20 @@ public class UserInterfaceService {
             }
         }
 
-        sc.close();
+        return input;
+
     }
 
+    private void handleMenuOption(int input) throws IOException {
+        FileReaderService fileReaderService;
+        input = initMenu();
+        switch (input) {
+            case 1:
+                System.out.println("Register new animal");
+                animalController.registerAnimal(animal);
+                break;
+        }
+    }
 }
 
 

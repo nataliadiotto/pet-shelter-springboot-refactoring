@@ -9,8 +9,8 @@ public class Main {
         FileReaderService fileReaderService = new FileReaderService();
         fileReaderService.fileReader();
 
-        UserInterfaceService userInterfaceService = new UserInterfaceService();
-        userInterfaceService.initMenu();
+        //UserInterfaceService userInterfaceService = new UserInterfaceService();
+        //userInterfaceService.initMenu();
 
     }
 }
