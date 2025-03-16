@@ -1,4 +1,15 @@
 package domain;
 
-public class Animal {
+public abstract class Animal {
+
+        String name;
+        String surname;
+        String foundAtAddress;
+        Double age;
+        Double weight;
+        Double breed;
+
+
+
+
 }
