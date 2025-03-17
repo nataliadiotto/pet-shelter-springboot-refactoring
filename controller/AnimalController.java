@@ -17,7 +17,7 @@ public class AnimalController {
     }
 
     public void registerAnimal(Animal animal) throws IOException {
-       fileReaderService.fileReader();
+       fileReaderService.readFile();
        animalService.registerNewAnimal(animal);
 
     }

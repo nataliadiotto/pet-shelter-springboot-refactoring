@@ -7,7 +7,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         FileReaderService fileReaderService = new FileReaderService();
-        fileReaderService.fileReader();
+        fileReaderService.readFile();
 
         //UserInterfaceService userInterfaceService = new UserInterfaceService();
         //userInterfaceService.initMenu();

@@ -14,14 +14,14 @@ public class AnimalService {
     }
 
     public void registerNewAnimal(Animal animal) {
-        Animal newAnimal = new Animal("null",
-                "null",
-                "null",
-                "",
-                "",
-                "",
-                "",
-                "");
+//        Animal newAnimal = new Animal("null",
+//                "null",
+//                "null",
+//                "",
+//                "",
+//                "",
+//                "",
+//                "");
 
         animalRepository.addAnimal(animal);
     }
