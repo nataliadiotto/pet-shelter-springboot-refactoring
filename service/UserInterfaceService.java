@@ -5,24 +5,32 @@ import domain.Animal;
 import domain.UserMenu;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class UserInterfaceService {
-    AnimalController animalController;
-    Scanner sc;
+     FileReaderService fileReaderService = new FileReaderService();
+     AnimalController animalController;
+     Scanner sc = new Scanner(System.in);
     UserMenu userMenu;
-    Animal animal;
-    public UserInterfaceService(AnimalController animalController, Scanner sc, UserMenu userMenu) {
+    private Animal animal;
+
+    public UserInterfaceService(AnimalController animalController, Scanner sc, UserMenu userMenu, Animal animal, FileReaderService fileReaderService) {
         this.animalController = animalController;
-        this.sc = new Scanner(System.in);;
+        this.sc = new Scanner(System.in);
         this.userMenu = userMenu;
+        this.animal = animal;
+        this.fileReaderService = new FileReaderService();
+    }
+
+    public UserInterfaceService() {
+
     }
 
 
-    private int initMenu(){
+    public int initMenu(){
         int input = -1;
 
         while (true){
@@ -49,16 +57,30 @@ public class UserInterfaceService {
     }
 
     private void handleMenuOption(int input) throws IOException {
-        FileReaderService fileReaderService;
         input = initMenu();
         switch (input) {
             case 1:
-                System.out.println("Register new animal");
-                animalController.registerAnimal(animal);
+                List<String> collectedRegisterResponses = collectRegisterResponses();
+                animalController.registerAnimal(collectedRegisterResponses);
+
                 break;
         }
     }
+
+    public List<String> collectRegisterResponses() throws IOException {
+        List<String> responses = new ArrayList<>();
+        List<String> questions = fileReaderService.readFile();
+
+        System.out.println("REGISTER NEW ANIMAL:");
+        for (String question: questions) {
+            System.out.println(question);
+            String response = sc.nextLine();
+            responses.add(response);
+        }
+        return responses;
+        }
 }
+
 
 
 

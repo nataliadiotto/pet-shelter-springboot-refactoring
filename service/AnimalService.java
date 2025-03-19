@@ -1,7 +1,6 @@
 package service;
 
 import domain.Animal;
-import repository.AnimalRepository;
 import repository.AnimalRepositoryImpl;
 
 public class AnimalService {
@@ -13,17 +12,9 @@ public class AnimalService {
         this.animalRepository = animalRepository;
     }
 
-    public void registerNewAnimal(Animal animal) {
-//        Animal newAnimal = new Animal("null",
-//                "null",
-//                "null",
-//                "",
-//                "",
-//                "",
-//                "",
-//                "");
 
-        animalRepository.addAnimal(animal);
+    public void saveAnimal(Animal animal) {
+        animalRepository.save(animal);
+        System.out.println("Animal salvo na service" + animal);
     }
-
 }

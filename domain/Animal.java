@@ -14,9 +14,9 @@ public class Animal {
         String foundAtAddress;
         Double age;
         Double weight;
-        Double breed;
+        String breed;
 
-        public Animal(String name, String surname, AnimalType animalType, BiologicalSex biologicalSex, String foundAtAddress, Double age, Double weight, Double breed) {
+        public Animal(String name, String surname, AnimalType animalType, BiologicalSex biologicalSex, String foundAtAddress, Double age, Double weight, String breed) {
                 this.name = name;
                 this.surname = surname;
                 this.animalType = animalType;
@@ -83,11 +83,11 @@ public class Animal {
                 this.weight = weight;
         }
 
-        public Double getBreed() {
+        public String getBreed() {
                 return breed;
         }
 
-        public void setBreed(Double breed) {
+        public void setBreed(String breed) {
                 this.breed = breed;
         }
 

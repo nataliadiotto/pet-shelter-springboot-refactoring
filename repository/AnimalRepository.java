@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface AnimalRepository {
 
-    void addAnimal(Animal animal);
+    void save(Animal animal);
     List<Animal> findByName(String name);
     List<Animal> findBySex(Enum BiologicaSex);
     List<Animal> findByAge(Double age);

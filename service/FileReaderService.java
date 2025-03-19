@@ -19,7 +19,6 @@ public class FileReaderService {
         try (Stream<String> lines = Files.lines(Paths
                 .get("/Users/Natalia/animal-shelter/register-form.txt"))){
             lines.forEach(line -> {stringList.add(line);
-                                    System.out.println(line);
             });
         } catch (IOException e) {
             e.printStackTrace();

@@ -8,12 +8,13 @@ import java.util.List;
 public class AnimalRepositoryImpl implements AnimalRepository {
 
     private List<Animal> animals;
-    private AnimalRepositoryImpl() {
+    public AnimalRepositoryImpl() {
         this.animals = new ArrayList<>();
     }
     @Override
-    public void addAnimal(Animal animal) {
-        this.animals.add(animal);
+    public void save(Animal animal) {
+        animals.add(animal);
+        System.out.println("Animal salvo no repository" + animal);
     }
 
     @Override
@@ -48,7 +49,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
 
     @Override
     public List<Animal> findAll() {
-        return null;
+        return animals;
     }
 
     @Override
