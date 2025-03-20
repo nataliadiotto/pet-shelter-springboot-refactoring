@@ -2,7 +2,7 @@ package domain;
 
 public class UserMenu {
 
-    String menu = "\n-------------- MENU --------------\n"  +
+    private String menuText = "\n-------------- MENU --------------\n"  +
             "1. Register new animal\n" +
             "2. Edit the data of a registered animal\n" +
             "3. Delete a registered animal\n" +
@@ -10,5 +10,13 @@ public class UserMenu {
             "5. List animals by criteria (age, name, breed)\n" +
             "6. Exit\n" +
             "Enter the number of your option: ";
+
+    public UserMenu() {
+        this.menuText = menuText;
+    }
+
+    public void displayMenu() {
+        System.out.println(menuText);
+    }
 
 }

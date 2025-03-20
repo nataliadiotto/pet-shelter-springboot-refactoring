@@ -1,7 +1,6 @@
 package service;
 
 import controller.AnimalController;
-import domain.Animal;
 import domain.UserMenu;
 
 import java.io.IOException;
@@ -10,32 +9,25 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+
 public class UserInterfaceService {
-     FileReaderService fileReaderService = new FileReaderService();
-     AnimalController animalController;
-     Scanner sc = new Scanner(System.in);
-    UserMenu userMenu;
-    private Animal animal;
+     private final FileReaderService fileReaderService;
+     private final AnimalController animalController;
+     private final Scanner sc;
+     private final UserMenu userMenu;
 
-    public UserInterfaceService(AnimalController animalController, Scanner sc, UserMenu userMenu, Animal animal, FileReaderService fileReaderService) {
+    public UserInterfaceService(FileReaderService fileReaderService, AnimalController animalController, UserMenu userMenu) {
+        this.fileReaderService = fileReaderService;
         this.animalController = animalController;
-        this.sc = new Scanner(System.in);
         this.userMenu = userMenu;
-        this.animal = animal;
-        this.fileReaderService = new FileReaderService();
+        this.sc = new Scanner(System.in);
     }
 
-    public UserInterfaceService() {
-
-    }
-
-
-    public int initMenu(){
+    public void initMenu() throws IOException {
         int input = -1;
 
         while (true){
-            System.out.println(userMenu);
-
+            userMenu.displayMenu();
             try {
                 input = sc.nextInt();
                 sc.nextLine();
@@ -52,12 +44,11 @@ public class UserInterfaceService {
             }
         }
 
-        return input;
+        handleMenuOption(input);
 
     }
 
     private void handleMenuOption(int input) throws IOException {
-        input = initMenu();
         switch (input) {
             case 1:
                 List<String> collectedRegisterResponses = collectRegisterResponses();
@@ -71,7 +62,7 @@ public class UserInterfaceService {
         List<String> responses = new ArrayList<>();
         List<String> questions = fileReaderService.readFile();
 
-        System.out.println("REGISTER NEW ANIMAL:");
+        System.out.println("\nREGISTER NEW ANIMAL:");
         for (String question: questions) {
             System.out.println(question);
             String response = sc.nextLine();

@@ -1,4 +1,9 @@
+import controller.AnimalController;
+import domain.UserMenu;
+import repository.AnimalRepository;
 import repository.AnimalRepositoryImpl;
+import service.AnimalService;
+import service.FileReaderService;
 import service.UserInterfaceService;
 
 import java.io.IOException;
@@ -6,17 +11,18 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        //FileReaderService fileReaderService = new FileReaderService();
-//        List<String> questions = fileReaderService.readFile();
-        //System.out.println(questions);
-        UserInterfaceService userInterfaceService = new UserInterfaceService();
-        userInterfaceService.collectRegisterResponses();
+        UserMenu userMenu = new UserMenu();
+        FileReaderService fileReaderService = new FileReaderService();
         AnimalRepositoryImpl animalRepository = new AnimalRepositoryImpl();
-        System.out.println(animalRepository.findAll());
+        AnimalService animalService = new AnimalService(animalRepository);
+        AnimalController animalController = new AnimalController(animalService);
 
+        // Cria o UserInterfaceService com as dependências injetadas
+        UserInterfaceService userInterfaceService = new UserInterfaceService(
+                fileReaderService, animalController, userMenu);
 
-        //UserInterfaceService userInterfaceService = new UserInterfaceService();
-        //userInterfaceService.initMenu();
+        // Coleta as respostas do usuário
+        userInterfaceService.initMenu();
 
     }
 }

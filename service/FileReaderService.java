@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+//TODO change the real path for a path coming from the main
 public class FileReaderService {
 
     List<String> stringList = new ArrayList<>();

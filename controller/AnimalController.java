@@ -12,13 +12,13 @@ import java.util.List;
 public class AnimalController {
 
     private final AnimalService animalService;
-    private final FileReaderService fileReaderService;
 
-    public AnimalController(AnimalService animalService, FileReaderService fileReaderService) {
+    public AnimalController(AnimalService animalService) {
         this.animalService = animalService;
-        this.fileReaderService = fileReaderService;
     }
 
+    //TODO test registerAnimal()
+        //print saved animal
     public void registerAnimal(List<String> userResponses) throws IOException {
         String name = userResponses.get(0);
         String surname = userResponses.get(0);
