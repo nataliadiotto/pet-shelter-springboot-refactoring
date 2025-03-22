@@ -7,40 +7,44 @@ import java.util.Objects;
 
 public class Animal {
 
-        String name;
-        String surname;
+        String firstName;
+        String lastName;
         AnimalType animalType;
         BiologicalSex biologicalSex;
-        String foundAtAddress;
+        Integer addressNumber;
+        String addressName;
+        String addressCity;
         Double age;
         Double weight;
         String breed;
 
-        public Animal(String name, String surname, AnimalType animalType, BiologicalSex biologicalSex, String foundAtAddress, Double age, Double weight, String breed) {
-                this.name = name;
-                this.surname = surname;
+        public Animal(String firstName, String lastName, AnimalType animalType, BiologicalSex biologicalSex, Integer addressNumber, String addressName, String addressCity, Double age, Double weight, String breed) {
+                this.firstName = firstName;
+                this.lastName = lastName;
                 this.animalType = animalType;
                 this.biologicalSex = biologicalSex;
-                this.foundAtAddress = foundAtAddress;
+                this.addressNumber = addressNumber;
+                this.addressName = addressName;
+                this.addressCity = addressCity;
                 this.age = age;
                 this.weight = weight;
                 this.breed = breed;
         }
 
-        public String getName() {
-                return name;
+        public String getFirstName() {
+                return firstName;
         }
 
-        public void setName(String name) {
-                this.name = name;
+        public void setFirstName(String firstName) {
+                this.firstName = firstName;
         }
 
-        public String getSurname() {
-                return surname;
+        public String getLastName() {
+                return lastName;
         }
 
-        public void setSurname(String surname) {
-                this.surname = surname;
+        public void setLastName(String lastName) {
+                this.lastName = lastName;
         }
 
         public AnimalType getAnimalType() {
@@ -59,12 +63,28 @@ public class Animal {
                 this.biologicalSex = biologicalSex;
         }
 
-        public String getFoundAtAddress() {
-                return foundAtAddress;
+        public Integer getAddressNumber() {
+                return addressNumber;
         }
 
-        public void setFoundAtAddress(String foundAtAddress) {
-                this.foundAtAddress = foundAtAddress;
+        public void setAddressNumber(Integer addressNumber) {
+                this.addressNumber = addressNumber;
+        }
+
+        public String getAddressName() {
+                return addressName;
+        }
+
+        public void setAddressName(String addressName) {
+                this.addressName = addressName;
+        }
+
+        public String getAddressCity() {
+                return addressCity;
+        }
+
+        public void setAddressCity(String addressCity) {
+                this.addressCity = addressCity;
         }
 
         public Double getAge() {
@@ -96,25 +116,27 @@ public class Animal {
                 if (this == o) return true;
                 if (o == null || getClass() != o.getClass()) return false;
                 Animal animal = (Animal) o;
-                return Objects.equals(name, animal.name) && Objects.equals(surname, animal.surname) && animalType == animal.animalType && biologicalSex == animal.biologicalSex && Objects.equals(foundAtAddress, animal.foundAtAddress) && Objects.equals(age, animal.age) && Objects.equals(weight, animal.weight) && Objects.equals(breed, animal.breed);
+                return Objects.equals(firstName, animal.firstName) && Objects.equals(lastName, animal.lastName) && animalType == animal.animalType && biologicalSex == animal.biologicalSex && Objects.equals(addressNumber, animal.addressNumber) && Objects.equals(addressName, animal.addressName) && Objects.equals(addressCity, animal.addressCity) && Objects.equals(age, animal.age) && Objects.equals(weight, animal.weight) && Objects.equals(breed, animal.breed);
         }
 
         @Override
         public int hashCode() {
-                return Objects.hash(name, surname, animalType, biologicalSex, foundAtAddress, age, weight, breed);
+                return Objects.hash(firstName, lastName, animalType, biologicalSex, addressNumber, addressName, addressCity, age, weight, breed);
         }
 
         @Override
         public String toString() {
                 return "Animal{" +
-                        "name='" + name + '\'' +
-                        ", surname='" + surname + '\'' +
+                        "firstName='" + firstName + '\'' +
+                        ", lastName='" + lastName + '\'' +
                         ", animalType=" + animalType +
                         ", biologicalSex=" + biologicalSex +
-                        ", foundAtAddress='" + foundAtAddress + '\'' +
+                        ", addressNumber=" + addressNumber +
+                        ", addressName='" + addressName + '\'' +
+                        ", addressCity='" + addressCity + '\'' +
                         ", age=" + age +
                         ", weight=" + weight +
-                        ", breed=" + breed +
+                        ", breed='" + breed + '\'' +
                         '}';
         }
 }

@@ -4,10 +4,7 @@ import controller.AnimalController;
 import domain.UserMenu;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class UserInterfaceService {
@@ -51,22 +48,50 @@ public class UserInterfaceService {
     private void handleMenuOption(int userChoice, String filePath) throws IOException {
         switch (userChoice) {
             case 1:
-                List<String> collectedRegisterResponses = collectRegisterResponses(filePath);
+                Map<String, String> collectedRegisterResponses = collectRegisterResponses(filePath);
                 animalController.registerAnimal(collectedRegisterResponses);
 
                 break;
         }
     }
 
-    public List<String> collectRegisterResponses(String filePath) throws IOException {
-        List<String> responses = new ArrayList<>();
+    public Map<String, String> collectRegisterResponses(String filePath) throws IOException {
+        Map<String, String>  responses = new HashMap<>();
         List<String> questions = fileReaderService.readFile(filePath);
 
         System.out.println("\nREGISTER NEW ANIMAL:");
         for (String question: questions) {
-            System.out.println(question);
-            String response = sc.nextLine();
-            responses.add(response);
+            if (question.contains("animal's first and last name")) {
+                System.out.println(question);
+
+                System.out.print("Animal's first name: ");
+                String firstName = sc.nextLine();
+                responses.put("first name", firstName);
+
+                System.out.print("Animal's last name: ");
+                String lastName = sc.nextLine();
+                responses.put("last name", lastName);
+            } else if (question.contains("the address and neighborhood it was found at")) {
+                System.out.println(question);
+
+                System.out.print("Number: ");
+                Integer addressNumber = sc.nextInt();
+                sc.nextLine();
+                responses.put("address number", String.valueOf(addressNumber));
+
+                System.out.print("St./Ave./Rd./Pl./Sq. name: ");
+                String addressName = sc.nextLine();
+                responses.put("address name", addressName);
+
+                System.out.print("City: ");
+                String addressCity = sc.nextLine();
+                responses.put("address city", addressCity);
+            } else {
+                System.out.println(question);
+                String response = sc.nextLine();
+                responses.put(question, response);
+            }
+
         }
         return responses;
         }

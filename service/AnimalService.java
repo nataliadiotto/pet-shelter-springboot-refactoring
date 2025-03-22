@@ -16,7 +16,7 @@ public class AnimalService {
     public void saveAnimal(Animal animal) {
         //Validate name and surname
 
-        if (isNameValid(animal.getName()) || isNameValid(animal.getName())) {
+        if (isNameValid(animal.getFirstName()) || isNameValid(animal.getFirstName())) {
             throw new IllegalArgumentException("Name and surname must not be blank and .");
 
         }
