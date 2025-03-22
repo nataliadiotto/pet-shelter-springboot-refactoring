@@ -17,8 +17,6 @@ public class AnimalController {
         this.animalService = animalService;
     }
 
-    //TODO test registerAnimal()
-        //print saved animal
     public void registerAnimal(List<String> userResponses) throws IOException {
         String name = userResponses.get(0);
         String surname = userResponses.get(0);

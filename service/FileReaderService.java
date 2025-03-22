@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,9 +17,9 @@ import java.util.stream.Stream;
 public class FileReaderService {
 
     List<String> stringList = new ArrayList<>();
-    public List<String>  readFile() throws IOException{
+    public List<String>  readFile(String filePath) throws IOException{
         try (Stream<String> lines = Files.lines(Paths
-                .get("/Users/Natalia/animal-shelter/register-form.txt"))){
+                .get(filePath))){
             lines.forEach(line -> {stringList.add(line);
             });
         } catch (IOException e) {
@@ -26,6 +27,8 @@ public class FileReaderService {
         }
         return stringList;
     }
+
+    
 
 
 

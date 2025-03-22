@@ -1,6 +1,5 @@
 import controller.AnimalController;
 import domain.UserMenu;
-import repository.AnimalRepository;
 import repository.AnimalRepositoryImpl;
 import service.AnimalService;
 import service.FileReaderService;
@@ -22,7 +21,7 @@ public class Main {
                 fileReaderService, animalController, userMenu);
 
         // Coleta as respostas do usuário
-        userInterfaceService.initMenu();
+        userInterfaceService.start("/Users/Natalia/animal-shelter/register-form.txt");
 
     }
 }

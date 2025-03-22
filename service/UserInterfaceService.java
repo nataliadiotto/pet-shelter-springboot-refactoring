@@ -23,16 +23,16 @@ public class UserInterfaceService {
         this.sc = new Scanner(System.in);
     }
 
-    public void initMenu() throws IOException {
-        int input = -1;
+    public void start(String filePath) throws IOException {
+        int userChoice = -1;
 
         while (true){
             userMenu.displayMenu();
             try {
-                input = sc.nextInt();
+                userChoice = sc.nextInt();
                 sc.nextLine();
 
-                if (input >= 1 && input <= 6) {
+                if (userChoice >= 1 && userChoice <= 6) {
                     break;
                 } else {
                     System.out.println("Please choose a number between 1 and 6!");
@@ -44,23 +44,23 @@ public class UserInterfaceService {
             }
         }
 
-        handleMenuOption(input);
+        handleMenuOption(userChoice, filePath);
 
     }
 
-    private void handleMenuOption(int input) throws IOException {
-        switch (input) {
+    private void handleMenuOption(int userChoice, String filePath) throws IOException {
+        switch (userChoice) {
             case 1:
-                List<String> collectedRegisterResponses = collectRegisterResponses();
+                List<String> collectedRegisterResponses = collectRegisterResponses(filePath);
                 animalController.registerAnimal(collectedRegisterResponses);
 
                 break;
         }
     }
 
-    public List<String> collectRegisterResponses() throws IOException {
+    public List<String> collectRegisterResponses(String filePath) throws IOException {
         List<String> responses = new ArrayList<>();
-        List<String> questions = fileReaderService.readFile();
+        List<String> questions = fileReaderService.readFile(filePath);
 
         System.out.println("\nREGISTER NEW ANIMAL:");
         for (String question: questions) {
