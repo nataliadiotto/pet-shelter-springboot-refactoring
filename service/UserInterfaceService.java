@@ -39,7 +39,7 @@ public class UserInterfaceService {
                 }
 
             } catch (InputMismatchException e) {
-                System.out.println("Invalid option! Please enter a number.");
+                System.out.println("Invalid option! Please enter a valid number.");
                 sc.nextLine();
             }
         }
