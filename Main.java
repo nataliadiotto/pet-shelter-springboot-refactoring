@@ -1,6 +1,5 @@
 import controller.AnimalController;
 import domain.UserMenu;
-import repository.AnimalRepository;
 import repository.AnimalRepositoryImpl;
 import service.AnimalService;
 import service.FileReaderService;
@@ -21,8 +20,9 @@ public class Main {
         UserInterfaceService userInterfaceService = new UserInterfaceService(
                 fileReaderService, animalController, userMenu);
 
+        //System.out.println(fileReaderService.readSpecificLine(fileReaderService.readFile("/Users/Natalia/animal-shelter/register-form.txt"), 3));
         // Coleta as respostas do usuário
-        userInterfaceService.initMenu();
+        userInterfaceService.start("/Users/Natalia/animal-shelter/register-form.txt");
 
     }
 }

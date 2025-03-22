@@ -4,10 +4,7 @@ import controller.AnimalController;
 import domain.UserMenu;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class UserInterfaceService {
@@ -23,50 +20,78 @@ public class UserInterfaceService {
         this.sc = new Scanner(System.in);
     }
 
-    public void initMenu() throws IOException {
-        int input = -1;
+    public void start(String filePath) throws IOException {
+        int userChoice = -1;
 
         while (true){
             userMenu.displayMenu();
             try {
-                input = sc.nextInt();
+                userChoice = sc.nextInt();
                 sc.nextLine();
 
-                if (input >= 1 && input <= 6) {
+                if (userChoice >= 1 && userChoice <= 6) {
                     break;
                 } else {
                     System.out.println("Please choose a number between 1 and 6!");
                 }
 
             } catch (InputMismatchException e) {
-                System.out.println("Invalid option! Please enter a number.");
+                System.out.println("Invalid option! Please enter a valid number.");
                 sc.nextLine();
             }
         }
 
-        handleMenuOption(input);
+        handleMenuOption(userChoice, filePath);
 
     }
 
-    private void handleMenuOption(int input) throws IOException {
-        switch (input) {
+    private void handleMenuOption(int userChoice, String filePath) throws IOException {
+        switch (userChoice) {
             case 1:
-                List<String> collectedRegisterResponses = collectRegisterResponses();
+                Map<String, String> collectedRegisterResponses = collectRegisterResponses(filePath);
                 animalController.registerAnimal(collectedRegisterResponses);
 
                 break;
         }
     }
 
-    public List<String> collectRegisterResponses() throws IOException {
-        List<String> responses = new ArrayList<>();
-        List<String> questions = fileReaderService.readFile();
+    public Map<String, String> collectRegisterResponses(String filePath) throws IOException {
+        Map<String, String>  responses = new HashMap<>();
+        List<String> questions = fileReaderService.readFile(filePath);
 
         System.out.println("\nREGISTER NEW ANIMAL:");
         for (String question: questions) {
-            System.out.println(question);
-            String response = sc.nextLine();
-            responses.add(response);
+            if (question.contains("animal's first and last name")) {
+                System.out.println(question);
+
+                System.out.print("Animal's first name: ");
+                String firstName = sc.nextLine();
+                responses.put("first name", firstName);
+
+                System.out.print("Animal's last name: ");
+                String lastName = sc.nextLine();
+                responses.put("last name", lastName);
+            } else if (question.contains("the address and neighborhood it was found at")) {
+                System.out.println(question);
+
+                System.out.print("Number: ");
+                Integer addressNumber = sc.nextInt();
+                sc.nextLine();
+                responses.put("address number", String.valueOf(addressNumber));
+
+                System.out.print("St./Ave./Rd./Pl./Sq. name: ");
+                String addressName = sc.nextLine();
+                responses.put("address name", addressName);
+
+                System.out.print("City: ");
+                String addressCity = sc.nextLine();
+                responses.put("address city", addressCity);
+            } else {
+                System.out.println(question);
+                String response = sc.nextLine();
+                responses.put(question, response);
+            }
+
         }
         return responses;
         }
