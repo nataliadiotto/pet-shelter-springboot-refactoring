@@ -21,6 +21,8 @@ public class AnimalController {
     public void registerAnimal(Map<String, String> userResponses) throws IOException {
         String firstName = userResponses.get("first name");
         String lastName = userResponses.get("last name");
+        if (firstName == null || firstName.trim().isEmpty()) {throw new IllegalArgumentException("Animal's first name is mandatory.");}
+        if (lastName == null || lastName.trim().isEmpty()) {throw new IllegalArgumentException("Animal's last name is mandatory.");}
 
         AnimalType animalType = AnimalType.valueOf(userResponses.get("2 - What type of animal is it (Dog/Cat)?").toUpperCase());
         BiologicalSex biologicalSex = BiologicalSex.valueOf(userResponses.get("3 - What is the animal's gender (Male/Female)?").toUpperCase());
