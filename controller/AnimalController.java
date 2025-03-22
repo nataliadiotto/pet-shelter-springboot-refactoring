@@ -33,7 +33,7 @@ public class AnimalController {
         Double weight = Double.parseDouble(userResponses.get("6 - What is the approximate weight of the animal?"));
         String breed = userResponses.get("7 - What is the breed of the animal?");
 
-       Animal animal = new Animal(firstName,
+       animalService.saveAnimal(firstName,
                lastName,
                animalType,
                biologicalSex,
@@ -43,9 +43,7 @@ public class AnimalController {
                age,
                weight,
                breed);
-
-       animalService.saveAnimal(animal);
-        System.out.println("Animal salvo na controller" + animal);
+        System.out.println("Animal insertion validated in Controller");
 
     }
 

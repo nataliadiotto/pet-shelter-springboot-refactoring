@@ -14,7 +14,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     @Override
     public void save(Animal animal) {
         animals.add(animal);
-        System.out.println("Animal salvo no repository" + animal);
+        System.out.println("Animal saved in Repository" + animal);
     }
 
     @Override
