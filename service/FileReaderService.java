@@ -25,13 +25,13 @@ public class FileReaderService {
         return stringList;
     }
 
-    public String readSpecificLine(List<String> lines, Integer specificLine) throws IOException {
-        if (specificLine < 0 || specificLine > lines.size()){
-            throw new IllegalArgumentException("Line number must be non-negative and less than " + lines.size());
-        }
-
-        return lines.get(specificLine);
-    }
+//    public String readSpecificLine(List<String> lines, Integer specificLine) throws IOException {
+//        if (specificLine < 0 || specificLine > lines.size()){
+//            throw new IllegalArgumentException("Line number must be non-negative and less than " + lines.size());
+//        }
+//
+//        return lines.get(specificLine);
+//    }
 
     private boolean isFileValid(String filePath){
         Path path = get(filePath);

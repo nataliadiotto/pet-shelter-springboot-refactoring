@@ -7,16 +7,16 @@ import java.util.Objects;
 
 public class Animal {
 
-        String firstName;
-        String lastName;
-        AnimalType animalType;
-        BiologicalSex biologicalSex;
-        Integer addressNumber;
-        String addressName;
-        String addressCity;
-        Double age;
-        Double weight;
-        String breed;
+        private String firstName;
+        private String lastName;
+        private AnimalType animalType;
+        private BiologicalSex biologicalSex;
+        private Integer addressNumber;
+        private String addressName;
+        private String addressCity;
+        private Double age;
+        private Double weight;
+        private String breed;
 
         public Animal(String firstName, String lastName, AnimalType animalType, BiologicalSex biologicalSex, Integer addressNumber, String addressName, String addressCity, Double age, Double weight, String breed) {
                 this.firstName = firstName;

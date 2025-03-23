@@ -13,11 +13,13 @@ public class UserInterfaceService {
      private final Scanner sc;
      private final UserMenu userMenu;
 
+
     public UserInterfaceService(FileReaderService fileReaderService, AnimalController animalController, UserMenu userMenu) {
         this.fileReaderService = fileReaderService;
         this.animalController = animalController;
         this.userMenu = userMenu;
         this.sc = new Scanner(System.in);
+
     }
 
     public void start(String filePath) throws IOException {
@@ -71,7 +73,7 @@ public class UserInterfaceService {
                 System.out.print("Animal's last name: ");
                 String lastName = sc.nextLine();
                 responses.put("last name", lastName);
-            } else if (question.contains("the address and neighborhood it was found at")) {
+            } else if (question.contains("address it was found")) {
                 System.out.println(question);
 
                 System.out.print("Number: ");
@@ -94,7 +96,8 @@ public class UserInterfaceService {
 
         }
         return responses;
-        }
+    }
+
 }
 
 

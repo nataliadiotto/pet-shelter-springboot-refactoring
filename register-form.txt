@@ -1,7 +1,7 @@
 1 - What is the animal's first and last name?
-2 - What type of animal is it (Dog/Cat)?
-3 - What is the animal's gender (Male/Female)?
-4 - What is the address and neighborhood it was found at?
+2 - What type of animal is it (Cat = 1/Dog = 2)?
+3 - What is the animal's gender (Female = 1/Male = 2)?
+4 - What is the address it was found at?
 5 - What is the approximate age of the animal?
 6 - What is the approximate weight of the animal?
 7 - What is the breed of the animal?
