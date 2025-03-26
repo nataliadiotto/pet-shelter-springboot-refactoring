@@ -1,8 +1,8 @@
 package service;
 
 import domain.Animal;
-import domain.enums.AnimalType;
-import domain.enums.BiologicalSex;
+import domain.utils.AnimalType;
+import domain.utils.BiologicalSex;
 import repository.AnimalRepositoryImpl;
 
 public class AnimalService {

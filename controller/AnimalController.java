@@ -1,13 +1,11 @@
 package controller;
 
-import domain.Animal;
-import domain.enums.AnimalType;
-import domain.enums.BiologicalSex;
+import domain.utils.AnimalType;
+import domain.utils.BiologicalSex;
+import domain.utils.Constants;
 import service.AnimalService;
-import service.FileReaderService;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 public class AnimalController {
@@ -30,9 +28,9 @@ public class AnimalController {
 
             animalType = AnimalType.fromValue(animalTypeResponse);
         } catch (NumberFormatException e) {
-            System.out.println("Animal type choice must be a valid number!");
+            showError("Animal type choice must be a valid number!");
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid option! Choose 1 for Cat or 2 for Dog.");
+            showError("Invalid option! Choose 1 for Cat or 2 for Dog.");
         }
 
         BiologicalSex biologicalSex = null;
@@ -41,31 +39,31 @@ public class AnimalController {
 
             biologicalSex = BiologicalSex.fromValue(biologicalSexResponse);
         } catch (NumberFormatException e) {
-            System.out.println("Animal gender choice must be a valid number!");
+            showError("Animal gender choice must be a valid number!");
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid option! Choose 1 for Female or 2 for Male.");
+            showError("Invalid option! Choose 1 for Female or 2 for Male.");
         }
 
+        Integer addressNumber = Integer.parseInt(userResponses.get("address number"));
 
-        Integer addressNumber = Integer.valueOf(userResponses.get("address number"));
         String addressName = userResponses.get("address name");
         String addressCity = userResponses.get("address city");
 
         Double age = null;
         try {
-            age = Double.valueOf(userResponses.get("5 - What is the approximate age of the animal?"));
+            age = Double.valueOf(getValueOrDefault(userResponses.get("5 - What is the approximate age of the animal?")));
         } catch (NumberFormatException e) {
-            System.out.println("Age must be a valid number!");
+            showError("Age must be a valid number!");
         }
 
         Double weight = null;
         try {
             weight = Double.parseDouble(userResponses.get("6 - What is the approximate weight of the animal?"));
         } catch (NumberFormatException e) {
-            System.out.println("Weight must be a valid number!");
+            showError("Weight must be a valid number!");
         }
 
-        String breed = userResponses.get("7 - What is the breed of the animal?");
+        String breed = getValueOrDefault(userResponses.get("7 - What is the breed of the animal?"));
 
        animalService.saveAnimal(firstName,
                lastName,
@@ -80,5 +78,20 @@ public class AnimalController {
         System.out.println("Animal insertion validated in Controller");
 
     }
+
+
+    //validate if String fields were informed
+    private String getValueOrDefault(String value) {
+        return (value == null || value.trim().isEmpty())
+                ? Constants.NOT_INFORMED
+                : value.trim();
+    }
+
+
+    private void showError(String message) {
+        System.err.println("Error: " + message);
+    }
+
+
 
 }

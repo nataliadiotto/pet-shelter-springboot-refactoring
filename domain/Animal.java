@@ -1,7 +1,7 @@
 package domain;
 
-import domain.enums.AnimalType;
-import domain.enums.BiologicalSex;
+import domain.utils.AnimalType;
+import domain.utils.BiologicalSex;
 
 import java.util.Objects;
 
