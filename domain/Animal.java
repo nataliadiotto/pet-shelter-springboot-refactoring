@@ -32,7 +32,7 @@ public class Animal {
         }
 
         public String getFirstName() {
-                return capitalizeString(firstName);
+                return capitalizeWords(firstName);
         }
 
         public void setFirstName(String firstName) {
@@ -40,14 +40,14 @@ public class Animal {
         }
 
         public String getLastName() {
-                return capitalizeString(lastName);
+                return capitalizeWords(lastName);
         }
 
         public void setLastName(String lastName) {
                 this.lastName = lastName;
         }
 
-        public String getFullName(){return capitalizeString(firstName) + " " + capitalizeString(lastName);}
+        public String getFullName(){return capitalizeWords(firstName) + " " + capitalizeWords(lastName);}
 
         public AnimalType getAnimalType() {
                 return animalType;
@@ -74,7 +74,7 @@ public class Animal {
         }
 
         public String getAddressName() {
-                return capitalizeString(addressCity);
+                return capitalizeWords(addressCity);
         }
 
         public void setAddressName(String addressName) {
@@ -82,7 +82,7 @@ public class Animal {
         }
 
         public String getAddressCity() {
-                return capitalizeString(addressCity);
+                return capitalizeWords(addressCity);
         }
 
         public void setAddressCity(String addressCity) {
@@ -90,8 +90,8 @@ public class Animal {
         }
 
         public String getFullAddress(){return addressNumber + ", " +
-                capitalizeString(addressName) +
-                ", " + capitalizeString(addressCity);}
+                capitalizeWords(addressName) +
+                ", " + capitalizeWords(addressCity);}
 
         public Double getAge() {
                 return age;
@@ -110,16 +110,33 @@ public class Animal {
         }
 
         public String getBreed() {
-                return capitalizeString(breed);
+                return capitalizeWords(breed);
         }
 
         public void setBreed(String breed) {
                 this.breed = breed;
         }
 
-        public static String capitalizeString(String s){
-                return s.substring(0, 1).toUpperCase()
-                        + s.substring(1).toLowerCase();
+        public static String capitalizeWords(String input){
+                if (input == null || input.isEmpty()) {
+                        return input;
+                }
+
+                StringBuilder result = new StringBuilder();
+                boolean capitalizeNext = true;
+
+                for (char c : input.toCharArray()) {
+                        if (Character.isWhitespace(c)) {
+                                capitalizeNext = true;
+                                result.append(c);
+                        } else if (capitalizeNext) {
+                                result.append(Character.toTitleCase(c));
+                                capitalizeNext = false;
+                        } else {
+                                result.append(Character.toLowerCase(c));
+                        }
+                }
+                return result.toString();
         }
 
         @Override
