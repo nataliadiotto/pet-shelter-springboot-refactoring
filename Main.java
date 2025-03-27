@@ -3,6 +3,7 @@ import domain.UserMenu;
 import repository.AnimalRepositoryImpl;
 import service.AnimalService;
 import service.FileReaderService;
+import service.FileWriterService;
 import service.UserInterfaceService;
 
 import java.io.IOException;
@@ -13,7 +14,8 @@ public class Main {
         UserMenu userMenu = new UserMenu();
         FileReaderService fileReaderService = new FileReaderService();
         AnimalRepositoryImpl animalRepository = new AnimalRepositoryImpl();
-        AnimalService animalService = new AnimalService(animalRepository);
+        FileWriterService fileWriterService = new FileWriterService();
+        AnimalService animalService = new AnimalService(animalRepository, fileWriterService);
         AnimalController animalController = new AnimalController(animalService);
 
         // Cria o UserInterfaceService com as dependências injetadas

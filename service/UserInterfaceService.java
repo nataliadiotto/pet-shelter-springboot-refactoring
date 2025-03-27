@@ -77,7 +77,7 @@ public class UserInterfaceService {
                 System.out.println(question);
 
                 System.out.print("Number: ");
-                Integer addressNumber = sc.nextInt();
+                Integer addressNumber = Integer.parseInt(sc.nextLine());
                 responses.put("address number", String.valueOf(addressNumber));
 
                 System.out.print("St./Ave./Rd./Pl./Sq. name: ");

@@ -5,17 +5,21 @@ import domain.utils.AnimalType;
 import domain.utils.BiologicalSex;
 import repository.AnimalRepositoryImpl;
 
+import java.io.IOException;
+
 public class AnimalService {
 
 
     private final AnimalRepositoryImpl animalRepository;
+    private final FileWriterService fileWriterService;
 
-    public AnimalService(AnimalRepositoryImpl animalRepository) {
+    public AnimalService(AnimalRepositoryImpl animalRepository, FileWriterService fileWriterService) {
         this.animalRepository = animalRepository;
+        this.fileWriterService = fileWriterService;
     }
 
     //TODO test saveAnimal()
-    public void saveAnimal(String firstName, String lastName, AnimalType animalType, BiologicalSex biologicalSex, Integer addressNumber, String addressName, String addressCity, Double age, Double weight, String breed) {
+    public void saveAnimal(String firstName, String lastName, AnimalType animalType, BiologicalSex biologicalSex, Integer addressNumber, String addressName, String addressCity, Double age, Double weight, String breed) throws IOException {
         //Validate name and surname content
         if (containsInvalidCharacters(firstName) || containsInvalidCharacters(lastName)) {
                 throw new IllegalArgumentException("First and last names must contain only A-Z letters.");
@@ -54,6 +58,10 @@ public class AnimalService {
                 breed);
         animalRepository.save(animal);
         System.out.println("Animal created in Service" + animal);
+        String fileName = "test3";
+        String fileContent = "test test test";
+        fileWriterService.createAnimalFile(animal);
+
     }
 
     private boolean containsInvalidCharacters(String text) {

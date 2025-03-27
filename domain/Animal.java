@@ -32,7 +32,7 @@ public class Animal {
         }
 
         public String getFirstName() {
-                return firstName;
+                return capitalizeString(firstName);
         }
 
         public void setFirstName(String firstName) {
@@ -40,12 +40,14 @@ public class Animal {
         }
 
         public String getLastName() {
-                return lastName;
+                return capitalizeString(lastName);
         }
 
         public void setLastName(String lastName) {
                 this.lastName = lastName;
         }
+
+        public String getFullName(){return capitalizeString(firstName) + " " + capitalizeString(lastName);}
 
         public AnimalType getAnimalType() {
                 return animalType;
@@ -72,7 +74,7 @@ public class Animal {
         }
 
         public String getAddressName() {
-                return addressName;
+                return capitalizeString(addressCity);
         }
 
         public void setAddressName(String addressName) {
@@ -80,12 +82,16 @@ public class Animal {
         }
 
         public String getAddressCity() {
-                return addressCity;
+                return capitalizeString(addressCity);
         }
 
         public void setAddressCity(String addressCity) {
                 this.addressCity = addressCity;
         }
+
+        public String getFullAddress(){return addressNumber + ", " +
+                capitalizeString(addressName) +
+                ", " + capitalizeString(addressCity);}
 
         public Double getAge() {
                 return age;
@@ -104,11 +110,16 @@ public class Animal {
         }
 
         public String getBreed() {
-                return breed;
+                return capitalizeString(breed);
         }
 
         public void setBreed(String breed) {
                 this.breed = breed;
+        }
+
+        public static String capitalizeString(String s){
+                return s.substring(0, 1).toUpperCase()
+                        + s.substring(1).toLowerCase();
         }
 
         @Override
