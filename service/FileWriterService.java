@@ -4,6 +4,10 @@ import domain.Animal;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 public class FileWriterService {
     private static final String BASE_DIR = "/Users/Natalia/animal-shelter/registeredAnimalsDir";
 
@@ -13,7 +17,7 @@ public class FileWriterService {
     }
 
     public static String formatFileContent(Animal animal) {
-        return String.format(
+        return String.format(Locale.ENGLISH,
                         "1 - %s\n" +
                         "2 - %s\n" +
                         "3 - %s\n" +
@@ -31,8 +35,16 @@ public class FileWriterService {
     }
 
     public static String formatFileName(Animal animal) {
-        return String.format("%d-%S%S",
-                System.currentTimeMillis(),
+        //Retrieve system timestamp
+        String dateTimestamp = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String timestamp = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("HHmm"));
+
+        //Create filename
+        return String.format("%sT%s-%S%S",
+                dateTimestamp,
+                timestamp,
                 animal.getLastName(),
                 animal.getFirstName());
     }
@@ -46,6 +58,7 @@ public class FileWriterService {
         String fileName = formatFileName(animal);
         Path filePath = directory.resolve(fileName + ".TXT");
 
+        //TODO Refactor method to rewrite file once animal is edited
         //write and create file
         Files.write(
                 filePath,
@@ -53,9 +66,6 @@ public class FileWriterService {
                 StandardOpenOption.CREATE_NEW);
 
     }
-
-
-
 
 
 }
