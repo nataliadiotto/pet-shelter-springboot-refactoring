@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.nio.file.Paths.*;
@@ -13,7 +12,7 @@ import static java.nio.file.Paths.*;
 public class FileReaderService {
 
    private final List<String> stringList = new ArrayList<>();
-    public List<String> readFile(String filePath) throws IOException{
+    public List<String> readFileToList(String filePath) throws IOException{
         if (!isFileValid(filePath)) {
             throw new IOException("File does not exist or is not readable: " + filePath);
         }
