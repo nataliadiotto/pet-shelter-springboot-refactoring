@@ -10,6 +10,8 @@ import java.util.Locale;
 
 public class FileWriterService {
     private static final String BASE_DIR = "/Users/Natalia/animal-shelter/registeredAnimalsDir";
+    private static final String FILE_EXTENSION = ".TXT";
+
 
     public static Path ensureDataDirectory() throws IOException {
         Path registeredAnimalsDir = Paths.get(BASE_DIR);
@@ -17,14 +19,14 @@ public class FileWriterService {
     }
 
     public static String formatFileContent(Animal animal) {
-        return String.format(Locale.ENGLISH,
-                        "1 - %s\n" +
-                        "2 - %s\n" +
-                        "3 - %s\n" +
-                        "4 - %s\n" +
-                        "5 - %.1f years old\n" +
-                        "6 - %.1fkg\n" +
-                        "7 - %s",
+        return String.format(Locale.ENGLISH, """
+                1 - %s
+                2 - %s
+                3 - %s
+                4 - %s
+                5 - %.1f years old
+                6 - %.1fkg
+                7 - %s""",
                 animal.getFullName(),
                 animal.getAnimalType(),
                 animal.getBiologicalSex(),
@@ -36,17 +38,14 @@ public class FileWriterService {
 
     public static String formatFileName(Animal animal) {
         //Retrieve system timestamp
-        String dateTimestamp = LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String timestamp = LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("HHmm"));
+                .format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmm"));
 
         //Create filename
-        return String.format("%sT%s-%S%S",
-                dateTimestamp,
+        return String.format("%s-%S%S",
                 timestamp,
-                animal.getLastName(),
-                animal.getFirstName());
+                sanitize(animal.getLastName()),
+                sanitize(animal.getFirstName()));
     }
     public void createAnimalFile(Animal animal) throws IOException {
         if (animal == null) {
@@ -56,15 +55,19 @@ public class FileWriterService {
         Path directory = ensureDataDirectory();
         String fileContent = formatFileContent(animal);
         String fileName = formatFileName(animal);
-        Path filePath = directory.resolve(fileName + ".TXT");
+        Path filePath = directory.resolve(fileName + FILE_EXTENSION);
 
         //TODO Refactor method to rewrite file once animal is edited
         //write and create file
-        Files.write(
+        Files.writeString(
                 filePath,
-                fileContent.getBytes(),
+                fileContent, // Add this
                 StandardOpenOption.CREATE_NEW);
 
+    }
+
+    private static String sanitize(String input){
+        return input.replaceAll("[^a-zA-Z0-9]", "_");
     }
 
 
