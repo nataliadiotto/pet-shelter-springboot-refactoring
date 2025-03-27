@@ -17,4 +17,9 @@ public enum BiologicalSex {
         }
         throw new IllegalArgumentException("Invalid value: " + value);
     }
+
+    @Override
+    public String toString() {
+        return this.name().charAt(0) + this.name().substring(1).toLowerCase();
+    }
 }

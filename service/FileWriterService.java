@@ -46,7 +46,6 @@ public class FileWriterService {
         String fileName = formatFileName(animal);
         Path filePath = directory.resolve(fileName + ".TXT");
 
-
         //write and create file
         Files.write(
                 filePath,
