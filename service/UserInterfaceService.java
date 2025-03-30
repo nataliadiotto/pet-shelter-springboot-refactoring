@@ -1,7 +1,7 @@
 package service;
 
 import controller.AnimalController;
-import domain.UserMenu;
+import domain.UserMenus;
 
 import java.io.IOException;
 import java.util.*;
@@ -11,13 +11,13 @@ public class UserInterfaceService {
      private final FileReaderService fileReaderService;
      private final AnimalController animalController;
      private final Scanner sc;
-     private final UserMenu userMenu;
+     private final UserMenus userMenus;
 
 
-    public UserInterfaceService(FileReaderService fileReaderService, AnimalController animalController, UserMenu userMenu) {
+    public UserInterfaceService(FileReaderService fileReaderService, AnimalController animalController, UserMenus userMenus) {
         this.fileReaderService = fileReaderService;
         this.animalController = animalController;
-        this.userMenu = userMenu;
+        this.userMenus = userMenus;
         this.sc = new Scanner(System.in);
 
     }
@@ -26,7 +26,7 @@ public class UserInterfaceService {
         int userChoice = -1;
 
         while (true){
-            userMenu.displayMenu();
+            userMenus.displayMainMenu();
             try {
                 userChoice = sc.nextInt();
                 sc.nextLine();
@@ -52,8 +52,9 @@ public class UserInterfaceService {
             case 1:
                 Map<String, String> collectedRegisterResponses = collectRegisterResponses(filePath);
                 animalController.registerAnimal(collectedRegisterResponses);
-
                 break;
+            case 2:
+
         }
     }
 
