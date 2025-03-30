@@ -43,17 +43,38 @@ public class UserInterfaceService {
             }
         }
 
-        handleMenuOption(userChoice, filePath);
+        handleMainMenuOption(userChoice, filePath);
 
     }
 
-    private void handleMenuOption(int userChoice, String filePath) throws IOException {
+    private void handleMainMenuOption(int userChoice, String filePath) throws IOException {
         switch (userChoice) {
             case 1:
+                //Register new animal
                 Map<String, String> collectedRegisterResponses = collectRegisterResponses(filePath);
                 animalController.registerAnimal(collectedRegisterResponses);
                 break;
             case 2:
+                //Edit animal
+
+                break;
+            case 3:
+                //Delete registered animal
+
+                break;
+            case 4:
+                //Find all animals
+
+                break;
+            case 5:
+                //Find animals by criteria
+                handleListAnimalMenu();
+
+                break;
+            case 6:
+                //Exit
+
+                break;
 
         }
     }
@@ -96,6 +117,11 @@ public class UserInterfaceService {
 
         }
         return responses;
+    }
+
+    private void handleListAnimalMenu() {
+        userMenus.displayListAnimalsMenu();
+        int userChoice = sc.nextInt();
     }
 
 }
