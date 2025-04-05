@@ -6,6 +6,7 @@ import domain.utils.BiologicalSex;
 import repository.AnimalRepositoryImpl;
 
 import java.io.IOException;
+import java.util.List;
 
 public class AnimalService {
 
@@ -62,6 +63,16 @@ public class AnimalService {
         System.out.println("Animal created in Service" + animal);
         fileWriterService.createAnimalFile(animal);
 
+    }
+
+    public List<Animal> listAll() {
+       List<Animal> animals = animalRepository.findAll();
+
+       if (animals.isEmpty()) {
+           System.out.println("No registered animals.");
+       }
+
+       return animals;
     }
 
     private boolean containsInvalidCharacters(String text) {

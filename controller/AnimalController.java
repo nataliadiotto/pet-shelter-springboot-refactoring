@@ -1,11 +1,13 @@
 package controller;
 
+import domain.Animal;
 import domain.utils.AnimalType;
 import domain.utils.BiologicalSex;
 import domain.utils.Constants;
 import service.AnimalService;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 //TODO Fix bug saving two animals in a row
@@ -79,6 +81,21 @@ public class AnimalController {
                breed);
         System.out.println("Animal insertion validated in Controller");
 
+    }
+
+    public void listAllAnimals() {
+        List<Animal> animals = animalService.listAll();
+
+        if (animals.isEmpty()) {
+            System.out.println("No animals found.");
+        } else {
+            System.out.println("------ LIST OF REGISTERED ANIMALS ------");
+            int i = 0;
+            for (Animal animal : animals) {
+                i++;
+                System.out.println(i + ". " + animal);
+            }
+        }
     }
 
 

@@ -3,6 +3,7 @@ package repository;
 import domain.Animal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AnimalRepositoryImpl implements AnimalRepository {
@@ -60,7 +61,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
 
     @Override
     public List<Animal> findAll() {
-        return new ArrayList<>(animals);
+        return animals != null ? animals : Collections.emptyList();
     }
 
     @Override

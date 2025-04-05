@@ -3,6 +3,7 @@ package domain;
 import domain.utils.AnimalType;
 import domain.utils.BiologicalSex;
 
+import java.util.Locale;
 import java.util.Objects;
 
 public class Animal {
@@ -74,7 +75,7 @@ public class Animal {
         }
 
         public String getAddressName() {
-                return capitalizeWords(addressCity);
+                return capitalizeWords(addressName);
         }
 
         public void setAddressName(String addressName) {
@@ -154,17 +155,16 @@ public class Animal {
 
         @Override
         public String toString() {
-                return "Animal{" +
-                        "firstName='" + firstName + '\'' +
-                        ", lastName='" + lastName + '\'' +
-                        ", animalType=" + animalType +
-                        ", biologicalSex=" + biologicalSex +
-                        ", addressNumber=" + addressNumber +
-                        ", addressName='" + addressName + '\'' +
-                        ", addressCity='" + addressCity + '\'' +
-                        ", age=" + age +
-                        ", weight=" + weight +
-                        ", breed='" + breed + '\'' +
-                        '}';
+                return String.format(Locale.ENGLISH, """
+                %s - %s - %s - %d, %s - %s - %.1f years old - %.1fkg - %s""",
+                        getFullName(),
+                        getAnimalType(),
+                        getBiologicalSex(),
+                        getAddressNumber(),
+                        getAddressName(),
+                        getAddressCity(),
+                        getAge(),
+                        getWeight(),
+                        getBreed());
         }
 }

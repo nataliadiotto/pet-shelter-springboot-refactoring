@@ -64,8 +64,7 @@ public class UserInterfaceService {
 
                 break;
             case 4:
-                //Find all animals
-
+                animalController.listAllAnimals();
                 break;
             case 5:
                 //Find animals by criteria
@@ -94,11 +93,11 @@ public class UserInterfaceService {
 
                 System.out.println("DEBUG: Collecting input for new animal...");
 
-                String firstName = inputHelper.readNonEmptyLine("Animal's first name: ");
+                String firstName = inputHelper.readLine("Animal's first name: ");
                 responses.put("first name", firstName);
                 System.out.println("DEBUG: Collected first name -> " + firstName);
 
-                String lastName = inputHelper.readNonEmptyLine("Animal's last name: ");
+                String lastName = inputHelper.readLine("Animal's last name: ");
                 responses.put("last name", lastName);
 
             } else if (question.contains("address it was found")) {
