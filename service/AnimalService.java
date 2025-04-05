@@ -13,8 +13,8 @@ public class AnimalService {
     private final AnimalRepositoryImpl animalRepository;
     private final FileWriterService fileWriterService;
 
-    public AnimalService(AnimalRepositoryImpl animalRepository, FileWriterService fileWriterService) {
-        this.animalRepository = animalRepository;
+    public AnimalService(FileWriterService fileWriterService) {
+        this.animalRepository = AnimalRepositoryImpl.getInstance();
         this.fileWriterService = fileWriterService;
     }
 
@@ -56,10 +56,10 @@ public class AnimalService {
                 age,
                 weight,
                 breed);
+        System.out.println("DEBUG SERVICE: Trying to save -> " + animal);
         animalRepository.save(animal);
+        System.out.println("DEBUG SERVICE: Save method executed");
         System.out.println("Animal created in Service" + animal);
-        String fileName = "test3";
-        String fileContent = "test test test";
         fileWriterService.createAnimalFile(animal);
 
     }

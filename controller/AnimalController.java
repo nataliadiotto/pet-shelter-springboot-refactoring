@@ -8,6 +8,8 @@ import service.AnimalService;
 import java.io.IOException;
 import java.util.Map;
 
+//TODO Fix bug saving two animals in a row
+
 public class AnimalController {
 
     private final AnimalService animalService;

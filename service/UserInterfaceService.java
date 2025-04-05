@@ -23,28 +23,30 @@ public class UserInterfaceService {
     }
 
     public void start(String filePath) throws IOException {
-        int userChoice = -1;
+        int userChoice;
 
-        while (true){
+        while (true) {
             userMenus.displayMainMenu();
-            try {
-                userChoice = sc.nextInt();
-                sc.nextLine();
+            System.out.print("Enter the number of your option: ");
 
-                if (userChoice >= 1 && userChoice <= 6) {
+            String input = sc.nextLine().trim();
+
+            try {
+                userChoice = Integer.parseInt(input);
+
+                if (userChoice == 6) {
+                    System.out.println("Exiting program...");
                     break;
-                } else {
-                    System.out.println("Please choose a number between 1 and 6!");
                 }
 
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid option! Please enter a valid number.");
-                sc.nextLine();
+                handleMainMenuOption(userChoice, filePath);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid option! Please enter a number.");
             }
+
+            System.out.println("\nPress enter to return to main menu...");
+            sc.nextLine();
         }
-
-        handleMainMenuOption(userChoice, filePath);
-
     }
 
     private void handleMainMenuOption(int userChoice, String filePath) throws IOException {
@@ -52,7 +54,12 @@ public class UserInterfaceService {
             case 1:
                 //Register new animal
                 Map<String, String> collectedRegisterResponses = collectRegisterResponses(filePath);
-                animalController.registerAnimal(collectedRegisterResponses);
+                System.out.println("DEBUG: Collected responses -> " + collectedRegisterResponses);
+                try {
+                    animalController.registerAnimal(collectedRegisterResponses);
+                } catch (Exception e) {
+                    System.out.println("ERROR: Failed to register animal: " + e.getMessage());
+                }
                 break;
             case 2:
                 //Edit animal
@@ -83,39 +90,48 @@ public class UserInterfaceService {
         Map<String, String>  responses = new HashMap<>();
         List<String> questions = fileReaderService.readFileToList(filePath);
 
+        System.out.println("DEBUG: Collecting responses for a new animal...");
+
         System.out.println("\nREGISTER NEW ANIMAL:");
         for (String question: questions) {
-            if (question.contains("animal's first and last name")) {
-                System.out.println(question);
+            System.out.println(question);
+            System.out.print("> ");  // Facilita a visualização da entrada
 
+            if (question.contains("animal's first and last name")) {
+
+                System.out.println("DEBUG: Collecting input for new animal...");
                 System.out.print("Animal's first name: ");
-                String firstName = sc.nextLine();
+                String firstName = sc.nextLine().trim();
                 responses.put("first name", firstName);
+                System.out.println("DEBUG: Collected first name -> " + firstName);
 
                 System.out.print("Animal's last name: ");
-                String lastName = sc.nextLine();
+                String lastName = sc.nextLine().trim();
                 responses.put("last name", lastName);
             } else if (question.contains("address it was found")) {
-                System.out.println(question);
-
                 System.out.print("Number: ");
-                Integer addressNumber = Integer.parseInt(sc.nextLine());
-                responses.put("address number", String.valueOf(addressNumber));
+                String addressNumber = sc.nextLine().trim();
+                responses.put("address number", addressNumber);
 
                 System.out.print("St./Ave./Rd./Pl./Sq. name: ");
-                String addressName = sc.nextLine();
+                String addressName = sc.nextLine().trim();
                 responses.put("address name", addressName);
 
                 System.out.print("City: ");
-                String addressCity = sc.nextLine();
+                String addressCity = sc.nextLine().trim();
                 responses.put("address city", addressCity);
+            } else if (question.contains("approximate age") || question.contains("approximate weight")) {
+                // Garantir que a entrada seja limpa corretamente para números
+                String input = sc.nextLine().trim();
+                responses.put(question, input); // Pode validar depois se for numérico
+
             } else {
-                System.out.println(question);
-                String response = sc.nextLine();
+                String response = sc.nextLine().trim();
                 responses.put(question, response);
             }
-
         }
+
+        System.out.println("DEBUG: Final collected responses -> " + responses);
         return responses;
     }
 

@@ -10,7 +10,6 @@ public class UserMenus {
                 4. List all registered animals
                 5. List animals by criteria (age, name, breed)
                 6. Exit
-                Enter the number of your option:
                 """;
 
 

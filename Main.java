@@ -13,9 +13,9 @@ public class Main {
 
         UserMenus userMenus = new UserMenus();
         FileReaderService fileReaderService = new FileReaderService();
-        AnimalRepositoryImpl animalRepository = new AnimalRepositoryImpl();
+        //AnimalRepositoryImpl animalRepository = AnimalRepositoryImpl.getInstance();
         FileWriterService fileWriterService = new FileWriterService();
-        AnimalService animalService = new AnimalService(animalRepository, fileWriterService);
+        AnimalService animalService = new AnimalService(fileWriterService);
         AnimalController animalController = new AnimalController(animalService);
 
         // Cria o UserInterfaceService com as dependências injetadas
