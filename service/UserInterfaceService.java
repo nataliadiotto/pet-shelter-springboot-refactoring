@@ -2,6 +2,7 @@ package service;
 
 import controller.AnimalController;
 import domain.UserMenus;
+import domain.utils.InputHelper;
 
 import java.io.IOException;
 import java.util.*;
@@ -11,6 +12,7 @@ public class UserInterfaceService {
      private final FileReaderService fileReaderService;
      private final AnimalController animalController;
      private final Scanner sc;
+     private final InputHelper inputHelper;
      private final UserMenus userMenus;
 
 
@@ -19,6 +21,7 @@ public class UserInterfaceService {
         this.animalController = animalController;
         this.userMenus = userMenus;
         this.sc = new Scanner(System.in);
+        this.inputHelper = new InputHelper(sc);
 
     }
 
@@ -27,24 +30,16 @@ public class UserInterfaceService {
 
         while (true) {
             userMenus.displayMainMenu();
-            System.out.print("Enter the number of your option: ");
+            userChoice = inputHelper.readInt("Enter the number of your option: ");
 
-            String input = sc.nextLine().trim();
-            try {
-                userChoice = Integer.parseInt(input);
-
-                if (userChoice == 6) {
-                    System.out.println("Exiting program...");
-                    break;
-                }
-
-                handleMainMenuOption(userChoice, filePath);
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid option! Please enter a number.");
+            if (userChoice == 6) {
+                System.out.println("Exiting program...");
+                break;
             }
 
-            System.out.println("\nPress enter to return to main menu...");
-            sc.nextLine();
+            handleMainMenuOption(userChoice, filePath);
+
+            inputHelper.waitForEnter("\nPress enter to return to main menu...");
         }
     }
 
@@ -94,38 +89,34 @@ public class UserInterfaceService {
         System.out.println("\nREGISTER NEW ANIMAL:");
         for (String question: questions) {
             System.out.println(question);
-            System.out.print("> ");  // Facilita a visualização da entrada
 
             if (question.contains("animal's first and last name")) {
 
                 System.out.println("DEBUG: Collecting input for new animal...");
-                System.out.print("Animal's first name: ");
-                String firstName = sc.nextLine().trim();
+
+                String firstName = inputHelper.readNonEmptyLine("Animal's first name: ");
                 responses.put("first name", firstName);
                 System.out.println("DEBUG: Collected first name -> " + firstName);
 
-                System.out.print("Animal's last name: ");
-                String lastName = sc.nextLine().trim();
+                String lastName = inputHelper.readNonEmptyLine("Animal's last name: ");
                 responses.put("last name", lastName);
+
             } else if (question.contains("address it was found")) {
-                System.out.print("Number: ");
-                String addressNumber = sc.nextLine().trim();
+                String addressNumber = inputHelper.readLine("Number: ");
                 responses.put("address number", addressNumber);
 
-                System.out.print("St./Ave./Rd./Pl./Sq. name: ");
-                String addressName = sc.nextLine().trim();
+                String addressName = inputHelper.readNonEmptyLine("St./Ave./Rd./Pl./Sq. name: ");
                 responses.put("address name", addressName);
 
-                System.out.print("City: ");
-                String addressCity = sc.nextLine().trim();
+                String addressCity = inputHelper.readNonEmptyLine("City: ");
                 responses.put("address city", addressCity);
+
             } else if (question.contains("approximate age") || question.contains("approximate weight")) {
-                // Garantir que a entrada seja limpa corretamente para números
-                String input = sc.nextLine().trim();
+                String input = inputHelper.readLine("> ");
                 responses.put(question, input); // Pode validar depois se for numérico
 
             } else {
-                String response = sc.nextLine().trim();
+                String response = inputHelper.readLine("> ");
                 responses.put(question, response);
             }
         }
@@ -136,8 +127,7 @@ public class UserInterfaceService {
 
     private void handleListAnimalMenu() {
         userMenus.displayListAnimalsMenu();
-        int userChoice = sc.nextInt();
-        sc.nextLine();
+        int userChoice = inputHelper.readInt("> ");
     }
 
 }
