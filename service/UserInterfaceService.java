@@ -30,7 +30,6 @@ public class UserInterfaceService {
             System.out.print("Enter the number of your option: ");
 
             String input = sc.nextLine().trim();
-
             try {
                 userChoice = Integer.parseInt(input);
 
@@ -138,6 +137,7 @@ public class UserInterfaceService {
     private void handleListAnimalMenu() {
         userMenus.displayListAnimalsMenu();
         int userChoice = sc.nextInt();
+        sc.nextLine();
     }
 
 }
