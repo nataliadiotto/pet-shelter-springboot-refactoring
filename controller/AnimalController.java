@@ -3,6 +3,7 @@ package controller;
 import domain.Animal;
 import domain.enums.AnimalType;
 import domain.enums.BiologicalSex;
+import domain.filterStrategy.AnimalFilterStrategy;
 import domain.utils.Constants;
 import service.AnimalService;
 
@@ -109,10 +110,25 @@ public class AnimalController {
         }
     }
 
-    private void showError(String message) {
-        System.err.println("Error: " + message);
+    public void filterByCriteria(AnimalType animalType, Map<AnimalFilterStrategy, Object> filters) {
+        System.out.println("Searching animals...");
+        List<Animal> filteredAnimals = animalService.filterAnimals(animalType, filters);
+
+        if (filteredAnimals.isEmpty()) {
+            System.out.println("No animals found.");
+        } else {
+            int i = 0;
+            for (Animal animal : filteredAnimals) {
+                i++;
+                System.out.println(i + ". " + animal);
+            }
+
+        }
+    }
+        private void showError(String message){
+            System.err.println("Error: " + message);
+        }
+
     }
 
 
-
-}

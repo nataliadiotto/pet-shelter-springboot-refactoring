@@ -1,5 +1,7 @@
 package domain;
 
+import domain.enums.AnimalType;
+
 public class UserMenus {
 
     private final String mainMenu = """ 
@@ -14,7 +16,6 @@ public class UserMenus {
 
 
     private final String findAnimalMenu = """
-            -------------- FIND ANIMAL --------------
             1. Find animal by first or last name
             2. Find animal by gender
             3. Find animal by age

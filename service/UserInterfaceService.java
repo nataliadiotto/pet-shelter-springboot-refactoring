@@ -2,6 +2,8 @@ package service;
 
 import controller.AnimalController;
 import domain.UserMenus;
+import domain.enums.AnimalType;
+import domain.filterStrategy.*;
 import domain.utils.InputHelper;
 
 import java.io.IOException;
@@ -142,11 +144,81 @@ public class UserInterfaceService {
     }
 
     private void handleListAnimalMenu() {
-        userMenus.displayListAnimalsMenu();
-        int userChoice = inputHelper.readInt("> ");
+        System.out.println("Choose animal type to search (Cat = 1/Dog = 2): ");
+        int animalInput = inputHelper.readInt("> ");
+        AnimalType animalType = AnimalType.fromValue(animalInput);
+
+        Map<AnimalFilterStrategy, Object> filters = new HashMap<>();
+        Set<Integer> usedCriteria = new HashSet<>();
+
+        int maxFilters = 2;
+        int filtersAdded = 0;
+        while (filtersAdded < maxFilters) {
+            System.out.printf("-------------- FIND %S --------------%n", animalType.name());
+            userMenus.displayListAnimalsMenu();
+
+            System.out.println("Choose a filter to search: ");
+            int criterion = inputHelper.readInt("> ");
+
+            if (criterion < 1 || criterion > 7) {
+                System.out.println("Please choose a valid filter.\n");
+                continue;
+            }
+            if (usedCriteria.contains(criterion)) {
+                System.out.println("You've already used this filter. Please choose a different one.\n");
+                continue;
+            }
+
+            switch (criterion){
+                case 1:
+                    String name = inputHelper.readNonEmptyLine("Enter name to search: ");
+                    filters.put(new NameFilterStrategy(), name);
+                    break;
+                case 2:
+                    String sex = inputHelper.readNonEmptyLine("Choose animal's biological sex (Female/Male): ");
+                    filters.put(new SexFilterStrategy(), sex);
+                    break;
+                case 3:
+                    Double age = inputHelper.readDouble("Enter age to search: ");
+                    filters.put(new AgeFilterStrategy(), age);
+                    break;
+                case 4:
+                    Double weight = inputHelper.readDouble("Enter weight to search: ");
+                    filters.put(new WeightFilterStrategy(), weight);
+                    break;
+                case 5:
+                    String breed = inputHelper.readNonEmptyLine("Enter breed to search: ");
+                    filters.put(new BreedFilterStrategy(), breed);
+                    break;
+                case 6:
+                    String address = inputHelper.readNonEmptyLine("Enter address it was found to search: ");
+                    filters.put(new AddressFilterStrategy(), address);
+                    break;
+                case 7:
+                    System.out.println("Returning to main menu...");
+                    return;
+
+            }
+            usedCriteria.add(criterion);
+            filtersAdded++;
+
+            if (filtersAdded < maxFilters) {
+                int addAnother = inputHelper.readInt("Would you like to add a second filter (Yes = 1 / No = 2)? " +
+                        "\n> ");
+                if (addAnother != 1) break;
+            }
+
+        }
+
+        if (!filters.isEmpty()){
+            animalController.filterByCriteria(animalType, filters);
+        } else {
+            System.out.println("Invalid search request! Try again.");
+        }
+        }
+
     }
 
-}
 
 
 

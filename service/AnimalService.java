@@ -3,10 +3,12 @@ package service;
 import domain.Animal;
 import domain.enums.AnimalType;
 import domain.enums.BiologicalSex;
+import domain.filterStrategy.AnimalFilterStrategy;
 import repository.AnimalRepositoryImpl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class AnimalService {
 
@@ -71,6 +73,13 @@ public class AnimalService {
        }
 
        return animals;
+    }
+
+    public List<Animal> filterAnimals(AnimalType animalType, Map<AnimalFilterStrategy, Object> filters) {
+        List<Animal> filteredAnimals = animalRepository.findAll();
+
+
+        return filteredAnimals;
     }
 
     private boolean containsInvalidCharacters(String text) {
