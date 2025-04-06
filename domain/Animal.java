@@ -1,7 +1,8 @@
 package domain;
 
-import domain.utils.AnimalType;
-import domain.utils.BiologicalSex;
+import domain.enums.AnimalType;
+import domain.enums.BiologicalSex;
+import domain.utils.Constants;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -74,6 +75,12 @@ public class Animal {
                 this.addressNumber = addressNumber;
         }
 
+        public String getFormattedAddressNumber() {
+                return (addressNumber != null)
+                        ? String.valueOf(addressNumber)
+                        : Constants.NOT_INFORMED;
+        }
+
         public String getAddressName() {
                 return capitalizeWords(addressName);
         }
@@ -90,7 +97,7 @@ public class Animal {
                 this.addressCity = addressCity;
         }
 
-        public String getFullAddress(){return addressNumber + ", " +
+        public String getFullAddress(){return getFormattedAddressNumber() + ", " +
                 capitalizeWords(addressName) +
                 ", " + capitalizeWords(addressCity);}
 
@@ -156,11 +163,11 @@ public class Animal {
         @Override
         public String toString() {
                 return String.format(Locale.ENGLISH, """
-                %s - %s - %s - %d, %s - %s - %.1f years old - %.1fkg - %s""",
+                %s - %s - %s - %s, %s - %s - %.1f years old - %.1fkg - %s""",
                         getFullName(),
                         getAnimalType(),
                         getBiologicalSex(),
-                        getAddressNumber(),
+                        getFormattedAddressNumber(),
                         getAddressName(),
                         getAddressCity(),
                         getAge(),

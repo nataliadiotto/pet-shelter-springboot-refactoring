@@ -1,8 +1,8 @@
 package controller;
 
 import domain.Animal;
-import domain.utils.AnimalType;
-import domain.utils.BiologicalSex;
+import domain.enums.AnimalType;
+import domain.enums.BiologicalSex;
 import domain.utils.Constants;
 import service.AnimalService;
 
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-//TODO Fix bug saving two animals in a row
+//TODO Refactor listAnimals to retrieve from files, not in memory list
 
 public class AnimalController {
 
@@ -48,7 +48,15 @@ public class AnimalController {
             showError("Invalid option! Choose 1 for Female or 2 for Male.");
         }
 
-        Integer addressNumber = Integer.parseInt(userResponses.get("address number"));
+        String addressNumberStr = userResponses.get("address number");
+        Integer addressNumber = null;
+
+        if (addressNumberStr != null && !addressNumberStr.trim().isEmpty()) {
+            try {
+                addressNumber = Integer.valueOf(addressNumberStr.trim());
+            } catch (NumberFormatException ignored) {
+            }
+        }
 
         String addressName = userResponses.get("address name");
         String addressCity = userResponses.get("address city");
@@ -89,7 +97,6 @@ public class AnimalController {
         if (animals.isEmpty()) {
             System.out.println("No animals found.");
         } else {
-            System.out.println("------ LIST OF REGISTERED ANIMALS ------");
             int i = 0;
             for (Animal animal : animals) {
                 i++;

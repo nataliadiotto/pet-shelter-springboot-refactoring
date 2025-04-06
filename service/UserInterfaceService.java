@@ -32,14 +32,10 @@ public class UserInterfaceService {
             userMenus.displayMainMenu();
             userChoice = inputHelper.readInt("Enter the number of your option: ");
 
-            if (userChoice == 6) {
-                System.out.println("Exiting program...");
-                break;
-            }
-
             handleMainMenuOption(userChoice, filePath);
 
             inputHelper.waitForEnter("\nPress enter to return to main menu...");
+
         }
     }
 
@@ -55,33 +51,54 @@ public class UserInterfaceService {
                     System.out.println("ERROR: Failed to register animal: " + e.getMessage());
                 }
                 break;
+
             case 2:
                 //Edit animal
 
                 break;
+
             case 3:
                 //Delete registered animal
 
                 break;
+
             case 4:
-                animalController.listAllAnimals();
+                System.out.println("\n=================================");
+                System.out.println("📋 Registered Animals:");
+                System.out.println("=================================");
+
+                try {
+                    animalController.listAllAnimals();
+                } catch (Exception e) {
+                    System.out.println("An error occurred while listing animals: " + e.getMessage());
+                }
                 break;
+
             case 5:
                 //Find animals by criteria
                 handleListAnimalMenu();
 
                 break;
-            case 6:
-                //Exit
 
-                break;
+            case 6:
+                int exitInput = inputHelper.readInt("Do you really want to leave? (1 - Yes / 2 - No)\n> ");
+
+                if (exitInput == 1) {
+                    System.out.println("Exiting program...");
+                    System.exit(0);
+                } else if (exitInput == 2) {
+                    break;
+                } else {
+                    System.out.println("Invalid option!");
+                    break;
+                }
 
         }
     }
 
     public Map<String, String> collectRegisterResponses(String filePath) throws IOException {
         Map<String, String>  responses = new HashMap<>();
-        List<String> questions = fileReaderService.readFileToList(filePath);
+        List<String> questions = fileReaderService.readRegisterFileToList(filePath);
 
         System.out.println("DEBUG: Collecting responses for a new animal...");
 

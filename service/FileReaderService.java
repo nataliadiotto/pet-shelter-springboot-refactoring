@@ -3,14 +3,14 @@ package service;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.nio.file.Paths.*;
 //TODO refactor readSpecificLine to not depend on readFile()
 public class FileReaderService {
-    public List<String> readFileToList(String filePath) throws IOException{
+    public List<String> readRegisterFileToList(String filePath) throws IOException{
         if (!isFileValid(filePath)) {
             throw new IOException("File does not exist or is not readable: " + filePath);
         }
@@ -25,6 +25,8 @@ public class FileReaderService {
         }
 
     }
+
+    public void readAnimalFile() {}
 
 //    public String readSpecificLine(List<String> lines, Integer specificLine) throws IOException {
 //        if (specificLine < 0 || specificLine > lines.size()){

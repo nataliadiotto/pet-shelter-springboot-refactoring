@@ -1,8 +1,8 @@
 package service;
 
 import domain.Animal;
-import domain.utils.AnimalType;
-import domain.utils.BiologicalSex;
+import domain.enums.AnimalType;
+import domain.enums.BiologicalSex;
 import repository.AnimalRepositoryImpl;
 
 import java.io.IOException;
