@@ -3,12 +3,14 @@ package controller;
 import domain.Animal;
 import domain.enums.AnimalType;
 import domain.enums.BiologicalSex;
+import domain.utils.Constants;
 import service.AnimalService;
-import service.FileReaderService;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+//TODO Refactor listAnimals to retrieve from files, not in memory list
 
 public class AnimalController {
 
@@ -24,13 +26,59 @@ public class AnimalController {
         if (firstName == null || firstName.trim().isEmpty()) {throw new IllegalArgumentException("Animal's first name is mandatory.");}
         if (lastName == null || lastName.trim().isEmpty()) {throw new IllegalArgumentException("Animal's last name is mandatory.");}
 
-        AnimalType animalType = AnimalType.valueOf(userResponses.get("2 - What type of animal is it (Dog/Cat)?").toUpperCase());
-        BiologicalSex biologicalSex = BiologicalSex.valueOf(userResponses.get("3 - What is the animal's gender (Male/Female)?").toUpperCase());
-        Integer addressNumber = Integer.valueOf(userResponses.get("address number"));
+        AnimalType animalType = null;
+        try {
+            int animalTypeResponse = Integer.parseInt(userResponses.get("2 - What type of animal is it (Cat = 1/Dog = 2)?"));
+
+            animalType = AnimalType.fromValue(animalTypeResponse);
+        } catch (NumberFormatException e) {
+            showError("Animal type choice must be a valid number!");
+        } catch (IllegalArgumentException e) {
+            showError("Invalid option! Choose 1 for Cat or 2 for Dog.");
+        }
+
+        BiologicalSex biologicalSex = null;
+        try {
+            int biologicalSexResponse = Integer.parseInt(userResponses.get("3 - What is the animal's gender (Female = 1/Male = 2)?"));
+
+            biologicalSex = BiologicalSex.fromValue(biologicalSexResponse);
+        } catch (NumberFormatException e) {
+            showError("Animal gender choice must be a valid number!");
+        } catch (IllegalArgumentException e) {
+            showError("Invalid option! Choose 1 for Female or 2 for Male.");
+        }
+
+        String addressNumberStr = userResponses.get("address number");
+        Integer addressNumber = null;
+
+        if (addressNumberStr != null && !addressNumberStr.trim().isEmpty()) {
+            try {
+                addressNumber = Integer.valueOf(addressNumberStr.trim());
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
         String addressName = userResponses.get("address name");
         String addressCity = userResponses.get("address city");
-        Double age = Double.valueOf(userResponses.get("5 - What is the approximate age of the animal?"));
-        Double weight = Double.parseDouble(userResponses.get("6 - What is the approximate weight of the animal?"));
+
+        String ageStr = userResponses.get("5 - What is the approximate age of the animal?");
+        Double age = null;
+        if (ageStr != null && !ageStr.trim().isEmpty()) {
+            try {
+                age = Double.valueOf(ageStr.trim());
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        String weightStr = userResponses.get("6 - What is the approximate weight of the animal?");
+        Double weight = null;
+        if (weightStr != null && !weightStr.trim().isEmpty()) {
+            try {
+                weight = Double.valueOf(weightStr.trim());
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
         String breed = userResponses.get("7 - What is the breed of the animal?");
 
        animalService.saveAnimal(firstName,
@@ -46,5 +94,25 @@ public class AnimalController {
         System.out.println("Animal insertion validated in Controller");
 
     }
+
+    public void listAllAnimals() {
+        List<Animal> animals = animalService.listAll();
+
+        if (animals.isEmpty()) {
+            System.out.println("No animals found.");
+        } else {
+            int i = 0;
+            for (Animal animal : animals) {
+                i++;
+                System.out.println(i + ". " + animal);
+            }
+        }
+    }
+
+    private void showError(String message) {
+        System.err.println("Error: " + message);
+    }
+
+
 
 }

@@ -3,19 +3,31 @@ package repository;
 import domain.Animal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AnimalRepositoryImpl implements AnimalRepository {
 
+    private static AnimalRepositoryImpl instance;
     private List<Animal> animals;
-    public AnimalRepositoryImpl() {
+
+    private AnimalRepositoryImpl() {
         this.animals = new ArrayList<>();
+    }
+
+    public static AnimalRepositoryImpl getInstance() {
+        if (instance == null) {
+            instance = new AnimalRepositoryImpl();
+        }
+        return instance;
     }
     @Override
     public void save(Animal animal) {
+        System.out.println("DEBUG REPOSITORY: Trying to save -> " + animal);
         animals.add(animal);
-        System.out.println("Animal saved in Repository" + animal);
+        System.out.println("DEBUG: Animal saved successfully. Current list: " + animals);
     }
+
 
     @Override
     public List<Animal> findByName(String name) {
@@ -49,7 +61,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
 
     @Override
     public List<Animal> findAll() {
-        return animals;
+        return animals != null ? animals : Collections.emptyList();
     }
 
     @Override
