@@ -24,16 +24,16 @@ public class FileWriterService {
                 2 - %s
                 3 - %s
                 4 - %s
-                5 - %.1f years old
-                6 - %.1fkg
+                5 - %s
+                6 - %s
                 7 - %s""",
                 animal.getFullName(),
                 animal.getAnimalType(),
                 animal.getBiologicalSex(),
                 animal.getFullAddress(),
-                animal.getAge(),
-                animal.getWeight(),
-                animal.getBreed());
+                animal.formatAge(),
+                animal.formatWeight(),
+                animal.formatBreed());
     }
 
     public static String formatFileName(Animal animal) {

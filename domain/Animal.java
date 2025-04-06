@@ -75,7 +75,7 @@ public class Animal {
                 this.addressNumber = addressNumber;
         }
 
-        public String getFormattedAddressNumber() {
+        public String formatAddressNumber() {
                 return (addressNumber != null)
                         ? String.valueOf(addressNumber)
                         : Constants.NOT_INFORMED;
@@ -97,7 +97,7 @@ public class Animal {
                 this.addressCity = addressCity;
         }
 
-        public String getFullAddress(){return getFormattedAddressNumber() + ", " +
+        public String getFullAddress(){return formatAddressNumber() + ", " +
                 capitalizeWords(addressName) +
                 ", " + capitalizeWords(addressCity);}
 
@@ -109,6 +109,12 @@ public class Animal {
                 this.age = age;
         }
 
+        public String formatAge() {
+                return (age != null)
+                        ? String.format("%.1f years old", age)
+                        : Constants.NOT_INFORMED;
+        }
+
         public Double getWeight() {
                 return weight;
         }
@@ -117,12 +123,24 @@ public class Animal {
                 this.weight = weight;
         }
 
+        public String formatWeight() {
+                return (weight != null)
+                        ? String.format("%.1fkg", weight)
+                        : Constants.NOT_INFORMED;
+        }
+
         public String getBreed() {
                 return capitalizeWords(breed);
         }
 
         public void setBreed(String breed) {
                 this.breed = breed;
+        }
+
+        public String formatBreed() {
+                return (!breed.trim().isEmpty())
+                        ? breed
+                        : Constants.NOT_INFORMED;
         }
 
         public static String capitalizeWords(String input){
@@ -163,15 +181,15 @@ public class Animal {
         @Override
         public String toString() {
                 return String.format(Locale.ENGLISH, """
-                %s - %s - %s - %s, %s - %s - %.1f years old - %.1fkg - %s""",
+                %s - %s - %s - %s, %s - %s - %s - %s - %s""",
                         getFullName(),
                         getAnimalType(),
                         getBiologicalSex(),
-                        getFormattedAddressNumber(),
+                        formatAddressNumber(),
                         getAddressName(),
                         getAddressCity(),
-                        getAge(),
-                        getWeight(),
-                        getBreed());
+                        formatAge(),
+                        formatWeight(),
+                        formatBreed());
         }
 }

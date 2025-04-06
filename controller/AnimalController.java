@@ -61,21 +61,25 @@ public class AnimalController {
         String addressName = userResponses.get("address name");
         String addressCity = userResponses.get("address city");
 
+        String ageStr = userResponses.get("5 - What is the approximate age of the animal?");
         Double age = null;
-        try {
-            age = Double.valueOf(getValueOrDefault(userResponses.get("5 - What is the approximate age of the animal?")));
-        } catch (NumberFormatException e) {
-            showError("Age must be a valid number!");
+        if (ageStr != null && !ageStr.trim().isEmpty()) {
+            try {
+                age = Double.valueOf(ageStr.trim());
+            } catch (NumberFormatException ignored) {
+            }
         }
 
+        String weightStr = userResponses.get("6 - What is the approximate weight of the animal?");
         Double weight = null;
-        try {
-            weight = Double.parseDouble(userResponses.get("6 - What is the approximate weight of the animal?"));
-        } catch (NumberFormatException e) {
-            showError("Weight must be a valid number!");
+        if (weightStr != null && !weightStr.trim().isEmpty()) {
+            try {
+                weight = Double.valueOf(weightStr.trim());
+            } catch (NumberFormatException ignored) {
+            }
         }
 
-        String breed = getValueOrDefault(userResponses.get("7 - What is the breed of the animal?"));
+        String breed = userResponses.get("7 - What is the breed of the animal?");
 
        animalService.saveAnimal(firstName,
                lastName,
@@ -104,15 +108,6 @@ public class AnimalController {
             }
         }
     }
-
-
-    //validate if String fields were informed
-    private String getValueOrDefault(String value) {
-        return (value == null || value.trim().isEmpty())
-                ? Constants.NOT_INFORMED
-                : value.trim();
-    }
-
 
     private void showError(String message) {
         System.err.println("Error: " + message);

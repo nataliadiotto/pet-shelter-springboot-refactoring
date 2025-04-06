@@ -27,26 +27,24 @@ public class AnimalService {
         }
 
         //validate breed content
-        if (containsInvalidCharacters(breed)) {
-            throw new IllegalArgumentException("Breed must contain only A-Z letters.");
+        if (!breed.trim().isEmpty()) {
+            if (containsInvalidCharacters(breed)) {
+                throw new IllegalArgumentException("Breed must contain only A-Z letters.");
+            }
         }
 
-        //validate input and maximum age
-        if (!isValidDecimal(String.valueOf(age))) {
-            throw new IllegalArgumentException("Age must contain only numbers!");
-        }
-        if (age > 20 || age == 0) {
-            throw new IllegalArgumentException("Age must be between 0.1 and 20");
+
+        //validate minimum and maximum age
+        if (age != null && (age <= 0 || age > 20)) {
+            throw new IllegalArgumentException("Age must be between 0.1 and 20.");
         }
 
-        //validate input and min and max weight
-        if (!isValidDecimal(String.valueOf(weight))) {
-            throw new IllegalArgumentException("Weight must contain only numbers!");
-        }
-        if (weight > 60 || weight < 0.1) {
-            throw new IllegalArgumentException("Weight must be between 0.1 and 60");
+        //validate min and max weight
+        if (weight != null && (weight > 60 || weight < 0.1)) {
+            throw new IllegalArgumentException("Weight must be between 0.1 and 60.");
         }
 
+        //create new animal
         Animal animal = new Animal(firstName,
                 lastName,
                 animalType,
