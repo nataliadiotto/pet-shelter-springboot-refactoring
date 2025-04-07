@@ -77,8 +77,11 @@ public class UserInterfaceService {
                 break;
 
             case 5:
-                //Find animals by criteria
-                handleListAnimalMenu();
+                try{handleListAnimalMenu();
+                } catch (Exception e) {
+                    System.out.println("An error ocurred while filtering animals: " + e.getMessage());
+                }
+
 
                 break;
 

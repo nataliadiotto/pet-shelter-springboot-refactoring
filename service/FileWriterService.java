@@ -18,6 +18,7 @@ public class FileWriterService {
         return Files.createDirectories(registeredAnimalsDir);
     }
 
+
     public static String formatFileContent(Animal animal) {
         return String.format(Locale.ENGLISH, """
                 1 - %s
