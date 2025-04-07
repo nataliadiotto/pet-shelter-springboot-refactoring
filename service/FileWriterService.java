@@ -1,6 +1,6 @@
 package service;
 
-import domain.Animal;
+import domain.entity.Animal;
 
 import java.io.IOException;
 import java.nio.file.*;

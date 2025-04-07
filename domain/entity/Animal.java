@@ -1,4 +1,4 @@
-package domain;
+package domain.entity;
 
 import domain.enums.AnimalType;
 import domain.enums.BiologicalSex;

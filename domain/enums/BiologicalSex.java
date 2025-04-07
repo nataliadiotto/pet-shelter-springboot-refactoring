@@ -18,6 +18,15 @@ public enum BiologicalSex {
         throw new IllegalArgumentException("Invalid value: " + value);
     }
 
+    public static BiologicalSex fromString(String value) {
+        if (value == null) return null;
+        try {
+            return BiologicalSex.valueOf(value.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
     @Override
     public String toString() {
         return this.name().charAt(0) + this.name().substring(1).toLowerCase();

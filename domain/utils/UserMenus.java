@@ -1,4 +1,4 @@
-package domain;
+package domain.utils;
 
 public class UserMenus {
 
@@ -14,7 +14,6 @@ public class UserMenus {
 
 
     private final String findAnimalMenu = """
-            -------------- FIND ANIMAL --------------
             1. Find animal by first or last name
             2. Find animal by gender
             3. Find animal by age

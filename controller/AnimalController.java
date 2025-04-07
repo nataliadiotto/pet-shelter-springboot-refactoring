@@ -1,9 +1,9 @@
 package controller;
 
-import domain.Animal;
+import domain.entity.Animal;
 import domain.enums.AnimalType;
 import domain.enums.BiologicalSex;
-import domain.utils.Constants;
+import domain.enums.FilterType;
 import service.AnimalService;
 
 import java.io.IOException;
@@ -109,10 +109,25 @@ public class AnimalController {
         }
     }
 
-    private void showError(String message) {
-        System.err.println("Error: " + message);
+    public void filterByCriteria(AnimalType animalType, Map<FilterType, String> filters) {
+        System.out.printf("Searching %ss...\n", animalType.name().toLowerCase());
+        List<Animal> filteredAnimals = animalService.filterAnimals(animalType, filters);
+
+        if (filteredAnimals.isEmpty()) {
+            System.out.println("No animals found.");
+        } else {
+            int i = 0;
+            for (Animal animal : filteredAnimals) {
+                i++;
+                System.out.println(i + ". " + animal);
+            }
+
+        }
+    }
+        private void showError(String message){
+            System.err.println("Error: " + message);
+        }
+
     }
 
 
-
-}
