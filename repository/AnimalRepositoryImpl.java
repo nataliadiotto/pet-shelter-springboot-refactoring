@@ -1,6 +1,6 @@
 package repository;
 
-import domain.Animal;
+import domain.entity.Animal;
 
 import java.util.ArrayList;
 import java.util.Collections;

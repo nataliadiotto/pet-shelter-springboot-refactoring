@@ -1,6 +1,5 @@
 import controller.AnimalController;
-import domain.UserMenus;
-import repository.AnimalRepositoryImpl;
+import domain.utils.UserMenus;
 import service.AnimalService;
 import service.FileReaderService;
 import service.FileWriterService;
@@ -8,7 +7,7 @@ import service.UserInterfaceService;
 
 import java.io.IOException;
 
-public class Main {
+public class AnimalShelterApp {
     public static void main(String[] args) throws IOException {
 
         UserMenus userMenus = new UserMenus();

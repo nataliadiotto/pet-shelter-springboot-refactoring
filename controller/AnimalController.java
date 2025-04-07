@@ -1,6 +1,6 @@
 package controller;
 
-import domain.Animal;
+import domain.entity.Animal;
 import domain.enums.AnimalType;
 import domain.enums.BiologicalSex;
 import domain.enums.FilterType;

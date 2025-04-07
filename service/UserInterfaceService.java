@@ -1,10 +1,9 @@
 package service;
 
 import controller.AnimalController;
-import domain.UserMenus;
+import domain.utils.UserMenus;
 import domain.enums.AnimalType;
 import domain.enums.FilterType;
-import domain.filterStrategy.*;
 import domain.utils.InputHelper;
 
 import java.io.IOException;

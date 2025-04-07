@@ -1,6 +1,6 @@
-package domain.filterStrategy;
+package domain.strategy;
 
-import domain.Animal;
+import domain.entity.Animal;
 
 import java.util.List;
 

@@ -1,6 +1,4 @@
-package domain;
-
-import domain.enums.AnimalType;
+package domain.utils;
 
 public class UserMenus {
 

@@ -1,10 +1,11 @@
 package service;
 
-import domain.Animal;
+import domain.entity.Animal;
 import domain.enums.AnimalType;
 import domain.enums.BiologicalSex;
 import domain.enums.FilterType;
-import domain.filterStrategy.*;
+import domain.strategy.*;
+import domain.strategy.filters.*;
 import repository.AnimalRepositoryImpl;
 
 import java.io.IOException;
