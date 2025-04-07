@@ -1,0 +1,12 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+
+# Java build
+*.class
+target/
