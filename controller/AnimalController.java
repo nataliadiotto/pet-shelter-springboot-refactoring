@@ -3,8 +3,7 @@ package controller;
 import domain.Animal;
 import domain.enums.AnimalType;
 import domain.enums.BiologicalSex;
-import domain.filterStrategy.AnimalFilterStrategy;
-import domain.utils.Constants;
+import domain.enums.FilterType;
 import service.AnimalService;
 
 import java.io.IOException;
@@ -110,8 +109,8 @@ public class AnimalController {
         }
     }
 
-    public void filterByCriteria(AnimalType animalType, Map<AnimalFilterStrategy, Object> filters) {
-        System.out.println("Searching animals...");
+    public void filterByCriteria(AnimalType animalType, Map<FilterType, String> filters) {
+        System.out.printf("Searching %ss...\n", animalType.name().toLowerCase());
         List<Animal> filteredAnimals = animalService.filterAnimals(animalType, filters);
 
         if (filteredAnimals.isEmpty()) {

@@ -3,7 +3,8 @@ package service;
 import domain.Animal;
 import domain.enums.AnimalType;
 import domain.enums.BiologicalSex;
-import domain.filterStrategy.AnimalFilterStrategy;
+import domain.enums.FilterType;
+import domain.filterStrategy.*;
 import repository.AnimalRepositoryImpl;
 
 import java.io.IOException;
@@ -12,9 +13,17 @@ import java.util.Map;
 
 public class AnimalService {
 
-
     private final AnimalRepositoryImpl animalRepository;
     private final FileWriterService fileWriterService;
+
+    private static final Map<FilterType, AnimalFilterStrategy> STRATEGY_MAP = Map.of(
+            FilterType.NAME, new NameFilterStrategy(),
+            FilterType.SEX, new SexFilterStrategy(),
+            FilterType.AGE, new AgeFilterStrategy(),
+            FilterType.WEIGHT, new WeightFilterStrategy(),
+            FilterType.BREED, new BreedFilterStrategy(),
+            FilterType.ADDRESS, new AddressFilterStrategy()
+    );
 
     public AnimalService(FileWriterService fileWriterService) {
         this.animalRepository = AnimalRepositoryImpl.getInstance();
@@ -75,9 +84,23 @@ public class AnimalService {
        return animals;
     }
 
-    public List<Animal> filterAnimals(AnimalType animalType, Map<AnimalFilterStrategy, Object> filters) {
-        List<Animal> filteredAnimals = animalRepository.findAll();
+    public List<Animal> filterAnimals(AnimalType animalType, Map<FilterType, String> filters) {
+        List<Animal> animals = animalRepository.findAll();
 
+        //Filter by AnimalType
+        List<Animal> filteredAnimals = animals.stream().filter(animal -> animal.getAnimalType()
+                        .equals(animalType))
+                .toList();
+
+
+        //Apply each filter
+        for (Map.Entry<FilterType, String> entry : filters.entrySet()) {
+            AnimalFilterStrategy strategy = STRATEGY_MAP.get(entry.getKey());
+
+            if (strategy != null) {
+                filteredAnimals = strategy.filter(filteredAnimals, entry.getValue());
+            }
+        }
 
         return filteredAnimals;
     }

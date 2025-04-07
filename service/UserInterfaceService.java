@@ -3,6 +3,7 @@ package service;
 import controller.AnimalController;
 import domain.UserMenus;
 import domain.enums.AnimalType;
+import domain.enums.FilterType;
 import domain.filterStrategy.*;
 import domain.utils.InputHelper;
 
@@ -148,7 +149,7 @@ public class UserInterfaceService {
         int animalInput = inputHelper.readInt("> ");
         AnimalType animalType = AnimalType.fromValue(animalInput);
 
-        Map<AnimalFilterStrategy, Object> filters = new HashMap<>();
+        Map<FilterType, String> filters = new HashMap<>();
         Set<Integer> usedCriteria = new HashSet<>();
 
         int maxFilters = 2;
@@ -169,35 +170,35 @@ public class UserInterfaceService {
                 continue;
             }
 
-            switch (criterion){
-                case 1:
+            switch (criterion) {
+                case 1 -> {
                     String name = inputHelper.readNonEmptyLine("Enter name to search: ");
-                    filters.put(new NameFilterStrategy(), name);
-                    break;
-                case 2:
+                    filters.put(FilterType.NAME, name);
+                }
+                case 2 -> {
                     String sex = inputHelper.readNonEmptyLine("Choose animal's biological sex (Female/Male): ");
-                    filters.put(new SexFilterStrategy(), sex);
-                    break;
-                case 3:
+                    filters.put(FilterType.SEX, sex);
+                }
+                case 3 -> {
                     Double age = inputHelper.readDouble("Enter age to search: ");
-                    filters.put(new AgeFilterStrategy(), age);
-                    break;
-                case 4:
+                    filters.put(FilterType.AGE, String.valueOf(age));
+                }
+                case 4 -> {
                     Double weight = inputHelper.readDouble("Enter weight to search: ");
-                    filters.put(new WeightFilterStrategy(), weight);
-                    break;
-                case 5:
+                    filters.put(FilterType.WEIGHT, String.valueOf(weight));
+                }
+                case 5 -> {
                     String breed = inputHelper.readNonEmptyLine("Enter breed to search: ");
-                    filters.put(new BreedFilterStrategy(), breed);
-                    break;
-                case 6:
+                    filters.put(FilterType.BREED, breed);
+                }
+                case 6 -> {
                     String address = inputHelper.readNonEmptyLine("Enter address it was found to search: ");
-                    filters.put(new AddressFilterStrategy(), address);
-                    break;
-                case 7:
+                    filters.put(FilterType.ADDRESS, address);
+                }
+                case 7 -> {
                     System.out.println("Returning to main menu...");
                     return;
-
+                }
             }
             usedCriteria.add(criterion);
             filtersAdded++;
