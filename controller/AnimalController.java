@@ -50,11 +50,11 @@ public class AnimalController {
 
         String addressNumberStr = userResponses.get("address number");
         Integer addressNumber = null;
-
         if (addressNumberStr != null && !addressNumberStr.trim().isEmpty()) {
             try {
                 addressNumber = Integer.valueOf(addressNumberStr.trim());
             } catch (NumberFormatException ignored) {
+                addressNumber = null;
             }
         }
 
@@ -67,6 +67,7 @@ public class AnimalController {
             try {
                 age = Double.valueOf(ageStr.trim());
             } catch (NumberFormatException ignored) {
+                age = null;
             }
         }
 
@@ -76,6 +77,7 @@ public class AnimalController {
             try {
                 weight = Double.valueOf(weightStr.trim());
             } catch (NumberFormatException ignored) {
+                weight = null;
             }
         }
 

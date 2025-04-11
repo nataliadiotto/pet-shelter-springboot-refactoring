@@ -111,7 +111,7 @@ public class Animal {
 
         public String formatAge() {
                 return (age != null)
-                        ? String.format("%.1f years old", age)
+                        ? String.format("%.1f years old", age).replace(",", ".")
                         : Constants.NOT_INFORMED;
         }
 
@@ -125,22 +125,18 @@ public class Animal {
 
         public String formatWeight() {
                 return (weight != null)
-                        ? String.format("%.1fkg", weight)
+                        ? String.format("%.1fkg", weight).replace(",", ".")
                         : Constants.NOT_INFORMED;
         }
 
         public String getBreed() {
-                return capitalizeWords(breed);
+                return (!breed.trim().isEmpty())
+                        ? capitalizeWords(breed)
+                        : Constants.NOT_INFORMED;
         }
 
         public void setBreed(String breed) {
                 this.breed = breed;
-        }
-
-        public String formatBreed() {
-                return (!breed.trim().isEmpty())
-                        ? breed
-                        : Constants.NOT_INFORMED;
         }
 
         public static String capitalizeWords(String input){
@@ -184,12 +180,12 @@ public class Animal {
                 %s - %s - %s - %s, %s - %s - %s - %s - %s""",
                         getFullName(),
                         getAnimalType(),
-                        getBiologicalSex(),
+                        biologicalSex.toString(),
                         formatAddressNumber(),
                         getAddressName(),
                         getAddressCity(),
                         formatAge(),
                         formatWeight(),
-                        formatBreed());
+                        getBreed());
         }
 }

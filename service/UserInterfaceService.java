@@ -103,7 +103,7 @@ public class UserInterfaceService {
 
     public Map<String, String> collectRegisterResponses(String filePath) throws IOException {
         Map<String, String>  responses = new HashMap<>();
-        List<String> questions = fileReaderService.readRegisterFileToList(filePath);
+        List<String> questions = fileReaderService.readFileToList(filePath);
 
         System.out.println("DEBUG: Collecting responses for a new animal...");
 

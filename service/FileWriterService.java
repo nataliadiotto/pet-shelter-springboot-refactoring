@@ -30,11 +30,11 @@ public class FileWriterService {
                 7 - %s""",
                 animal.getFullName(),
                 animal.getAnimalType(),
-                animal.getBiologicalSex(),
+                animal.getBiologicalSex().toString(),
                 animal.getFullAddress(),
                 animal.formatAge(),
                 animal.formatWeight(),
-                animal.formatBreed());
+                animal.getBreed());
     }
 
     public static String formatFileName(Animal animal) {

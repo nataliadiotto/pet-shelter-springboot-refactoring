@@ -2,18 +2,15 @@ package repository;
 
 import domain.entity.Animal;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 public interface AnimalRepository {
 
-    void save(Animal animal);
-    List<Animal> findByName(String name);
-    List<Animal> findBySex(Enum BiologicaSex);
-    List<Animal> findByAge(Double age);
-    List<Animal> findByWeight(Double weight);
-    List<Animal> findByBreed(String breed);
-    List<Animal> findByFoundAtAddress(String address);
-    List<Animal> findAll();
+    void save(Animal animal) throws IOException;
+    Map<Path, Animal> findAll();
     void updateAnimal(Animal animal);
     void deleteAnimal(Animal animal);
 
