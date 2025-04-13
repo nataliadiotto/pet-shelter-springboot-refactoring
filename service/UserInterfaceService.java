@@ -236,7 +236,7 @@ public class UserInterfaceService {
 
             List<Animal> animals = handleListAnimalMenu();
             int animalIndex = inputHelper.readInt("Choose the animal's number to update: ");
-            System.out.println("Enter the new information to update, leave it blank if you wish to maintain the current data.");
+            System.out.println("\nEnter the new information to update, leave it blank if you wish to maintain the current data.");
 
             Map<String, Object> updatedData = new HashMap<>();
             updatedData.put("firstName", inputHelper.readLine("First name: "));
@@ -244,10 +244,12 @@ public class UserInterfaceService {
             updatedData.put("addressCity", inputHelper.readLine("City: "));
             updatedData.put("addressName", inputHelper.readLine("Address name: "));
 
-            System.out.println("The following fields may be optional, enter 'null' if you don't want to update nor keep the data.");
-            updatedData.put("addressNumber", inputHelper.readInt("Address number: "));
-            updatedData.put("age", inputHelper.readDouble("Age: "));
-            updatedData.put("weight", inputHelper.readDouble("Weight: "));
+            System.out.println("\n--------------------------------------------------------------------------------------------------------");
+            System.out.println("The following fields may be optional, enter '0' if you don't want to update nor keep the current data.\n");
+
+            updatedData.put("addressNumber", inputHelper.readLine("Address number: "));
+            updatedData.put("age", inputHelper.readLine("Age: "));
+            updatedData.put("weight", inputHelper.readLine("Weight: "));
             updatedData.put("breed", inputHelper.readLine("Breed: "));
 
             System.out.println("DEBUG MAP: " + updatedData);

@@ -72,7 +72,7 @@ public class Animal {
         }
 
         public String formatAddressNumber() {
-                return (isNotBlank(String.valueOf(addressNumber)) && addressNumber != null)
+                return (isNotBlank(String.valueOf(addressNumber)) && addressNumber != null && addressNumber != 0)
                         ? String.valueOf(addressNumber)
                         : Constants.NOT_INFORMED;
         }
@@ -106,7 +106,7 @@ public class Animal {
         }
 
         public String formatAge() {
-                return (age != null)
+                return (age != null && age != 0)
                         ? String.format("%.1f years old", age).replace(",", ".")
                         : Constants.NOT_INFORMED;
         }
@@ -120,7 +120,7 @@ public class Animal {
         }
 
         public String formatWeight() {
-                return (weight != null)
+                return (weight != null && weight != 0)
                         ? String.format("%.1fkg", weight).replace(",", ".")
                         : Constants.NOT_INFORMED;
         }

@@ -6,6 +6,7 @@ import domain.enums.BiologicalSex;
 import domain.enums.FilterType;
 import domain.strategy.*;
 import domain.strategy.filters.*;
+import domain.utils.Constants;
 import repository.AnimalRepositoryImpl;
 
 import java.io.IOException;
@@ -146,13 +147,19 @@ public class AnimalService {
     private <T> void updateIfNotBlank(Map<String, Object> data, String key, Class<T> type, Consumer<T> setter) {
         Object value = data.get(key);
 
-        if (isNullOrEmpty(value)) {
-            return; // User wants to keep existing value (pressed Enter)
+        String stringValue = value.toString().trim();
+
+        if ("0".equals(stringValue)) {
+            if (type == String.class) {
+                setter.accept(type.cast(Constants.NOT_INFORMED)); // e.g., "Not Informed"
+            } else {
+                setter.accept(null); // For numbers, null means not informed
+            }
+            return;
         }
 
-        if (isExplicitNull(value)) {
-            setter.accept(null); // User typed "null"
-            return;
+        if (isNullOrEmpty(value)) {
+            return; // User wants to keep existing value (pressed Enter)
         }
 
         try {
