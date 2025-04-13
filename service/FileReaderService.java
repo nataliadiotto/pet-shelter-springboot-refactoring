@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.nio.file.Paths.*;
@@ -23,7 +24,7 @@ public class FileReaderService {
         try (Stream<String> lines = Files.lines(get(filePath))){
             return lines.map(String::trim)
                     .filter(line -> !line.isEmpty())
-                    .toList();
+                    .collect(Collectors.toCollection(ArrayList::new));
         } catch (IOException e) {
             System.out.println("Failed to read the file: " + e.getMessage());
             return List.of();
@@ -118,13 +119,6 @@ public class FileReaderService {
         return line.substring(line.indexOf('-') + 1).trim();
     }
 
-//    public String readSpecificLine(List<String> lines, Integer specificLine) throws IOException {
-//        if (specificLine < 0 || specificLine > lines.size()){
-//            throw new IllegalArgumentException("Line number must be non-negative and less than " + lines.size());
-//        }
-//
-//        return lines.get(specificLine);
-//    }
 
     private boolean isFileValid(String filePath){
         Path path = get(filePath);

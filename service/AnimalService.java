@@ -140,8 +140,24 @@ public class AnimalService {
 
 
         System.out.println("DEBUG SERVICE: Trying to update -> " + originalAnimal);
-        animalRepository.updateAnimal(originalAnimal, oldFilePath);
+        animalRepository.updateAnimalByIndex(originalAnimal, oldFilePath);
         System.out.println("Animal updated in Service" + originalAnimal);
+    }
+
+    public void deleteAnimalByIndex(int targetIndex, List<Animal> animals) throws IOException {
+
+        if (targetIndex < 1 || targetIndex > animals.size()) {
+            throw new IndexOutOfBoundsException("Invalid index.");
+        }
+
+        Animal existingAnimal = animals.get(targetIndex - 1);
+        Path oldFilePath = existingAnimal.getFilePath();
+        System.out.println("DEBUG SERVICE | Path: " + oldFilePath);
+
+        System.out.println("DEBUG SERVICE: Trying to delete -> " + existingAnimal);
+        animalRepository.deleteAnimalByIndex(existingAnimal, oldFilePath, animals, targetIndex);
+
+
     }
 
     private <T> void updateIfNotBlank(Map<String, Object> data, String key, Class<T> type, Consumer<T> setter) {
@@ -176,6 +192,5 @@ public class AnimalService {
             System.out.println("Invalid type or conversion error for key " + key + ": " + value);
         }
     }
-
 
 }

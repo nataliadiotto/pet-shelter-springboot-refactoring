@@ -127,14 +127,19 @@ public class AnimalController {
         return filteredAnimals;
     }
 
-    public void updateAnimal(int index, List<Animal> filteredAnimals, Map<String, Object> updatedData) throws IOException {
+    public void updateAnimalByIndex(int index, List<Animal> filteredAnimals, Map<String, Object> updatedData) throws IOException {
         animalService.updateAnimal(index, filteredAnimals, updatedData);
+    }
+
+    public void deleteAnimalByIndex(int animalIndex, List<Animal> animals) throws IOException {
+        animalService.deleteAnimalByIndex(animalIndex, animals);
     }
 
     private void showError(String message){
             System.err.println("Error: " + message);
         }
 
-    }
+
+}
 
 
