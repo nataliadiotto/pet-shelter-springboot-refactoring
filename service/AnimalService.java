@@ -8,18 +8,16 @@ import domain.strategy.*;
 import domain.strategy.filters.*;
 import repository.AnimalRepositoryImpl;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
+
+import static domain.utils.InputHelper.*;
 
 public class AnimalService {
 
     private final AnimalRepositoryImpl animalRepository;
-    private final FileWriterService fileWriterService;
-    private final FileReaderService fileReaderService;
 
     private static final Map<FilterType, AnimalFilterStrategy> STRATEGY_MAP = Map.of(
             FilterType.NAME, new NameFilterStrategy(),
@@ -32,11 +30,8 @@ public class AnimalService {
 
     public AnimalService(FileWriterService fileWriterService, FileReaderService fileReaderService) {
         this.animalRepository = AnimalRepositoryImpl.getInstance(fileReaderService, fileWriterService);
-        this.fileWriterService = fileWriterService;
-        this.fileReaderService = fileReaderService;
     }
 
-    //TODO test saveAnimal()
     public void saveAnimal(String firstName, String lastName, AnimalType animalType, BiologicalSex biologicalSex, Integer addressNumber, String addressName, String addressCity, Double age, Double weight, String breed) throws IOException {
         //Validate name and surname content
         if (containsInvalidCharacters(firstName) || containsInvalidCharacters(lastName)) {
@@ -115,12 +110,65 @@ public class AnimalService {
         return filteredAnimals;
     }
 
-    private boolean containsInvalidCharacters(String text) {
-        return text == null || !text.matches("[a-zA-Z ]+");
+    public void updateAnimal(int targetIndex, List<Animal> animals, Map<String, Object> updatedData) throws IOException {
+        if (updatedData == null || updatedData.isEmpty()) {
+            throw new IllegalArgumentException("Not enough data to update animal.");
+        }
+
+        if (targetIndex < 1 || targetIndex > animals.size()) {
+            throw new IndexOutOfBoundsException("Invalid index.");
+        }
+
+
+        Animal originalAnimal = animals.get(targetIndex - 1);
+
+        Path oldFilePath = originalAnimal.getFilePath();
+
+        updateIfNotBlank(updatedData, "firstName", String.class, originalAnimal::setFirstName);
+        updateIfNotBlank(updatedData, "lastName", String.class, originalAnimal::setLastName);
+
+        updateIfNotBlank(updatedData, "addressNumber", Integer.class, originalAnimal::setAddressNumber);
+        updateIfNotBlank(updatedData, "addressName", String.class, originalAnimal::setAddressName);
+        updateIfNotBlank(updatedData, "addressCity", String.class, originalAnimal::setAddressCity);
+
+        updateIfNotBlank(updatedData, "age", Double.class, originalAnimal::setAge);
+
+        updateIfNotBlank(updatedData, "weight", Double.class, originalAnimal::setWeight);
+
+        updateIfNotBlank(updatedData, "breed", String.class, originalAnimal::setBreed);
+
+
+        System.out.println("DEBUG SERVICE: Trying to update -> " + originalAnimal);
+        animalRepository.updateAnimal(originalAnimal, oldFilePath);
+        System.out.println("Animal updated in Service" + originalAnimal);
     }
 
-    public boolean isValidDecimal(String input) {
-        return input.matches("^[+-]?\\d+(?:[.,]\\d+)?$");
+    private <T> void updateIfNotBlank(Map<String, Object> data, String key, Class<T> type, Consumer<T> setter) {
+        Object value = data.get(key);
+
+        if (isNullOrEmpty(value)) {
+            return; // User wants to keep existing value (pressed Enter)
+        }
+
+        if (isExplicitNull(value)) {
+            setter.accept(null); // User typed "null"
+            return;
+        }
+
+        try {
+            if (type == Integer.class) {
+                setter.accept(type.cast(Integer.parseInt(value.toString())));
+            } else if (type == Double.class) {
+                setter.accept(type.cast(Double.parseDouble(value.toString())));
+            } else if (type == String.class) {
+                setter.accept(type.cast(value.toString()));
+            } else {
+                setter.accept(type.cast(value));
+            }
+        } catch (Exception e) {
+            System.out.println("Invalid type or conversion error for key " + key + ": " + value);
+        }
     }
+
 
 }

@@ -44,6 +44,8 @@ public class FileReaderService {
                     List<String> lines = Files.readAllLines(path);
 
                     Animal animal = parseAnimalFromFile(lines);
+                    animal.setFilePath(path);
+
                     animalMap.put(path, animal);
                 }
 
@@ -108,13 +110,7 @@ public class FileReaderService {
                 age,
                 weight,
                 breed);
-        //1 - Bebe Diotto
-        //2 - Cat
-        //3 - Male
-        //4 - 471, Fabricio Vampre Avenue, Limeira
-        //5 - 1,0 years old
-        //6 - 5,0kg
-        //7 - orange
+
 
     }
 

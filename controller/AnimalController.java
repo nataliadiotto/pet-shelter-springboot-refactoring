@@ -111,7 +111,7 @@ public class AnimalController {
         }
     }
 
-    public void filterByCriteria(AnimalType animalType, Map<FilterType, String> filters) {
+    public List<Animal> filterByCriteria(AnimalType animalType, Map<FilterType, String> filters) {
         System.out.printf("Searching %ss...\n", animalType.name().toLowerCase());
         List<Animal> filteredAnimals = animalService.filterAnimals(animalType, filters);
 
@@ -123,10 +123,15 @@ public class AnimalController {
                 i++;
                 System.out.println(i + ". " + animal);
             }
-
         }
+        return filteredAnimals;
     }
-        private void showError(String message){
+
+    public void updateAnimal(int index, List<Animal> filteredAnimals, Map<String, Object> updatedData) throws IOException {
+        animalService.updateAnimal(index, filteredAnimals, updatedData);
+    }
+
+    private void showError(String message){
             System.err.println("Error: " + message);
         }
 

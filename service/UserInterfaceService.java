@@ -1,6 +1,7 @@
 package service;
 
 import controller.AnimalController;
+import domain.entity.Animal;
 import domain.utils.UserMenus;
 import domain.enums.AnimalType;
 import domain.enums.FilterType;
@@ -56,6 +57,13 @@ public class UserInterfaceService {
 
             case 2:
                 //Edit animal
+                try{
+                    System.out.println("-------------- UPDATE ANIMAL --------------%n");
+                    handleUpdateMenu();
+
+                } catch (Exception e) {
+                    System.out.println("An error ocurred while filtering animals: " + e.getMessage());
+                }
 
                 break;
 
@@ -65,6 +73,7 @@ public class UserInterfaceService {
                 break;
 
             case 4:
+                //List all animals
                 System.out.println("\n=================================");
                 System.out.println("📋 Registered Animals:");
                 System.out.println("=================================");
@@ -77,15 +86,16 @@ public class UserInterfaceService {
                 break;
 
             case 5:
-                try{handleListAnimalMenu();
+                //Filter animals
+                try{
+                    handleListAnimalMenu();
                 } catch (Exception e) {
                     System.out.println("An error ocurred while filtering animals: " + e.getMessage());
                 }
-
-
                 break;
 
             case 6:
+                //Exit
                 int exitInput = inputHelper.readInt("Do you really want to leave? (1 - Yes / 2 - No)\n> ");
 
                 if (exitInput == 1) {
@@ -146,7 +156,7 @@ public class UserInterfaceService {
         return responses;
     }
 
-    private void handleListAnimalMenu() {
+    private List<Animal> handleListAnimalMenu() {
         System.out.println("Choose animal type to search (Cat = 1/Dog = 2): ");
         int animalInput = inputHelper.readInt("> ");
         AnimalType animalType = AnimalType.fromValue(animalInput);
@@ -199,7 +209,7 @@ public class UserInterfaceService {
                 }
                 case 7 -> {
                     System.out.println("Returning to main menu...");
-                    return;
+                    continue;
                 }
             }
             usedCriteria.add(criterion);
@@ -213,12 +223,41 @@ public class UserInterfaceService {
 
         }
 
+        List<Animal> filteredAnimals = new ArrayList<>();
         if (!filters.isEmpty()){
-            animalController.filterByCriteria(animalType, filters);
+            filteredAnimals = animalController.filterByCriteria(animalType, filters);
         } else {
             System.out.println("Invalid search request! Try again.");
         }
+        return filteredAnimals;
         }
+
+        private void handleUpdateMenu() throws IOException {
+
+            List<Animal> animals = handleListAnimalMenu();
+            int animalIndex = inputHelper.readInt("Choose the animal's number to update: ");
+            System.out.println("Enter the new information to update, leave it blank if you wish to maintain the current data.");
+
+            Map<String, Object> updatedData = new HashMap<>();
+            updatedData.put("firstName", inputHelper.readLine("First name: "));
+            updatedData.put("lastName", inputHelper.readLine("Last name: "));
+            updatedData.put("addressCity", inputHelper.readLine("City: "));
+            updatedData.put("addressName", inputHelper.readLine("Address name: "));
+
+            System.out.println("The following fields may be optional, enter 'null' if you don't want to update nor keep the data.");
+            updatedData.put("addressNumber", inputHelper.readInt("Address number: "));
+            updatedData.put("age", inputHelper.readDouble("Age: "));
+            updatedData.put("weight", inputHelper.readDouble("Weight: "));
+            updatedData.put("breed", inputHelper.readLine("Breed: "));
+
+            System.out.println("DEBUG MAP: " + updatedData);
+
+            animalController.updateAnimal(animalIndex, animals, updatedData);
+
+
+        }
+
+
 
     }
 

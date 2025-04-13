@@ -4,21 +4,25 @@ import domain.enums.AnimalType;
 import domain.enums.BiologicalSex;
 import domain.utils.Constants;
 
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Objects;
 
+import static domain.utils.InputHelper.*;
+
 public class Animal {
 
-        private String firstName;
-        private String lastName;
-        private AnimalType animalType;
-        private BiologicalSex biologicalSex;
-        private Integer addressNumber;
-        private String addressName;
-        private String addressCity;
-        private Double age;
-        private Double weight;
-        private String breed;
+    private String firstName;
+    private String lastName;
+    private final AnimalType animalType;
+    private final BiologicalSex biologicalSex;
+    private Integer addressNumber;
+    private String addressName;
+    private String addressCity;
+    private Double age;
+    private Double weight;
+    private String breed;
+    private Path filePath;
 
         public Animal(String firstName, String lastName, AnimalType animalType, BiologicalSex biologicalSex, Integer addressNumber, String addressName, String addressCity, Double age, Double weight, String breed) {
                 this.firstName = firstName;
@@ -55,16 +59,8 @@ public class Animal {
                 return animalType;
         }
 
-        public void setAnimalType(AnimalType animalType) {
-                this.animalType = animalType;
-        }
-
         public BiologicalSex getBiologicalSex() {
                 return biologicalSex;
-        }
-
-        public void setBiologicalSex(BiologicalSex biologicalSex) {
-                this.biologicalSex = biologicalSex;
         }
 
         public Integer getAddressNumber() {
@@ -76,7 +72,7 @@ public class Animal {
         }
 
         public String formatAddressNumber() {
-                return (addressNumber != null)
+                return (isNotBlank(String.valueOf(addressNumber)) && addressNumber != null)
                         ? String.valueOf(addressNumber)
                         : Constants.NOT_INFORMED;
         }
@@ -130,7 +126,7 @@ public class Animal {
         }
 
         public String getBreed() {
-                return (!breed.trim().isEmpty())
+                return (isNotBlank(breed) && !breed.trim().isEmpty())
                         ? capitalizeWords(breed)
                         : Constants.NOT_INFORMED;
         }
@@ -139,7 +135,15 @@ public class Animal {
                 this.breed = breed;
         }
 
-        public static String capitalizeWords(String input){
+        public Path getFilePath() {
+            return filePath;
+        }
+
+        public void setFilePath(Path filePath) {
+            this.filePath = filePath;
+        }
+
+    public static String capitalizeWords(String input){
                 if (input == null || input.isEmpty()) {
                         return input;
                 }

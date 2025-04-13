@@ -1,7 +1,0 @@
-1 - Moana Ramos
-2 - Dog
-3 - Female
-4 - 400, Humaita Street, Limeira
-5 - 9,0 years old
-6 - 15,0kg
-7 - brown

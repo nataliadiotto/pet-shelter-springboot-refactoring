@@ -5,6 +5,7 @@ import service.FileReaderService;
 import service.FileWriterService;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -30,7 +31,7 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     @Override
     public void save(Animal animal) throws IOException {
         System.out.println("DEBUG REPOSITORY: Trying to save -> " + animal);
-        fileWriterService.createAnimalFile(animal);
+        fileWriterService.saveAnimalToFile(animal);
         animals.clear();
         System.out.println("DEBUG: Animal saved successfully. Current list: " + findAll());
     }
@@ -49,7 +50,16 @@ public class AnimalRepositoryImpl implements AnimalRepository {
     }
 
     @Override
-    public void updateAnimal(Animal animal) {
+    public void updateAnimal(Animal updatedAnimal, Path oldPath) throws IOException {
+        if (updatedAnimal == null) {
+            throw new IllegalArgumentException("Animal cannot be null");
+        }
+
+        if (oldPath != null && Files.exists(oldPath)) {
+            Files.delete(oldPath);
+        }
+
+        fileWriterService.saveAnimalToFile(updatedAnimal);
 
     }
 

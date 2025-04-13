@@ -51,5 +51,27 @@ public class InputHelper {
             System.out.println(message);
             scanner.nextLine();
         }
+
+        public static boolean isNotBlank(String value) {
+            return value != null && !value.trim().isEmpty();
+        }
+
+
+    public static boolean isExplicitNull(Object value) {
+            return "null".equalsIgnoreCase(String.valueOf(value).trim());
+        }
+
+        public static boolean isNullOrEmpty(Object value) {
+            return value == null || String.valueOf(value).trim().isEmpty();
+        }
+
+        public static boolean containsInvalidCharacters(String text) {
+            return text == null || !text.matches("[a-zA-Z ]+");
+        }
+
+        public boolean isValidDecimal(String input) {
+            return input.matches("^[+-]?\\d+(?:[.,]\\d+)?$");
+        }
+
     }
 

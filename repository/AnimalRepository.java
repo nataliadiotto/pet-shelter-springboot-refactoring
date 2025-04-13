@@ -11,7 +11,9 @@ public interface AnimalRepository {
 
     void save(Animal animal) throws IOException;
     Map<Path, Animal> findAll();
-    void updateAnimal(Animal animal);
+
+    void updateAnimal(Animal updatedAnimal, Path oldPath) throws IOException;
+
     void deleteAnimal(Animal animal);
 
 
