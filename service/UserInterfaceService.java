@@ -1,6 +1,7 @@
 package service;
 
 import controller.AnimalController;
+import domain.entity.Animal;
 import domain.utils.UserMenus;
 import domain.enums.AnimalType;
 import domain.enums.FilterType;
@@ -56,15 +57,31 @@ public class UserInterfaceService {
 
             case 2:
                 //Edit animal
+                try{
+                    System.out.println("-------------- UPDATE ANIMAL --------------");
+                    handleUpdateMenu();
+
+                } catch (Exception e) {
+                    System.out.println("An error occurred while updating animal: " + e.getMessage());
+                }
 
                 break;
 
             case 3:
                 //Delete registered animal
+                try{
+                    System.out.println("-------------- DELETE ANIMAL --------------");
+                    handleDeleteMenu();
+
+                } catch (Exception e) {
+                    System.out.println("An error occurred while deleting animal: ");
+                    e.printStackTrace();
+                }
 
                 break;
 
             case 4:
+                //List all animals
                 System.out.println("\n=================================");
                 System.out.println("📋 Registered Animals:");
                 System.out.println("=================================");
@@ -77,13 +94,17 @@ public class UserInterfaceService {
                 break;
 
             case 5:
-                //Find animals by criteria
-                handleListAnimalMenu();
-
+                //Filter animals
+                try{
+                    handleListAnimalMenu();
+                } catch (Exception e) {
+                    System.out.println("An error ocurred while filtering animals: " + e.getMessage());
+                }
                 break;
 
             case 6:
-                int exitInput = inputHelper.readInt("Do you really want to leave? (1 - Yes / 2 - No)\n> ");
+                //Exit
+                int exitInput = inputHelper.readInt("Do you really wish to leave? (1 - Yes / 2 - No)\n> ");
 
                 if (exitInput == 1) {
                     System.out.println("Exiting program...");
@@ -98,9 +119,10 @@ public class UserInterfaceService {
         }
     }
 
+
     public Map<String, String> collectRegisterResponses(String filePath) throws IOException {
         Map<String, String>  responses = new HashMap<>();
-        List<String> questions = fileReaderService.readRegisterFileToList(filePath);
+        List<String> questions = fileReaderService.readFileToList(filePath);
 
         System.out.println("DEBUG: Collecting responses for a new animal...");
 
@@ -143,7 +165,7 @@ public class UserInterfaceService {
         return responses;
     }
 
-    private void handleListAnimalMenu() {
+    private List<Animal> handleListAnimalMenu() {
         System.out.println("Choose animal type to search (Cat = 1/Dog = 2): ");
         int animalInput = inputHelper.readInt("> ");
         AnimalType animalType = AnimalType.fromValue(animalInput);
@@ -196,7 +218,7 @@ public class UserInterfaceService {
                 }
                 case 7 -> {
                     System.out.println("Returning to main menu...");
-                    return;
+                    continue;
                 }
             }
             usedCriteria.add(criterion);
@@ -210,12 +232,80 @@ public class UserInterfaceService {
 
         }
 
-        if (!filters.isEmpty()){
-            animalController.filterByCriteria(animalType, filters);
-        } else {
-            System.out.println("Invalid search request! Try again.");
+        return filters.isEmpty()
+                ? new ArrayList<>()
+                : new ArrayList<>(animalController.filterByCriteria(animalType, filters));
+
+    }
+
+        private void handleUpdateMenu() throws IOException {
+
+            List<Animal> animals = handleListAnimalMenu();
+
+            int animalIndex;
+            while (true) {
+                animalIndex = inputHelper.readInt("Choose the animal's number to update: ");
+
+                if (animalIndex >= 1 && animalIndex <= animals.size()) {
+                    break;
+                }
+
+                System.out.println("Invalid index. Please enter the numerical index of one of the animals in the list.");
+                System.out.println();
+
+                animals = handleListAnimalMenu();
+            }
+
+            System.out.println("\nEnter the new information to update, leave it blank if you wish to maintain the current data.");
+
+            Map<String, Object> updatedData = new HashMap<>();
+            updatedData.put("firstName", inputHelper.readLine("First name: "));
+            updatedData.put("lastName", inputHelper.readLine("Last name: "));
+            updatedData.put("addressCity", inputHelper.readLine("City: "));
+            updatedData.put("addressName", inputHelper.readLine("Address name: "));
+
+            System.out.println("\n--------------------------------------------------------------------------------------------------------");
+            System.out.println("The following fields may be optional, enter '0' if you don't want to update nor keep the current data.\n");
+
+            updatedData.put("addressNumber", inputHelper.readLine("Address number: "));
+            updatedData.put("age", inputHelper.readLine("Age: "));
+            updatedData.put("weight", inputHelper.readLine("Weight: "));
+            updatedData.put("breed", inputHelper.readLine("Breed: "));
+
+            System.out.println("DEBUG MAP: " + updatedData);
+
+            animalController.updateAnimalByIndex(animalIndex, animals, updatedData);
+
         }
+
+        private void handleDeleteMenu() throws IOException {
+
+            List<Animal> animals = handleListAnimalMenu();
+
+            int animalIndex;
+            while (true) {
+                animalIndex = inputHelper.readInt("Choose the animal's number to delete: ");
+
+                if (animalIndex >= 1 && animalIndex <= animals.size()) {
+                    break;
+                }
+
+                System.out.println("Invalid index. Please enter the numerical index of one of the animals in the list.");
+                System.out.println();
+
+                animals = handleListAnimalMenu();
+            }
+
+            String confirmation = inputHelper.readNonEmptyLine("Do you really wish to delete animal number " + animalIndex + "?" +
+                    "\nEnter YES or NO:" +
+                    "\n> ");
+
+            if (confirmation.equalsIgnoreCase("yes")) {
+                animalController.deleteAnimalByIndex(animalIndex, animals);
+            }
         }
+
+
 
     }
 

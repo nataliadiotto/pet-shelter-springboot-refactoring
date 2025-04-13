@@ -6,16 +6,19 @@ import domain.enums.BiologicalSex;
 import domain.enums.FilterType;
 import domain.strategy.*;
 import domain.strategy.filters.*;
+import domain.utils.Constants;
 import repository.AnimalRepositoryImpl;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.function.Consumer;
+
+import static domain.utils.InputHelper.*;
 
 public class AnimalService {
 
     private final AnimalRepositoryImpl animalRepository;
-    private final FileWriterService fileWriterService;
 
     private static final Map<FilterType, AnimalFilterStrategy> STRATEGY_MAP = Map.of(
             FilterType.NAME, new NameFilterStrategy(),
@@ -26,12 +29,10 @@ public class AnimalService {
             FilterType.ADDRESS, new AddressFilterStrategy()
     );
 
-    public AnimalService(FileWriterService fileWriterService) {
-        this.animalRepository = AnimalRepositoryImpl.getInstance();
-        this.fileWriterService = fileWriterService;
+    public AnimalService(FileWriterService fileWriterService, FileReaderService fileReaderService) {
+        this.animalRepository = AnimalRepositoryImpl.getInstance(fileReaderService, fileWriterService);
     }
 
-    //TODO test saveAnimal()
     public void saveAnimal(String firstName, String lastName, AnimalType animalType, BiologicalSex biologicalSex, Integer addressNumber, String addressName, String addressCity, Double age, Double weight, String breed) throws IOException {
         //Validate name and surname content
         if (containsInvalidCharacters(firstName) || containsInvalidCharacters(lastName)) {
@@ -44,7 +45,6 @@ public class AnimalService {
                 throw new IllegalArgumentException("Breed must contain only A-Z letters.");
             }
         }
-
 
         //validate minimum and maximum age
         if (age != null && (age <= 0 || age > 20)) {
@@ -71,22 +71,27 @@ public class AnimalService {
         animalRepository.save(animal);
         System.out.println("DEBUG SERVICE: Save method executed");
         System.out.println("Animal created in Service" + animal);
-        fileWriterService.createAnimalFile(animal);
 
     }
 
     public List<Animal> listAll() {
-       List<Animal> animals = animalRepository.findAll();
+        Map<Path, Animal> animalMap = animalRepository.findAll();
 
-       if (animals.isEmpty()) {
+       if (animalMap.isEmpty()) {
            System.out.println("No registered animals.");
        }
 
-       return animals;
+       return new ArrayList<>(animalMap.values());
     }
 
     public List<Animal> filterAnimals(AnimalType animalType, Map<FilterType, String> filters) {
-        List<Animal> animals = animalRepository.findAll();
+        Map<Path, Animal> animalMap = animalRepository.findAll();
+
+        if (animalMap.isEmpty()) {
+            System.out.println("No registered animals.");
+        }
+
+        List<Animal> animals = new ArrayList<>(animalMap.values());
 
         //Filter by AnimalType
         List<Animal> filteredAnimals = animals.stream().filter(animal -> animal.getAnimalType()
@@ -106,12 +111,86 @@ public class AnimalService {
         return filteredAnimals;
     }
 
-    private boolean containsInvalidCharacters(String text) {
-        return text == null || !text.matches("[a-zA-Z ]+");
+    public void updateAnimal(int targetIndex, List<Animal> animals, Map<String, Object> updatedData) throws IOException {
+        if (updatedData == null || updatedData.isEmpty()) {
+            throw new IllegalArgumentException("Not enough data to update animal.");
+        }
+
+        if (targetIndex < 1 || targetIndex > animals.size()) {
+            throw new IndexOutOfBoundsException("Invalid index.");
+        }
+
+
+        Animal originalAnimal = animals.get(targetIndex - 1);
+
+        Path oldFilePath = originalAnimal.getFilePath();
+
+        updateIfNotBlank(updatedData, "firstName", String.class, originalAnimal::setFirstName);
+        updateIfNotBlank(updatedData, "lastName", String.class, originalAnimal::setLastName);
+
+        updateIfNotBlank(updatedData, "addressNumber", Integer.class, originalAnimal::setAddressNumber);
+        updateIfNotBlank(updatedData, "addressName", String.class, originalAnimal::setAddressName);
+        updateIfNotBlank(updatedData, "addressCity", String.class, originalAnimal::setAddressCity);
+
+        updateIfNotBlank(updatedData, "age", Double.class, originalAnimal::setAge);
+
+        updateIfNotBlank(updatedData, "weight", Double.class, originalAnimal::setWeight);
+
+        updateIfNotBlank(updatedData, "breed", String.class, originalAnimal::setBreed);
+
+
+        System.out.println("DEBUG SERVICE: Trying to update -> " + originalAnimal);
+        animalRepository.updateAnimalByIndex(originalAnimal, oldFilePath);
+        System.out.println("Animal updated in Service" + originalAnimal);
     }
 
-    public boolean isValidDecimal(String input) {
-        return input.matches("^[+-]?\\d+(?:[.,]\\d+)?$");
+    public void deleteAnimalByIndex(int targetIndex, List<Animal> animals) throws IOException {
+
+        if (targetIndex < 1 || targetIndex > animals.size()) {
+            throw new IndexOutOfBoundsException("Invalid index.");
+        }
+
+        Animal existingAnimal = animals.get(targetIndex - 1);
+        Path oldFilePath = existingAnimal.getFilePath();
+        System.out.println("DEBUG SERVICE | Path: " + oldFilePath);
+
+        System.out.println("DEBUG SERVICE: Trying to delete -> " + existingAnimal);
+        animalRepository.deleteAnimalByIndex(existingAnimal, oldFilePath, animals, targetIndex);
+
+
+    }
+
+    private <T> void updateIfNotBlank(Map<String, Object> data, String key, Class<T> type, Consumer<T> setter) {
+        Object value = data.get(key);
+
+        String stringValue = value.toString().trim();
+
+        if ("0".equals(stringValue)) {
+            if (type == String.class) {
+                setter.accept(type.cast(Constants.NOT_INFORMED)); // e.g., "Not Informed"
+            } else {
+                setter.accept(null); // For numbers, null means not informed
+            }
+            return;
+        }
+
+        if (isNullOrEmpty(value)) {
+            return; // User wants to keep existing value (pressed Enter)
+        }
+
+        try {
+            if (type == Integer.class) {
+                setter.accept(type.cast(Integer.parseInt(value.toString())));
+            } else if (type == Double.class) {
+                setter.accept(type.cast(Double.parseDouble(value.toString())));
+            } else if (type == String.class) {
+                setter.accept(type.cast(value.toString()));
+            } else {
+                setter.accept(type.cast(value));
+            }
+        } catch (Exception e) {
+            System.out.println("Invalid type or conversion error for key " + key + ": " + value);
+        }
     }
 
 }

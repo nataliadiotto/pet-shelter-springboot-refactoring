@@ -50,11 +50,11 @@ public class AnimalController {
 
         String addressNumberStr = userResponses.get("address number");
         Integer addressNumber = null;
-
         if (addressNumberStr != null && !addressNumberStr.trim().isEmpty()) {
             try {
                 addressNumber = Integer.valueOf(addressNumberStr.trim());
             } catch (NumberFormatException ignored) {
+                addressNumber = null;
             }
         }
 
@@ -67,6 +67,7 @@ public class AnimalController {
             try {
                 age = Double.valueOf(ageStr.trim());
             } catch (NumberFormatException ignored) {
+                age = null;
             }
         }
 
@@ -76,6 +77,7 @@ public class AnimalController {
             try {
                 weight = Double.valueOf(weightStr.trim());
             } catch (NumberFormatException ignored) {
+                weight = null;
             }
         }
 
@@ -109,7 +111,7 @@ public class AnimalController {
         }
     }
 
-    public void filterByCriteria(AnimalType animalType, Map<FilterType, String> filters) {
+    public List<Animal> filterByCriteria(AnimalType animalType, Map<FilterType, String> filters) {
         System.out.printf("Searching %ss...\n", animalType.name().toLowerCase());
         List<Animal> filteredAnimals = animalService.filterAnimals(animalType, filters);
 
@@ -121,13 +123,23 @@ public class AnimalController {
                 i++;
                 System.out.println(i + ". " + animal);
             }
-
         }
+        return filteredAnimals;
     }
-        private void showError(String message){
+
+    public void updateAnimalByIndex(int index, List<Animal> filteredAnimals, Map<String, Object> updatedData) throws IOException {
+        animalService.updateAnimal(index, filteredAnimals, updatedData);
+    }
+
+    public void deleteAnimalByIndex(int animalIndex, List<Animal> animals) throws IOException {
+        animalService.deleteAnimalByIndex(animalIndex, animals);
+    }
+
+    private void showError(String message){
             System.err.println("Error: " + message);
         }
 
-    }
+
+}
 
 

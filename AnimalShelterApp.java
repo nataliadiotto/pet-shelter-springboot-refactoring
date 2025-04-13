@@ -14,7 +14,7 @@ public class AnimalShelterApp {
         FileReaderService fileReaderService = new FileReaderService();
         //AnimalRepositoryImpl animalRepository = AnimalRepositoryImpl.getInstance();
         FileWriterService fileWriterService = new FileWriterService();
-        AnimalService animalService = new AnimalService(fileWriterService);
+        AnimalService animalService = new AnimalService(fileWriterService, fileReaderService);
         AnimalController animalController = new AnimalController(animalService);
 
         // Cria o UserInterfaceService com as dependências injetadas
