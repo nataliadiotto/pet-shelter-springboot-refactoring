@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-//TODO Refactor listAnimals to retrieve from files, not in memory list
-
 public class AnimalController {
 
     private final AnimalService animalService;
