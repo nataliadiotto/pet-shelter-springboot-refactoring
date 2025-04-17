@@ -9,6 +9,7 @@ import service.PetService;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import static domain.utils.ConsoleColors.*;
 
 public class PetController {
 
@@ -18,7 +19,7 @@ public class PetController {
         this.petService = petService;
     }
 
-    public void registerPet(Map<String, String> userResponses) throws IOException {
+    public void registerPet(Map<String, String> userResponses) throws IOException, InterruptedException {
         String firstName = userResponses.get("first name");
         String lastName = userResponses.get("last name");
         if (firstName == null || firstName.trim().isEmpty()) {throw new IllegalArgumentException("Pet's first name is mandatory.");}
@@ -91,48 +92,76 @@ public class PetController {
                age,
                weight,
                breed);
-        System.out.println("Pet insertion validated in Controller");
+
+        System.out.print(BOLD_YELLOW + "Saving pet");
+        animatedTransition();
+        System.out.println(BOLD_GREEN + " ✅ Pet successfully registered!" + RESET);
 
     }
 
-    public void listAllPets() {
+    public void listAllPets() throws InterruptedException {
         List<Pet> pets = petService.listAll();
 
+        System.out.print(BOLD_YELLOW + "Listing pets");
+        animatedTransition();
+
         if (pets.isEmpty()) {
-            System.out.println("No pets found.");
+            System.out.println(BOLD_RED + "No pets found." + RESET);
         } else {
             int i = 0;
             for (Pet pet : pets) {
                 i++;
-                System.out.println(i + ". " + pet);
+                System.out.print(BOLD_CYAN + i + ". " + RESET);
+                System.out.println(CYAN + pet + RESET);
             }
         }
     }
 
-    public List<Pet> filterByCriteria(PetType petType, Map<FilterType, String> filters) {
-        System.out.printf("Searching %ss...\n", petType.name().toLowerCase());
+    public List<Pet> filterByCriteria(PetType petType, Map<FilterType, String> filters) throws InterruptedException {
         List<Pet> filteredPets = petService.filterPets(petType, filters);
 
+        System.out.printf(BOLD_YELLOW + "Searching %ss", petType.name().toLowerCase());
+        animatedTransition();
+        System.out.println();
+
         if (filteredPets.isEmpty()) {
-            System.out.println("No pets found.");
+            System.out.println(BOLD_RED + "No pets found." + RESET);
         } else {
             int i = 0;
             for (Pet pet : filteredPets) {
                 i++;
-                System.out.println(i + ". " + pet);
+                System.out.println(BOLD_PURPLE + i +
+                        ". " + RESET +
+                        PURPLE + pet + RESET);
             }
         }
         return filteredPets;
     }
 
-    public void updatePetByIndex(int index, List<Pet> filteredPets, Map<String, Object> updatedData) throws IOException {
+    public void updatePetByIndex(int index, List<Pet> filteredPets, Map<String, Object> updatedData) throws IOException, InterruptedException {
         petService.updatePet(index, filteredPets, updatedData);
+
+        System.out.print(BOLD_YELLOW + "Updating pet");
+        animatedTransition();
+        System.out.println(BOLD_GREEN + " ✅ Pet successfully updated!" + RESET);
     }
 
-    public void deletePetByIndex(int petIndex, List<Pet> pets) throws IOException {
+    public void deletePetByIndex(int petIndex, List<Pet> pets) throws IOException, InterruptedException {
         petService.deletePetByIndex(petIndex, pets);
+
+        System.out.print(BOLD_YELLOW + "Deleting pet");
+        animatedTransition();
+        System.out.println(BOLD_GREEN + " ✅ Pet successfully deleted!" + RESET);
+
     }
 
+    private void animatedTransition() throws InterruptedException {
+        for (int i = 0; i < 3; i++) {
+            Thread.sleep(500);
+            System.out.print(BOLD_YELLOW + "." + RESET);
+        }
+        System.out.println();
+    }
     private void showError(String message){
             System.err.println("Error: " + message);
         }

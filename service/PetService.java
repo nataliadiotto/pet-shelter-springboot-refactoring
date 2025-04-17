@@ -67,10 +67,7 @@ public class PetService {
                 age,
                 weight,
                 breed);
-        System.out.println("DEBUG SERVICE: Trying to save -> " + pet);
         petRepository.save(pet);
-        System.out.println("DEBUG SERVICE: Save method executed");
-        System.out.println("Pet created in Service" + pet);
 
     }
 
@@ -138,10 +135,7 @@ public class PetService {
 
         updateIfNotBlank(updatedData, "breed", String.class, originalPet::setBreed);
 
-
-        System.out.println("DEBUG SERVICE: Trying to update -> " + originalPet);
         petRepository.updatePetByIndex(originalPet, oldFilePath);
-        System.out.println("Pet updated in Service" + originalPet);
     }
 
     public void deletePetByIndex(int targetIndex, List<Pet> pets) throws IOException {
@@ -152,11 +146,8 @@ public class PetService {
 
         Pet existingPet = pets.get(targetIndex - 1);
         Path oldFilePath = existingPet.getFilePath();
-        System.out.println("DEBUG SERVICE | Path: " + oldFilePath);
 
-        System.out.println("DEBUG SERVICE: Trying to delete -> " + existingPet);
         petRepository.deletePetByIndex(existingPet, oldFilePath, pets, targetIndex);
-
 
     }
 

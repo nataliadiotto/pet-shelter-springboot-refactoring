@@ -30,10 +30,8 @@ public class PetRepositoryImpl implements PetRepository {
     }
     @Override
     public void save(Pet pet) throws IOException {
-        System.out.println("DEBUG REPOSITORY: Trying to save -> " + pet);
         fileWriterService.savePetToFile(pet);
         refreshCache();
-        System.out.println("DEBUG: Pet saved successfully. Current list: " + findAll());
     }
 
 
@@ -70,15 +68,10 @@ public class PetRepositoryImpl implements PetRepository {
             throw new IllegalArgumentException("Pet cannot be null");
         }
 
-        System.out.println("DEBUG REPOSITORY | Path: " + oldFilePath);
-
         if (oldFilePath != null) {
             if (Files.exists(oldFilePath)) {
                 Files.delete(oldFilePath);
-                System.out.println("Success deleting pet: " + existingPet +
-                        " at " + oldFilePath);
 
-                System.out.println("Current pets: " + findAll());
                 refreshCache();
             } else {
                 System.out.println("File does not exist: " + oldFilePath);

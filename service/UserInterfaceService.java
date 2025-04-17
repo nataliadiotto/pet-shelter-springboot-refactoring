@@ -9,6 +9,7 @@ import domain.utils.InputHelper;
 
 import java.io.IOException;
 import java.util.*;
+import static domain.utils.ConsoleColors.*;
 
 
 public class UserInterfaceService {
@@ -47,7 +48,6 @@ public class UserInterfaceService {
             case 1 -> {
                 //Register new pet
                 Map<String, String> collectedRegisterResponses = collectRegisterResponses(filePath);
-                System.out.println("DEBUG: Collected responses -> " + collectedRegisterResponses);
                 try {
                     petController.registerPet(collectedRegisterResponses);
                 } catch (Exception e) {
@@ -57,7 +57,7 @@ public class UserInterfaceService {
             case 2 -> {
                 //Edit pet
                 try {
-                    System.out.println("-------------- UPDATE PET --------------");
+                    System.out.println(BOLD_GREEN + "-------------- 🔧 UPDATE PET --------------" + RESET);
                     handleUpdateMenu();
 
                 } catch (Exception e) {
@@ -67,7 +67,7 @@ public class UserInterfaceService {
             case 3 -> {
                 //Delete registered pet
                 try {
-                    System.out.println("-------------- DELETE PET --------------");
+                    System.out.println(BOLD_CYAN + "-------------- ❌ DELETE PET --------------" + RESET);
                     handleDeleteMenu();
 
                 } catch (Exception e) {
@@ -77,9 +77,9 @@ public class UserInterfaceService {
             }
             case 4 -> {
                 //List all pets
-                System.out.println("\n=================================");
+                System.out.println(BOLD_CYAN + "\n=================================");
                 System.out.println("📋 Registered Pets:");
-                System.out.println("=================================");
+                System.out.println("=================================" + RESET);
                 try {
                     petController.listAllPets();
                 } catch (Exception e) {
@@ -96,7 +96,7 @@ public class UserInterfaceService {
             }
             case 6 -> {
                 //Exit
-                int exitInput = inputHelper.readInt("Do you really wish to leave? (1 - Yes / 2 - No)\n> ");
+                int exitInput = inputHelper.readInt(BOLD_RED + "Do you really wish to leave? (1 - Yes / 2 - No)\n> " + RESET);
                 if (exitInput == 1) {
                     System.out.println("Exiting program...");
                     System.exit(0);
@@ -113,19 +113,14 @@ public class UserInterfaceService {
         Map<String, String>  responses = new HashMap<>();
         List<String> questions = fileReaderService.readFileToList(filePath);
 
-        System.out.println("DEBUG: Collecting responses for a new pet...");
-
-        System.out.println("\nREGISTER NEW PET:");
+        System.out.println(BOLD_GREEN + "\nREGISTER NEW PET:" + RESET);
         for (String question: questions) {
             System.out.println(question);
 
             if (question.contains("pet's first and last name")) {
 
-                System.out.println("DEBUG: Collecting input for new pet...");
-
                 String firstName = inputHelper.readLine("Pet's first name: ");
                 responses.put("first name", firstName);
-                System.out.println("DEBUG: Collected first name -> " + firstName);
 
                 String lastName = inputHelper.readLine("Pet's last name: ");
                 responses.put("last name", lastName);
@@ -150,11 +145,10 @@ public class UserInterfaceService {
             }
         }
 
-        System.out.println("DEBUG: Final collected responses -> " + responses);
         return responses;
     }
 
-    private List<Pet> handleListPetMenu() {
+    private List<Pet> handleListPetMenu() throws InterruptedException {
 
         PetType petType;
         while (true) {
@@ -241,7 +235,7 @@ public class UserInterfaceService {
 
     }
 
-        private void handleUpdateMenu() throws IOException {
+        private void handleUpdateMenu() throws IOException, InterruptedException {
 
             List<Pet> pets = handleListPetMenu();
 
@@ -283,13 +277,11 @@ public class UserInterfaceService {
             updatedData.put("weight", inputHelper.readLine("Weight: "));
             updatedData.put("breed", inputHelper.readLine("Breed: "));
 
-            System.out.println("DEBUG MAP: " + updatedData);
-
             petController.updatePetByIndex(petIndex, pets, updatedData);
 
         }
 
-        private void handleDeleteMenu() throws IOException {
+        private void handleDeleteMenu() throws IOException, InterruptedException {
 
             List<Pet> pets = handleListPetMenu();
             if (pets.isEmpty()) {
@@ -314,8 +306,8 @@ public class UserInterfaceService {
                // pets = handleListPetMenu();
             }
 
-            String confirmation = inputHelper.readNonEmptyLine("Do you really wish to delete pet number " + petIndex + "?" +
-                    "\nEnter YES or NO:" +
+            String confirmation = inputHelper.readNonEmptyLine(BOLD_RED + "Do you really wish to delete pet number " + petIndex + "?" +
+                    "\nEnter YES or NO:" + RESET +
                     "\n> ");
 
             if (confirmation.equalsIgnoreCase("yes")) {

@@ -63,9 +63,6 @@ public class FileWriterService {
 
         Path oldFilePath = pet.getFilePath(); // salva referência do antigo caminho
 
-        System.out.println("DEBUG - OLD FILE PATH: " + oldFilePath);
-
-
         Path directory = ensureDataDirectory();
         String fileContent = formatFileContent(pet);
         String fileName = formatFileName(pet);
@@ -77,8 +74,6 @@ public class FileWriterService {
 
         // Atualiza o filePath com o novo caminho
         pet.setFilePath(newFilePath);
-
-        System.out.println("DEBUG: Salvando arquivo em: " + newFilePath);
 
         Files.writeString(
                 newFilePath,

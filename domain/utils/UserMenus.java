@@ -2,6 +2,8 @@ package domain.utils;
 
 import domain.enums.PetType;
 
+import static domain.utils.ConsoleColors.*;
+
 public class UserMenus {
 
     private final String mainMenu = """ 
@@ -28,10 +30,10 @@ public class UserMenus {
     }
 
     public void displayMainMenu() {
-        System.out.println(ConsoleColors.BOLD_BLUE + "-------------- MAIN MENU --------------"
-        + ConsoleColors.RESET);
-        System.out.println(ConsoleColors.BLUE + mainMenu +
-                ConsoleColors.RESET);
+        System.out.println(BOLD_BLUE + "-------------- MAIN MENU --------------"
+        + RESET);
+        System.out.println(BLUE + mainMenu +
+                RESET);
     }
 
     public void displayListPetsMenu(PetType petType){
@@ -43,10 +45,10 @@ public class UserMenus {
             //cat emoji
             pet = "\uD83D\uDC31";
         }
-        System.out.printf(ConsoleColors.BOLD_PURPLE + "-------------- FIND %S " + pet + " --------------\n", petType.name() +
-                ConsoleColors.RESET);
-        System.out.println(ConsoleColors.PURPLE + findPetMenu
-                + ConsoleColors.RESET);
+        System.out.printf(BOLD_PURPLE + "-------------- FIND %S " + pet + " --------------\n", petType.name() +
+                RESET);
+        System.out.println(PURPLE + findPetMenu
+                + RESET);
     }
 
 }
