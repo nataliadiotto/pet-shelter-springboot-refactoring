@@ -1,18 +1,18 @@
 package domain.strategy.filters;
 
-import domain.entity.Animal;
-import domain.strategy.AnimalFilterStrategy;
+import domain.entity.Pet;
+import domain.strategy.PetFilterStrategy;
 
 import java.util.List;
 
-public class AgeFilterStrategy implements AnimalFilterStrategy {
+public class AgeFilterStrategy implements PetFilterStrategy {
 
     @Override
-    public List<Animal> filter(List<Animal> animals, String value) {
+    public List<Pet> filter(List<Pet> pets, String value) {
         try{
             Double age = Double.valueOf(value);
-            return animals.stream()
-                    .filter(animal -> age.equals(animal.getAge()))
+            return pets.stream()
+                    .filter(pet -> age.equals(pet.getAge()))
                     .toList();
         } catch (NumberFormatException e) {
             throw new NumberFormatException("Please enter a valid age!");

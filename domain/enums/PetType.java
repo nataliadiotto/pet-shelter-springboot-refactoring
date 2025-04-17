@@ -1,17 +1,17 @@
 package domain.enums;
 
-public enum AnimalType {
+public enum PetType {
 
     CAT(1), DOG(2);
 
     private final int value;
 
-    AnimalType(int value) {
+    PetType(int value) {
         this.value = value;
     }
 
-    public static AnimalType fromValue(int value) {
-        for (AnimalType type : AnimalType.values()) {
+    public static PetType fromValue(int value) {
+        for (PetType type : PetType.values()) {
             if (type.value == value) {
                 return type;
             }
@@ -19,10 +19,10 @@ public enum AnimalType {
         throw new IllegalArgumentException("Invalid value: " + value);
     }
 
-    public static AnimalType fromString(String value) {
+    public static PetType fromString(String value) {
         if (value == null) return null;
         try {
-            return AnimalType.valueOf(value.trim().toUpperCase());
+            return PetType.valueOf(value.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
             return null;
         }

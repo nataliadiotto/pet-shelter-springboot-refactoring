@@ -1,6 +1,6 @@
 package domain.entity;
 
-import domain.enums.AnimalType;
+import domain.enums.PetType;
 import domain.enums.BiologicalSex;
 import domain.utils.Constants;
 
@@ -10,11 +10,11 @@ import java.util.Objects;
 
 import static domain.utils.InputHelper.*;
 
-public class Animal {
+public class Pet {
 
     private String firstName;
     private String lastName;
-    private final AnimalType animalType;
+    private final PetType petType;
     private final BiologicalSex biologicalSex;
     private Integer addressNumber;
     private String addressName;
@@ -24,10 +24,10 @@ public class Animal {
     private String breed;
     private Path filePath;
 
-        public Animal(String firstName, String lastName, AnimalType animalType, BiologicalSex biologicalSex, Integer addressNumber, String addressName, String addressCity, Double age, Double weight, String breed) {
+        public Pet(String firstName, String lastName, PetType petType, BiologicalSex biologicalSex, Integer addressNumber, String addressName, String addressCity, Double age, Double weight, String breed) {
                 this.firstName = firstName;
                 this.lastName = lastName;
-                this.animalType = animalType;
+                this.petType = petType;
                 this.biologicalSex = biologicalSex;
                 this.addressNumber = addressNumber;
                 this.addressName = addressName;
@@ -55,8 +55,8 @@ public class Animal {
 
         public String getFullName(){return capitalizeWords(firstName) + " " + capitalizeWords(lastName);}
 
-        public AnimalType getAnimalType() {
-                return animalType;
+        public PetType getPetType() {
+                return petType;
         }
 
         public BiologicalSex getBiologicalSex() {
@@ -169,13 +169,13 @@ public class Animal {
         public boolean equals(Object o) {
                 if (this == o) return true;
                 if (o == null || getClass() != o.getClass()) return false;
-                Animal animal = (Animal) o;
-                return Objects.equals(firstName, animal.firstName) && Objects.equals(lastName, animal.lastName) && animalType == animal.animalType && biologicalSex == animal.biologicalSex && Objects.equals(addressNumber, animal.addressNumber) && Objects.equals(addressName, animal.addressName) && Objects.equals(addressCity, animal.addressCity) && Objects.equals(age, animal.age) && Objects.equals(weight, animal.weight) && Objects.equals(breed, animal.breed);
+                Pet pet = (Pet) o;
+                return Objects.equals(firstName, pet.firstName) && Objects.equals(lastName, pet.lastName) && petType == pet.petType && biologicalSex == pet.biologicalSex && Objects.equals(addressNumber, pet.addressNumber) && Objects.equals(addressName, pet.addressName) && Objects.equals(addressCity, pet.addressCity) && Objects.equals(age, pet.age) && Objects.equals(weight, pet.weight) && Objects.equals(breed, pet.breed);
         }
 
         @Override
         public int hashCode() {
-                return Objects.hash(firstName, lastName, animalType, biologicalSex, addressNumber, addressName, addressCity, age, weight, breed);
+                return Objects.hash(firstName, lastName, petType, biologicalSex, addressNumber, addressName, addressCity, age, weight, breed);
         }
 
         @Override
@@ -183,7 +183,7 @@ public class Animal {
                 return String.format(Locale.ENGLISH, """
                 %s - %s - %s - %s, %s - %s - %s - %s - %s""",
                         getFullName(),
-                        getAnimalType(),
+                        getPetType(),
                         biologicalSex.toString(),
                         formatAddressNumber(),
                         getAddressName(),

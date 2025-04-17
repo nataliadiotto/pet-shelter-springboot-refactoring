@@ -4,22 +4,22 @@ public class UserMenus {
 
     private final String mainMenu = """ 
                 -------------- MAIN MENU --------------
-                1. Register new animal
-                2. Edit the data of a registered animal
-                3. Delete a registered animal
-                4. List all registered animals
-                5. List animals by criteria (age, name, breed)
+                1. Register new pet
+                2. Edit the data of a registered pet
+                3. Delete a registered pet
+                4. List all registered pets
+                5. List pets by criteria (age, name, breed)
                 6. Exit
                 """;
 
 
-    private final String findAnimalMenu = """
-            1. Find animal by first or last name
-            2. Find animal by gender
-            3. Find animal by age
-            4. Find animal by weight
-            5. Find animal by breed
-            6. Find animal by address
+    private final String findPetMenu = """
+            1. Find pet by first or last name
+            2. Find pet by gender
+            3. Find pet by age
+            4. Find pet by weight
+            5. Find pet by breed
+            6. Find pet by address
             7. Return to main menu
             """;
 
@@ -30,8 +30,8 @@ public class UserMenus {
         System.out.println(mainMenu);
     }
 
-    public void displayListAnimalsMenu(){
-        System.out.println(findAnimalMenu);
+    public void displayListPetsMenu(){
+        System.out.println(findPetMenu);
     }
 
 }

@@ -1,7 +1,7 @@
 package service;
 
-import domain.entity.Animal;
-import domain.enums.AnimalType;
+import domain.entity.Pet;
+import domain.enums.PetType;
 import domain.enums.BiologicalSex;
 
 import java.io.IOException;
@@ -32,22 +32,22 @@ public class FileReaderService {
 
     }
 
-    public Map<Path, Animal> readAllAnimals() throws IOException {
-        Path dirPath = getRegisteredAnimalsDir();
+    public Map<Path, Pet> readAllPets() throws IOException {
+        Path dirPath = getRegisteredPetsDir();
         if (!isDirValid(dirPath)) {
             throw new IOException("Directory does not exist or is not readable: " + dirPath);
         }
 
-        Map<Path, Animal> animalMap = new HashMap<>();
+        Map<Path, Pet> petMap = new HashMap<>();
         try (DirectoryStream<Path> streamDir = Files.newDirectoryStream(dirPath, "*.TXT")) {
             for (Path path : streamDir) {
                 if (Files.isRegularFile(path)) {
                     List<String> lines = Files.readAllLines(path);
 
-                    Animal animal = parseAnimalFromFile(lines);
-                    animal.setFilePath(path);
+                    Pet pet = parsePetFromFile(lines);
+                    pet.setFilePath(path);
 
-                    animalMap.put(path, animal);
+                    petMap.put(path, pet);
                 }
 
             }
@@ -55,10 +55,10 @@ public class FileReaderService {
             System.out.println("Failed to read the file: " + e.getMessage());
             return Map.of();
         }
-        return animalMap;
+        return petMap;
     }
 
-    public Animal parseAnimalFromFile(List<String> lines) throws IOException {
+    public Pet parsePetFromFile(List<String> lines) throws IOException {
         if (lines.size() != 7) {
             throw new IOException("Invalid file format. Expected 7 lines but got " + lines.size());
         }
@@ -69,7 +69,7 @@ public class FileReaderService {
         String firstName = nameParts[0];
         String lastName = String.join(" ", Arrays.copyOfRange(nameParts, 1, nameParts.length));
 
-        AnimalType animalType = AnimalType.fromString(extractValue(lines.get(1)));
+        PetType petType = PetType.fromString(extractValue(lines.get(1)));
 
         BiologicalSex biologicalSex = BiologicalSex.fromString(extractValue(lines.get(2)));
 
@@ -101,9 +101,9 @@ public class FileReaderService {
 
         String breed = extractValue(lines.get(6));
 
-        return new Animal(firstName,
+        return new Pet(firstName,
                 lastName,
-                animalType,
+                petType,
                 biologicalSex,
                 addressNumber,
                 addressName,
@@ -125,7 +125,7 @@ public class FileReaderService {
         return Files.exists(path) && Files.isReadable(path);
     }
 
-    private Path getRegisteredAnimalsDir() throws IOException {
+    private Path getRegisteredPetsDir() throws IOException {
         return Paths.get(FileWriterService.ensureDataDirectory().toUri());
     }
     private boolean isDirValid(Path path) throws IOException {
