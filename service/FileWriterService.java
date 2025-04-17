@@ -1,6 +1,6 @@
 package service;
 
-import domain.entity.Animal;
+import domain.entity.Pet;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -9,17 +9,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class FileWriterService {
-    private static final String BASE_DIR = "/Users/Natalia/animal-shelter/registeredAnimalsDir";
+    private static final String BASE_DIR = "/Users/Natalia/pet-shelter/registeredPetsDir";
     private static final String FILE_EXTENSION = ".TXT";
 
 
     public static Path ensureDataDirectory() throws IOException {
-        Path registeredAnimalsDir = Paths.get(BASE_DIR);
-        return Files.createDirectories(registeredAnimalsDir);
+        Path registeredPetsDir = Paths.get(BASE_DIR);
+        return Files.createDirectories(registeredPetsDir);
     }
 
 
-    public static String formatFileContent(Animal animal) {
+    public static String formatFileContent(Pet pet) {
         return String.format(Locale.ENGLISH, """
                 1 - %s
                 2 - %s
@@ -28,23 +28,23 @@ public class FileWriterService {
                 5 - %s
                 6 - %s
                 7 - %s""",
-                animal.getFullName(),
-                animal.getAnimalType(),
-                animal.getBiologicalSex().toString(),
-                animal.getFullAddress(),
-                animal.formatAge(),
-                animal.formatWeight(),
-                animal.getBreed());
+                pet.getFullName(),
+                pet.getPetType(),
+                pet.getBiologicalSex().toString(),
+                pet.getFullAddress(),
+                pet.formatAge(),
+                pet.formatWeight(),
+                pet.getBreed());
 
     }
 
-    public static String formatFileName(Animal animal) {
+    public static String formatFileName(Pet pet) {
         //Retrieve system timestamp
         String timestamp = LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmm"));
 
-        String lastName = sanitize(animal.getLastName());
-        String firstName = sanitize(animal.getFirstName());
+        String lastName = sanitize(pet.getLastName());
+        String firstName = sanitize(pet.getFirstName());
 
         // Fallbacks se estiverem vazios
         if (lastName.isEmpty()) lastName = "NO_LASTNAME";
@@ -56,19 +56,16 @@ public class FileWriterService {
                 lastName,
                 firstName);
     }
-    public void saveAnimalToFile(Animal animal) throws IOException {
-        if (animal == null) {
-            throw new IllegalArgumentException("Animal cannot be null");
+    public void savePetToFile(Pet pet) throws IOException {
+        if (pet == null) {
+            throw new IllegalArgumentException("Pet cannot be null");
         }
 
-        Path oldFilePath = animal.getFilePath(); // salva referência do antigo caminho
-
-        System.out.println("DEBUG - OLD FILE PATH: " + oldFilePath);
-
+        Path oldFilePath = pet.getFilePath(); // salva referência do antigo caminho
 
         Path directory = ensureDataDirectory();
-        String fileContent = formatFileContent(animal);
-        String fileName = formatFileName(animal);
+        String fileContent = formatFileContent(pet);
+        String fileName = formatFileName(pet);
         Path newFilePath = directory.resolve(fileName + FILE_EXTENSION);
 
         if (oldFilePath != null && !oldFilePath.equals(newFilePath) && Files.exists(oldFilePath)) {
@@ -76,9 +73,7 @@ public class FileWriterService {
         }
 
         // Atualiza o filePath com o novo caminho
-        animal.setFilePath(newFilePath);
-
-        System.out.println("DEBUG: Salvando arquivo em: " + newFilePath);
+        pet.setFilePath(newFilePath);
 
         Files.writeString(
                 newFilePath,

@@ -7,7 +7,7 @@
 
 # 🐾 **Pet Shelter CLI**
 
-Pet Adoption CLI is a Java-based console application designed to assist animal shelters in managing pet records for adoption. With a friendly interface and simple interactions, shelter staff can easily register, search, list, update, and delete pet records using a structured command-line menu.
+Pet Adoption CLI is a Java-based console application designed to assist pet shelters in managing pet records for adoption. With a friendly interface and simple interactions, shelter staff can easily register, search, list, update, and delete pet records using a structured command-line menu.
 
 ---
 

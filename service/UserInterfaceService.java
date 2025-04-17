@@ -1,27 +1,28 @@
 package service;
 
-import controller.AnimalController;
-import domain.entity.Animal;
+import controller.PetController;
+import domain.entity.Pet;
 import domain.utils.UserMenus;
-import domain.enums.AnimalType;
+import domain.enums.PetType;
 import domain.enums.FilterType;
 import domain.utils.InputHelper;
 
 import java.io.IOException;
 import java.util.*;
+import static domain.utils.ConsoleColors.*;
 
 
 public class UserInterfaceService {
      private final FileReaderService fileReaderService;
-     private final AnimalController animalController;
+     private final PetController petController;
      private final Scanner sc;
      private final InputHelper inputHelper;
      private final UserMenus userMenus;
 
 
-    public UserInterfaceService(FileReaderService fileReaderService, AnimalController animalController, UserMenus userMenus) {
+    public UserInterfaceService(FileReaderService fileReaderService, PetController petController, UserMenus userMenus) {
         this.fileReaderService = fileReaderService;
-        this.animalController = animalController;
+        this.petController = petController;
         this.userMenus = userMenus;
         this.sc = new Scanner(System.in);
         this.inputHelper = new InputHelper(sc);
@@ -44,78 +45,66 @@ public class UserInterfaceService {
 
     private void handleMainMenuOption(int userChoice, String filePath) throws IOException {
         switch (userChoice) {
-            case 1:
-                //Register new animal
+            case 1 -> {
+                //Register new pet
                 Map<String, String> collectedRegisterResponses = collectRegisterResponses(filePath);
-                System.out.println("DEBUG: Collected responses -> " + collectedRegisterResponses);
                 try {
-                    animalController.registerAnimal(collectedRegisterResponses);
+                    petController.registerPet(collectedRegisterResponses);
                 } catch (Exception e) {
-                    System.out.println("ERROR: Failed to register animal: " + e.getMessage());
+                    System.out.println("ERROR: Failed to register pet: " + e.getMessage());
                 }
-                break;
-
-            case 2:
-                //Edit animal
-                try{
-                    System.out.println("-------------- UPDATE ANIMAL --------------");
+            }
+            case 2 -> {
+                //Edit pet
+                try {
+                    System.out.println(BOLD_GREEN + "-------------- 🔧 UPDATE PET --------------" + RESET);
                     handleUpdateMenu();
 
                 } catch (Exception e) {
-                    System.out.println("An error occurred while updating animal: " + e.getMessage());
+                    System.out.println("An error occurred while updating pet: " + e.getMessage());
                 }
-
-                break;
-
-            case 3:
-                //Delete registered animal
-                try{
-                    System.out.println("-------------- DELETE ANIMAL --------------");
+            }
+            case 3 -> {
+                //Delete registered pet
+                try {
+                    System.out.println(BOLD_CYAN + "-------------- ❌ DELETE PET --------------" + RESET);
                     handleDeleteMenu();
 
                 } catch (Exception e) {
-                    System.out.println("An error occurred while deleting animal: ");
+                    System.out.println("An error occurred while deleting pet: ");
                     e.printStackTrace();
                 }
-
-                break;
-
-            case 4:
-                //List all animals
-                System.out.println("\n=================================");
-                System.out.println("📋 Registered Animals:");
-                System.out.println("=================================");
-
+            }
+            case 4 -> {
+                //List all pets
+                System.out.println(BOLD_CYAN + "\n=================================");
+                System.out.println("📋 Registered Pets:");
+                System.out.println("=================================" + RESET);
                 try {
-                    animalController.listAllAnimals();
+                    petController.listAllPets();
                 } catch (Exception e) {
-                    System.out.println("An error occurred while listing animals: " + e.getMessage());
+                    System.out.println("An error occurred while listing pets: " + e.getMessage());
                 }
-                break;
-
-            case 5:
-                //Filter animals
-                try{
-                    handleListAnimalMenu();
+            }
+            case 5 -> {
+                //Filter pets
+                try {
+                    handleListPetMenu();
                 } catch (Exception e) {
-                    System.out.println("An error ocurred while filtering animals: " + e.getMessage());
+                    System.out.println("An error ocurred while filtering pets: " + e.getMessage());
                 }
-                break;
-
-            case 6:
+            }
+            case 6 -> {
                 //Exit
-                int exitInput = inputHelper.readInt("Do you really wish to leave? (1 - Yes / 2 - No)\n> ");
-
+                int exitInput = inputHelper.readInt(BOLD_RED + "Do you really wish to leave? (1 - Yes / 2 - No)\n> " + RESET);
                 if (exitInput == 1) {
                     System.out.println("Exiting program...");
                     System.exit(0);
                 } else if (exitInput == 2) {
-                    break;
                 } else {
                     System.out.println("Invalid option!");
-                    break;
                 }
-
+            }
         }
     }
 
@@ -124,21 +113,16 @@ public class UserInterfaceService {
         Map<String, String>  responses = new HashMap<>();
         List<String> questions = fileReaderService.readFileToList(filePath);
 
-        System.out.println("DEBUG: Collecting responses for a new animal...");
-
-        System.out.println("\nREGISTER NEW ANIMAL:");
+        System.out.println(BOLD_GREEN + "\nREGISTER NEW PET:" + RESET);
         for (String question: questions) {
             System.out.println(question);
 
-            if (question.contains("animal's first and last name")) {
+            if (question.contains("pet's first and last name")) {
 
-                System.out.println("DEBUG: Collecting input for new animal...");
-
-                String firstName = inputHelper.readLine("Animal's first name: ");
+                String firstName = inputHelper.readLine("Pet's first name: ");
                 responses.put("first name", firstName);
-                System.out.println("DEBUG: Collected first name -> " + firstName);
 
-                String lastName = inputHelper.readLine("Animal's last name: ");
+                String lastName = inputHelper.readLine("Pet's last name: ");
                 responses.put("last name", lastName);
 
             } else if (question.contains("address it was found")) {
@@ -161,14 +145,28 @@ public class UserInterfaceService {
             }
         }
 
-        System.out.println("DEBUG: Final collected responses -> " + responses);
         return responses;
     }
 
-    private List<Animal> handleListAnimalMenu() {
-        System.out.println("Choose animal type to search (Cat = 1/Dog = 2): ");
-        int animalInput = inputHelper.readInt("> ");
-        AnimalType animalType = AnimalType.fromValue(animalInput);
+    private List<Pet> handleListPetMenu() throws InterruptedException {
+
+        PetType petType;
+        while (true) {
+            System.out.println("Choose pet type to search (Cat = 1 / Dog = 2 / 0 to return): ");
+            int petInput = inputHelper.readInt("> ");
+
+            if (petInput == 0) {
+                System.out.println("Returning to main menu...");
+                return new ArrayList<>();
+            }
+
+            if (petInput == 1 || petInput == 2) {
+                petType = PetType.fromValue(petInput);
+                break;
+            }
+
+            System.out.println("Invalid option. Please enter 1 for Cat, 2 for Dog, or 0 to return.");
+        }
 
         Map<FilterType, String> filters = new HashMap<>();
         Set<Integer> usedCriteria = new HashSet<>();
@@ -176,8 +174,7 @@ public class UserInterfaceService {
         int maxFilters = 2;
         int filtersAdded = 0;
         while (filtersAdded < maxFilters) {
-            System.out.printf("-------------- FIND %S --------------%n", animalType.name());
-            userMenus.displayListAnimalsMenu();
+            userMenus.displayListPetsMenu(petType);
 
             System.out.println("Choose a filter to search: ");
             int criterion = inputHelper.readInt("> ");
@@ -197,7 +194,7 @@ public class UserInterfaceService {
                     filters.put(FilterType.NAME, name);
                 }
                 case 2 -> {
-                    String sex = inputHelper.readNonEmptyLine("Choose animal's biological sex (Female/Male): ");
+                    String sex = inputHelper.readNonEmptyLine("Choose pet's biological sex (Female/Male): ");
                     filters.put(FilterType.SEX, sex);
                 }
                 case 3 -> {
@@ -218,7 +215,7 @@ public class UserInterfaceService {
                 }
                 case 7 -> {
                     System.out.println("Returning to main menu...");
-                    continue;
+                    return new ArrayList<>();
                 }
             }
             usedCriteria.add(criterion);
@@ -234,26 +231,34 @@ public class UserInterfaceService {
 
         return filters.isEmpty()
                 ? new ArrayList<>()
-                : new ArrayList<>(animalController.filterByCriteria(animalType, filters));
+                : new ArrayList<>(petController.filterByCriteria(petType, filters));
 
     }
 
-        private void handleUpdateMenu() throws IOException {
+        private void handleUpdateMenu() throws IOException, InterruptedException {
 
-            List<Animal> animals = handleListAnimalMenu();
+            List<Pet> pets = handleListPetMenu();
 
-            int animalIndex;
+            if (pets.isEmpty()) {
+                return;
+            }
+
+            int petIndex;
             while (true) {
-                animalIndex = inputHelper.readInt("Choose the animal's number to update: ");
+                petIndex = inputHelper.readInt("Choose the pet's number to update (or 0 to go back to the menu): ");
 
-                if (animalIndex >= 1 && animalIndex <= animals.size()) {
+                if (petIndex == 0) {
+                    System.out.println("Returning to search menu...");
+                    return;
+                }
+
+                if (petIndex >= 1 && petIndex <= pets.size()) {
                     break;
                 }
 
-                System.out.println("Invalid index. Please enter the numerical index of one of the animals in the list.");
+                System.out.println("Invalid index. Please enter the numerical index of one of the pets in the list.");
                 System.out.println();
 
-                animals = handleListAnimalMenu();
             }
 
             System.out.println("\nEnter the new information to update, leave it blank if you wish to maintain the current data.");
@@ -272,36 +277,43 @@ public class UserInterfaceService {
             updatedData.put("weight", inputHelper.readLine("Weight: "));
             updatedData.put("breed", inputHelper.readLine("Breed: "));
 
-            System.out.println("DEBUG MAP: " + updatedData);
-
-            animalController.updateAnimalByIndex(animalIndex, animals, updatedData);
+            petController.updatePetByIndex(petIndex, pets, updatedData);
 
         }
 
-        private void handleDeleteMenu() throws IOException {
+        private void handleDeleteMenu() throws IOException, InterruptedException {
 
-            List<Animal> animals = handleListAnimalMenu();
+            List<Pet> pets = handleListPetMenu();
+            if (pets.isEmpty()) {
+                return;
+            }
 
-            int animalIndex;
+            int petIndex;
             while (true) {
-                animalIndex = inputHelper.readInt("Choose the animal's number to delete: ");
+                petIndex = inputHelper.readInt("Choose the pet's number to delete (or 0 to go back to the menu): ");
 
-                if (animalIndex >= 1 && animalIndex <= animals.size()) {
+                if (petIndex == 0) {
+                    System.out.println("Returning to search menu...");
+                    return;
+                }
+
+                if (petIndex >= 1 && petIndex <= pets.size()) {
                     break;
                 }
 
-                System.out.println("Invalid index. Please enter the numerical index of one of the animals in the list.");
+                System.out.println("Invalid index. Please enter the numerical index of one of the pets in the list.");
                 System.out.println();
-
-                animals = handleListAnimalMenu();
+               // pets = handleListPetMenu();
             }
 
-            String confirmation = inputHelper.readNonEmptyLine("Do you really wish to delete animal number " + animalIndex + "?" +
-                    "\nEnter YES or NO:" +
+            String confirmation = inputHelper.readNonEmptyLine(BOLD_RED + "Do you really wish to delete pet number " + petIndex + "?" +
+                    "\nEnter YES or NO:" + RESET +
                     "\n> ");
 
             if (confirmation.equalsIgnoreCase("yes")) {
-                animalController.deleteAnimalByIndex(animalIndex, animals);
+                petController.deletePetByIndex(petIndex, pets);
+            } else {
+                System.out.println("Deletion cancelled.");
             }
         }
 
