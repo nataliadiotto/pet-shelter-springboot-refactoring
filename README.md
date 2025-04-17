@@ -1,9 +1,9 @@
 
-![GitHub repo size](https://img.shields.io/github/repo-size/yourusername/Pet-Adoption-CLI?style=for-the-badge)
-![GitHub language count](https://img.shields.io/github/languages/count/yourusername/Pet-Adoption-CLI?style=for-the-badge)
-![GitHub forks](https://img.shields.io/github/forks/yourusername/Pet-Adoption-CLI?style=for-the-badge)
-![GitHub issues](https://img.shields.io/github/issues/yourusername/Pet-Adoption-CLI?style=for-the-badge)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/Pet-Adoption-CLI?style=for-the-badge)
+![GitHub repo size](https://img.shields.io/github/repo-size/nataliadiotto/pet-shelter?style=for-the-badge)
+![GitHub language count](https://img.shields.io/github/languages/count/nataliadiotto/pet-shelter?style=for-the-badge)
+![GitHub forks](https://img.shields.io/github/forks/nataliadiotto/pet-shelter?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues/nataliadiotto/pet-shelter?style=for-the-badge)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/nataliadiotto/pet-shelter?style=for-the-badge)
 
 # 🐾 **Pet Shelter CLI**
 
