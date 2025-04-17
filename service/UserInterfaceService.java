@@ -180,8 +180,7 @@ public class UserInterfaceService {
         int maxFilters = 2;
         int filtersAdded = 0;
         while (filtersAdded < maxFilters) {
-            System.out.printf("-------------- FIND %S --------------%n", petType.name());
-            userMenus.displayListPetsMenu();
+            userMenus.displayListPetsMenu(petType);
 
             System.out.println("Choose a filter to search: ");
             int criterion = inputHelper.readInt("> ");

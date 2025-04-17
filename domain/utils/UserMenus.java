@@ -1,15 +1,16 @@
 package domain.utils;
 
+import domain.enums.PetType;
+
 public class UserMenus {
 
     private final String mainMenu = """ 
-                -------------- MAIN MENU --------------
-                1. Register new pet
-                2. Edit the data of a registered pet
-                3. Delete a registered pet
-                4. List all registered pets
-                5. List pets by criteria (age, name, breed)
-                6. Exit
+                1. 🐾 Register new pet
+                2. 🔧 Edit the data of a registered pet
+                3. ❌ Delete pet
+                4. 📋 View all pets
+                5. 🔎 Search pets
+                6. 🚪 Exit
                 """;
 
 
@@ -27,11 +28,25 @@ public class UserMenus {
     }
 
     public void displayMainMenu() {
-        System.out.println(mainMenu);
+        System.out.println(ConsoleColors.BOLD_BLUE + "-------------- MAIN MENU --------------"
+        + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.BLUE + mainMenu +
+                ConsoleColors.RESET);
     }
 
-    public void displayListPetsMenu(){
-        System.out.println(findPetMenu);
+    public void displayListPetsMenu(PetType petType){
+        String pet = "";
+        if (petType.equals(PetType.DOG)) {
+            //dog emoji
+            pet = "\uD83D\uDC36";
+        } else {
+            //cat emoji
+            pet = "\uD83D\uDC31";
+        }
+        System.out.printf(ConsoleColors.BOLD_PURPLE + "-------------- FIND %S " + pet + " --------------\n", petType.name() +
+                ConsoleColors.RESET);
+        System.out.println(ConsoleColors.PURPLE + findPetMenu
+                + ConsoleColors.RESET);
     }
 
 }
