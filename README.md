@@ -8,7 +8,7 @@
 
 Pet Adoption CLI is a Java-based console application designed to assist pet shelters in managing pet records for adoption. With a friendly interface and simple interactions, shelter staff can easily register, search, list, update, and delete pet records using a structured command-line menu.
 
-The application is part of the challenge created by Lucas Carrilho (@[devmagro]([url]https://x.com/devmagro)) to practice Java foundations. Access the project's [README]([url](https://github.com/karilho/desafioCadastro?tab=readme-ov-file#desafio-programação---sistema-de-cadastros-)) for further information.
+The application is part of the challenge created by Lucas Carrilho ([@devmagro](https://x.com/devmagro)) to practice Java foundations. Access the project's [README](https://github.com/karilho/desafioCadastro?tab=readme-ov-file#desafio-programação---sistema-de-cadastros-) for further information.
 
 ---
 
