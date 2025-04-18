@@ -1,11 +1,10 @@
+# 🐾  **Pet Shelter CLI**
+![Java](https://img.shields.io/badge/Java-21-blue)
+![CLI App](https://img.shields.io/badge/CLI-Application-orange)
+![OOP](https://img.shields.io/badge/Principles-OOP-success)
+![Strategy Pattern](https://img.shields.io/badge/Pattern-Strategy-yellow)
+![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen)
 
-![GitHub repo size](https://img.shields.io/github/repo-size/nataliadiotto/pet-shelter?style=for-the-badge)
-![GitHub language count](https://img.shields.io/github/languages/count/nataliadiotto/pet-shelter?style=for-the-badge)
-![GitHub forks](https://img.shields.io/github/forks/nataliadiotto/pet-shelter?style=for-the-badge)
-![GitHub issues](https://img.shields.io/github/issues/nataliadiotto/pet-shelter?style=for-the-badge)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/nataliadiotto/pet-shelter?style=for-the-badge)
-
-# 🐾 **Pet Shelter CLI**
 
 Pet Adoption CLI is a Java-based console application designed to assist pet shelters in managing pet records for adoption. With a friendly interface and simple interactions, shelter staff can easily register, search, list, update, and delete pet records using a structured command-line menu.
 
@@ -14,9 +13,9 @@ Pet Adoption CLI is a Java-based console application designed to assist pet shel
 ### 📌 **Project Highlights**
 
 - **Full CRUD Support:** Create, read, update, and delete pet records.
-- **Input Validation:** Ensures data integrity by validating user inputs.
+- **Input Validation and exception handling:** Ensures data integrity by validating user inputs.
 - **Text File Storage:** Persists data using text files for simplicity and portability.
-- **Search Functionality:** Search pets by name, age, breed, and more.
+- **Strategy Pattern:** Applied to enable flexible filtering behavior to search pets by name, age, breed, and more.
 - **Form-Based Input:** Reads structured prompts from `.txt` files for consistent data entry.
 - **Object-Oriented Design:** Utilizes Java best practices for maintainable code.
   
@@ -112,6 +111,8 @@ Search using:
 - Address
 
 🔍 Filter by **type (dog/cat)** first and then, combine up to **2 criteria**. Results are displayed in a readable format.
+🧠 Implemented using the Strategy Pattern:
+Each search criterion (e.g., filter by name, age, or breed) is encapsulated as a strategy. This promotes code extensibility and clean separation of logic, making it easier to add new filters or modify behavior.
 
 
 📋 Example of filtering cats by gender: 
