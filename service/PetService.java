@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static domain.utils.InputHelper.*;
 
@@ -33,43 +34,44 @@ public class PetService {
         this.petRepository = PetRepositoryImpl.getInstance(fileReaderService, fileWriterService);
     }
 
-    public void savePet(String firstName, String lastName, PetType petType, BiologicalSex biologicalSex, Integer addressNumber, String addressName, String addressCity, Double age, Double weight, String breed) throws IOException {
-        //Validate name and surname content
+    public void savePet(Map<String, String> userResponses) throws IOException {
+        String firstName = normalizeText(userResponses.get("first name"), true);
+        String lastName = normalizeText(userResponses.get("last name"), true);
+
         if (containsInvalidCharacters(firstName) || containsInvalidCharacters(lastName)) {
-                throw new IllegalArgumentException("First and last names must contain only A-Z letters.");
+            throw new IllegalArgumentException("First and last names must contain only letters A-Z.");
         }
 
-        //validate breed content
-        if (!breed.trim().isEmpty()) {
-            if (containsInvalidCharacters(breed)) {
-                throw new IllegalArgumentException("Breed must contain only A-Z letters.");
-            }
-        }
+        PetType petType = parseEnum(userResponses.get("2 - What type of pet is it (Cat = 1/Dog = 2)?"), PetType::fromValue, "Invalid pet type option.");
+        BiologicalSex biologicalSex = parseEnum(userResponses.get("3 - What is the pet's gender (Female = 1/Male = 2)?"), BiologicalSex::fromValue, "Invalid gender option.");
 
-        //validate minimum and maximum age
+        Integer addressNumber = parseIntegerOrDefault(userResponses.get("address number"));
+        String addressName = normalizeText(userResponses.get("address name"), false);
+        String addressCity = normalizeText(userResponses.get("address city"), false);
+
+        Double age = parseDouble(userResponses.get("5 - What is the approximate age of the pet?"));
+        if (age != null && age < 1) {
+            age = Double.parseDouble(String.format("%.1f", age)); // padroniza para 0.x
+        }
         if (age != null && (age <= 0 || age > 20)) {
-            throw new IllegalArgumentException("Age must be between 0.1 and 20.");
+            throw new IllegalArgumentException("Age must be between 0.1 and 20 years.");
         }
 
-        //validate min and max weight
-        if (weight != null && (weight > 60 || weight < 0.1)) {
-            throw new IllegalArgumentException("Weight must be between 0.1 and 60.");
+        Double weight = parseDouble(userResponses.get("6 - What is the approximate weight of the pet?"));
+        if (weight != null && (weight < 0.5 || weight > 60)) {
+            throw new IllegalArgumentException("Weight must be between 0.5 and 60 kg.");
         }
 
-        //create new pet
-        Pet pet = new Pet(firstName,
-                lastName,
-                petType,
-                biologicalSex,
-                addressNumber,
-                addressName,
-                addressCity,
-                age,
-                weight,
-                breed);
+        String breed = normalizeText(userResponses.get("7 - What is the breed of the pet?"), false);
+        if (!breed.equals(Constants.NOT_INFORMED) && containsInvalidCharacters(breed)) {
+            throw new IllegalArgumentException("Breed must contain only letters A-Z.");
+        }
+
+        Pet pet = new Pet(firstName, lastName, petType, biologicalSex,
+                addressNumber, addressName, addressCity, age, weight, breed);
         petRepository.save(pet);
-
     }
+
 
     public List<Pet> listAll() {
         Map<Path, Pet> petMap = petRepository.findAll();
@@ -149,6 +151,43 @@ public class PetService {
 
         petRepository.deletePetByIndex(existingPet, oldFilePath, pets, targetIndex);
 
+    }
+
+    private String normalizeText(String value, boolean mandatory) {
+        if (value == null || value.trim().isEmpty()) {
+            if (mandatory) throw new IllegalArgumentException("Mandatory field missing.");
+            return Constants.NOT_INFORMED;
+        }
+        return value.trim();
+    }
+
+    private Integer parseIntegerOrDefault(String value) {
+        try {
+            return Integer.parseInt(value.trim());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Double parseDouble(String value) {
+        if (value == null || value.trim().isEmpty()) return null;
+        try {
+            return Double.parseDouble(value.replace(",", ".").trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Please enter a valid number.");
+        }
+    }
+
+    private <T> T parseEnum(String input, Function<Integer, T> converter, String errorMessage) {
+        try {
+            return converter.apply(Integer.parseInt(input.trim()));
+        } catch (Exception e) {
+            throw new IllegalArgumentException(errorMessage);
+        }
+    }
+
+    private boolean containsInvalidCharacters(String text) {
+        return !text.matches("^[A-Za-zÀ-ÿ\\s]+$"); // inclui acentos e espaço
     }
 
     private <T> void updateIfNotBlank(Map<String, Object> data, String key, Class<T> type, Consumer<T> setter) {
