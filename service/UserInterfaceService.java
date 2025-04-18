@@ -9,7 +9,7 @@ import domain.utils.InputHelper;
 
 import java.io.IOException;
 import java.util.*;
-import static domain.utils.ConsoleColors.*;
+import static domain.utils.ConsoleVisuals.*;
 
 
 public class UserInterfaceService {
@@ -29,7 +29,7 @@ public class UserInterfaceService {
 
     }
 
-    public void start(String filePath) throws IOException {
+    public void start(String filePath) throws IOException, InterruptedException {
         int userChoice;
 
         while (true) {
@@ -43,7 +43,7 @@ public class UserInterfaceService {
         }
     }
 
-    private void handleMainMenuOption(int userChoice, String filePath) throws IOException {
+    private void handleMainMenuOption(int userChoice, String filePath) throws IOException, InterruptedException {
         switch (userChoice) {
             case 1 -> {
                 //Register new pet
@@ -77,7 +77,7 @@ public class UserInterfaceService {
             }
             case 4 -> {
                 //List all pets
-                System.out.println(BOLD_CYAN + "\n=================================");
+                System.out.println(BOLD_GREEN + "\n=================================");
                 System.out.println("📋 Registered Pets:");
                 System.out.println("=================================" + RESET);
                 try {
@@ -91,16 +91,18 @@ public class UserInterfaceService {
                 try {
                     handleListPetMenu();
                 } catch (Exception e) {
-                    System.out.println("An error ocurred while filtering pets: " + e.getMessage());
+                    System.out.println("An error occurred while filtering pets: " + e.getMessage());
                 }
             }
             case 6 -> {
                 //Exit
                 int exitInput = inputHelper.readInt(BOLD_RED + "Do you really wish to leave? (1 - Yes / 2 - No)\n> " + RESET);
                 if (exitInput == 1) {
-                    System.out.println("Exiting program...");
+                    System.out.print(BOLD_YELLOW + "Exiting program");
+                    animatedTransition();
                     System.exit(0);
                 } else if (exitInput == 2) {
+
                 } else {
                     System.out.println("Invalid option!");
                 }
@@ -113,9 +115,9 @@ public class UserInterfaceService {
         Map<String, String>  responses = new HashMap<>();
         List<String> questions = fileReaderService.readFileToList(filePath);
 
-        System.out.println(BOLD_GREEN + "\nREGISTER NEW PET:" + RESET);
+        System.out.println(BOLD_CYAN + "\n 🐾 REGISTER NEW PET:" + RESET);
         for (String question: questions) {
-            System.out.println(question);
+            System.out.println(CYAN + question);
 
             if (question.contains("pet's first and last name")) {
 
@@ -137,7 +139,7 @@ public class UserInterfaceService {
 
             } else if (question.contains("approximate age") || question.contains("approximate weight")) {
                 String input = inputHelper.readLine("> ");
-                responses.put(question, input); // Pode validar depois se for numérico
+                responses.put(question, input);
 
             } else {
                 String response = inputHelper.readLine("> ");
@@ -245,7 +247,7 @@ public class UserInterfaceService {
 
             int petIndex;
             while (true) {
-                petIndex = inputHelper.readInt("Choose the pet's number to update (or 0 to go back to the menu): ");
+                petIndex = inputHelper.readInt("\nChoose the pet's number to update (or 0 to go back to the menu): ");
 
                 if (petIndex == 0) {
                     System.out.println("Returning to search menu...");
@@ -290,7 +292,7 @@ public class UserInterfaceService {
 
             int petIndex;
             while (true) {
-                petIndex = inputHelper.readInt("Choose the pet's number to delete (or 0 to go back to the menu): ");
+                petIndex = inputHelper.readInt("\nChoose the pet's number to delete (or 0 to go back to the menu): ");
 
                 if (petIndex == 0) {
                     System.out.println("Returning to search menu...");
@@ -303,7 +305,6 @@ public class UserInterfaceService {
 
                 System.out.println("Invalid index. Please enter the numerical index of one of the pets in the list.");
                 System.out.println();
-               // pets = handleListPetMenu();
             }
 
             String confirmation = inputHelper.readNonEmptyLine(BOLD_RED + "Do you really wish to delete pet number " + petIndex + "?" +

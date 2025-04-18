@@ -1,6 +1,6 @@
 package domain.utils;
 
-public class ConsoleColors {
+public class ConsoleVisuals {
 
         public static final String RESET = "\033[0m";
         public static final String BLACK = "\033[0;30m";
@@ -28,15 +28,13 @@ public class ConsoleColors {
 
 
 
-        //BRIGHT COLORS
-        public static final String BRIGHT_BLACK = "\033[0;90m";
-        public static final String BRIGHT_RED = "\033[0;91m";
-        public static final String BRIGHT_GREEN = "\033[0;92m";
-        public static final String BRIGHT_YELLOW = "\033[0;93m";
-        public static final String BRIGHT_BLUE = "\033[0;94m";
-        public static final String BRIGHT_PURPLE = "\033[0;95m";
-        public static final String BRIGHT_CYAN = "\033[0;96m";
-        public static final String BRIGHT_WHITE = "\033[0;97m";
+        public static void animatedTransition() throws InterruptedException {
+                for (int i = 0; i < 3; i++) {
+                        Thread.sleep(500);
+                        System.out.print(BOLD_YELLOW + "." + RESET);
+                }
+                System.out.println();
+        }
 
 
 
