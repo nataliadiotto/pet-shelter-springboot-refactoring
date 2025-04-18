@@ -138,10 +138,10 @@ Update any field of a pet after performing a search as shown above. All validati
 
 ## 🧪 **Possible Future Enhancements**
 
+- 🌱 Refactor it with Spring framework
 - 🐶 Photo upload (via path references)
 - 📆 Filter by registration date
 - 📊 Export data to CSV or Excel
-- 🌍 Multilingual CLI
 - ✅ Unit tests with JUnit
 - ☁️ Cloud integration for remote storage
 
