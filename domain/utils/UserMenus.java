@@ -2,7 +2,7 @@ package domain.utils;
 
 import domain.enums.PetType;
 
-import static domain.utils.ConsoleColors.*;
+import static domain.utils.ConsoleVisuals.*;
 
 public class UserMenus {
 

@@ -9,7 +9,8 @@ import service.PetService;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import static domain.utils.ConsoleColors.*;
+import static domain.utils.ConsoleVisuals.*;
+
 
 public class PetController {
 
@@ -111,8 +112,8 @@ public class PetController {
             int i = 0;
             for (Pet pet : pets) {
                 i++;
-                System.out.print(BOLD_CYAN + i + ". " + RESET);
-                System.out.println(CYAN + pet + RESET);
+                System.out.print(BOLD_GREEN + i + ". " + RESET);
+                System.out.println(GREEN + pet + RESET);
             }
         }
     }
@@ -155,13 +156,6 @@ public class PetController {
 
     }
 
-    private void animatedTransition() throws InterruptedException {
-        for (int i = 0; i < 3; i++) {
-            Thread.sleep(500);
-            System.out.print(BOLD_YELLOW + "." + RESET);
-        }
-        System.out.println();
-    }
     private void showError(String message){
             System.err.println("Error: " + message);
         }
