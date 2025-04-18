@@ -7,13 +7,12 @@ import domain.enums.FilterType;
 import domain.strategy.*;
 import domain.strategy.filters.*;
 import domain.utils.Constants;
+import domain.utils.InputHelper;
 import repository.PetRepositoryImpl;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static domain.utils.InputHelper.*;
 
@@ -45,7 +44,7 @@ public class PetService {
         PetType petType = parseEnum(userResponses.get("2 - What type of pet is it (Cat = 1/Dog = 2)?"), PetType::fromValue, "Invalid pet type option.");
         BiologicalSex biologicalSex = parseEnum(userResponses.get("3 - What is the pet's gender (Female = 1/Male = 2)?"), BiologicalSex::fromValue, "Invalid gender option.");
 
-        Integer addressNumber = parseIntegerOrDefault(userResponses.get("address number"));
+        Integer addressNumber = InputHelper.parseIntegerOrDefault((userResponses.get("address number")));
         String addressName = normalizeText(userResponses.get("address name"), false);
         String addressCity = normalizeText(userResponses.get("address city"), false);
 
@@ -161,66 +160,5 @@ public class PetService {
         return value.trim();
     }
 
-    private Integer parseIntegerOrDefault(String value) {
-        try {
-            return Integer.parseInt(value.trim());
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private Double parseDouble(String value) {
-        if (value == null || value.trim().isEmpty()) return null;
-        try {
-            return Double.parseDouble(value.replace(",", ".").trim());
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Please enter a valid number.");
-        }
-    }
-
-    private <T> T parseEnum(String input, Function<Integer, T> converter, String errorMessage) {
-        try {
-            return converter.apply(Integer.parseInt(input.trim()));
-        } catch (Exception e) {
-            throw new IllegalArgumentException(errorMessage);
-        }
-    }
-
-    private boolean containsInvalidCharacters(String text) {
-        return !text.matches("^[A-Za-zÀ-ÿ\\s]+$"); // inclui acentos e espaço
-    }
-
-    private <T> void updateIfNotBlank(Map<String, Object> data, String key, Class<T> type, Consumer<T> setter) {
-        Object value = data.get(key);
-
-        String stringValue = value.toString().trim();
-
-        if ("0".equals(stringValue)) {
-            if (type == String.class) {
-                setter.accept(type.cast(Constants.NOT_INFORMED)); // e.g., "Not Informed"
-            } else {
-                setter.accept(null); // For numbers, null means not informed
-            }
-            return;
-        }
-
-        if (isNullOrEmpty(value)) {
-            return; // User wants to keep existing value (pressed Enter)
-        }
-
-        try {
-            if (type == Integer.class) {
-                setter.accept(type.cast(Integer.parseInt(value.toString())));
-            } else if (type == Double.class) {
-                setter.accept(type.cast(Double.parseDouble(value.toString())));
-            } else if (type == String.class) {
-                setter.accept(type.cast(value.toString()));
-            } else {
-                setter.accept(type.cast(value));
-            }
-        } catch (Exception e) {
-            System.out.println("Invalid type or conversion error for key " + key + ": " + value);
-        }
-    }
 
 }
