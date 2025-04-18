@@ -1,4 +1,5 @@
 import controller.PetController;
+import domain.utils.ConsoleVisuals;
 import domain.utils.UserMenus;
 import service.PetService;
 import service.FileReaderService;
@@ -6,24 +7,34 @@ import service.FileWriterService;
 import service.UserInterfaceService;
 
 import java.io.IOException;
+import java.nio.file.Paths;
+
+import static domain.utils.ConsoleVisuals.*;
 
 public class PetShelterApp {
     public static void main(String[] args) throws IOException, InterruptedException {
+        System.out.println(BOLD_BLUE + "🐾 Welcome to the Pet Shelter! 🐾" + RESET);
+        System.out.println(BLUE + "Please follow the instructions to register or manage pets.\n" + RESET);
 
+        // Dependencies creation
+        PetController petController = createPetController();
         UserMenus userMenus = new UserMenus();
         FileReaderService fileReaderService = new FileReaderService();
-        //PetRepositoryImpl petRepository = PetRepositoryImpl.getInstance();
-        FileWriterService fileWriterService = new FileWriterService();
-        PetService petService = new PetService(fileWriterService, fileReaderService);
-        PetController petController = new PetController(petService);
 
-        // Cria o UserInterfaceService com as dependências injetadas
-        UserInterfaceService userInterfaceService = new UserInterfaceService(
-                fileReaderService, petController, userMenus);
+        // Interface with dependencies injections creation
+        UserInterfaceService ui = new UserInterfaceService(fileReaderService, petController, userMenus);
 
-        //System.out.println(fileReaderService.readSpecificLine(fileReaderService.readFile("/Users/Natalia/pet-shelter/register-form.txt"), 3));
-        // Coleta as respostas do usuário
-        userInterfaceService.start("/Users/Natalia/pet-shelter/register-form.txt");
+        // Register form path, with fallback to local file
+        String filePath = args.length > 0 ? args[0] : Paths.get("register-form.txt").toAbsolutePath().toString();
 
+        // Application start
+        ui.start(filePath);
+    }
+
+    private static PetController createPetController() {
+        FileReaderService fileReader = new FileReaderService();
+        FileWriterService fileWriter = new FileWriterService();
+        PetService petService = new PetService(fileWriter, fileReader);
+        return new PetController(petService);
     }
 }
