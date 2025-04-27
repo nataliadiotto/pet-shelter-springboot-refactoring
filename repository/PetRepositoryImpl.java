@@ -44,6 +44,7 @@ public class PetRepositoryImpl implements PetRepository {
                 pets = new HashMap<>();
             }
         }
+        //return new TreeMap<>(pets);
         return pets;
     }
 
