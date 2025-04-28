@@ -12,13 +12,13 @@ import java.util.*;
 public class PetRepositoryImpl implements PetRepository {
 
     private static PetRepositoryImpl instance;
-    private Map<Path, Pet> pets;
+    private TreeMap<Path, Pet> pets;
     private final FileReaderService fileReaderService;
     private final FileWriterService fileWriterService;
 
     private PetRepositoryImpl(FileReaderService fileReaderService, FileWriterService fileWriterService) {
         this.fileWriterService = fileWriterService;
-        this.pets = new HashMap<>();
+        this.pets = new TreeMap<>();
         this.fileReaderService = fileReaderService;
     }
 
@@ -31,40 +31,41 @@ public class PetRepositoryImpl implements PetRepository {
     @Override
     public void save(Pet pet) throws IOException {
         fileWriterService.savePetToFile(pet);
+        pets.put(pet.getFilePath(), pet);
         refreshCache();
     }
 
 
-    public Map<Path, Pet> findAll() {
+    public TreeMap<Path, Pet> findAll() {
         if (pets == null || pets.isEmpty()) {
             try {
                 pets = fileReaderService.readAllPets();
             } catch (IOException e) {
                 System.err.println("Failed to read pet files: " + e.getMessage());
-                pets = new HashMap<>();
+                pets = new TreeMap<>();
             }
         }
-        //return new TreeMap<>(pets);
         return pets;
     }
 
     @Override
-    public void updatePetByIndex(Pet updatedPet, Path oldPath) throws IOException {
+    public void updatePetByPath(Pet updatedPet, Path originalPath) throws IOException {
         if (updatedPet == null) {
             throw new IllegalArgumentException("Pet cannot be null");
         }
 
-        if (oldPath != null && Files.exists(oldPath)) {
-            Files.delete(oldPath);
+        if (originalPath != null && Files.exists(originalPath)) {
+            Files.delete(originalPath);
             refreshCache();
         }
 
         fileWriterService.savePetToFile(updatedPet);
+        pets.put(updatedPet.getFilePath(), updatedPet);
 
     }
 
     @Override
-    public void deletePetByIndex(Pet existingPet, Path oldFilePath, List<Pet> pets, int targetIndex) throws IOException {
+    public void deletePetByPath(Pet existingPet, Path oldFilePath) throws IOException {
         if (existingPet == null) {
             throw new IllegalArgumentException("Pet cannot be null");
         }
@@ -72,6 +73,7 @@ public class PetRepositoryImpl implements PetRepository {
         if (oldFilePath != null) {
             if (Files.exists(oldFilePath)) {
                 Files.delete(oldFilePath);
+                pets.remove(oldFilePath);
 
                 refreshCache();
             } else {

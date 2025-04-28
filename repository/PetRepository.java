@@ -6,14 +6,15 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public interface PetRepository {
 
     void save(Pet pet) throws IOException;
-    Map<Path, Pet> findAll();
+    TreeMap<Path, Pet> findAll();
 
-    void updatePetByIndex(Pet updatedPet, Path oldPath) throws IOException;
+    void updatePetByPath(Pet updatedPet, Path oldPath) throws IOException;
 
 
-    void deletePetByIndex(Pet existingPet, Path oldFilePath, List<Pet> pets, int targetIndex) throws IOException;
+    void deletePetByPath(Pet existingPet, Path oldFilePath) throws IOException;
 }

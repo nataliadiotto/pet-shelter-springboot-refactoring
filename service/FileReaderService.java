@@ -32,13 +32,13 @@ public class FileReaderService {
 
     }
 
-    public Map<Path, Pet> readAllPets() throws IOException {
+    public TreeMap<Path, Pet> readAllPets() throws IOException {
         Path dirPath = getRegisteredPetsDir();
         if (!isDirValid(dirPath)) {
             throw new IOException("Directory does not exist or is not readable: " + dirPath);
         }
 
-        Map<Path, Pet> petMap = new HashMap<>();
+        TreeMap<Path, Pet> petMap = new TreeMap<>();
         try (DirectoryStream<Path> streamDir = Files.newDirectoryStream(dirPath, "*.TXT")) {
             for (Path path : streamDir) {
                 if (Files.isRegularFile(path)) {
@@ -53,7 +53,7 @@ public class FileReaderService {
             }
         } catch (IOException e) {
             System.out.println("Failed to read the file: " + e.getMessage());
-            return Map.of();
+            return new TreeMap<>();
         }
         return petMap;
     }

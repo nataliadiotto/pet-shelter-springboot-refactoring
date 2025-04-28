@@ -2,7 +2,6 @@ package controller;
 
 import domain.entity.Pet;
 import domain.enums.PetType;
-import domain.enums.BiologicalSex;
 import domain.enums.FilterType;
 import service.PetService;
 
@@ -72,6 +71,10 @@ public class PetController {
     }
 
     public void updatePetByIndex(int index, List<Pet> filteredPets, Map<String, Object> updatedData) throws IOException, InterruptedException {
+        if (index < 1 || index > filteredPets.size()) {
+            throw new IndexOutOfBoundsException("Invalid index.");
+        }
+
         petService.updatePet(index, filteredPets, updatedData);
 
         System.out.print(BOLD_YELLOW + "Updating pet");
@@ -79,8 +82,12 @@ public class PetController {
         System.out.println(BOLD_GREEN + " ✅ Pet successfully updated!" + RESET);
     }
 
-    public void deletePetByIndex(int petIndex, List<Pet> pets) throws IOException, InterruptedException {
-        petService.deletePetByIndex(petIndex, pets);
+    public void deletePetByIndex(int index, List<Pet> filteredPets) throws IOException, InterruptedException {
+        if (index < 1 || index > filteredPets.size()) {
+            throw new IndexOutOfBoundsException("Invalid index.");
+        }
+
+        petService.deletePet(index, filteredPets);
 
         System.out.print(BOLD_YELLOW + "Deleting pet");
         animatedTransition();
