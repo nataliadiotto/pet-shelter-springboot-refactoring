@@ -12,7 +12,7 @@ import java.util.*;
 import static domain.utils.ConsoleVisuals.*;
 
 
-public class UserInterfaceService {
+public class ConsoleInteractionManager {
      private final FileReaderService fileReaderService;
      private final PetController petController;
      private final Scanner sc;
@@ -20,7 +20,7 @@ public class UserInterfaceService {
      private final UserMenus userMenus;
 
 
-    public UserInterfaceService(FileReaderService fileReaderService, PetController petController, UserMenus userMenus) {
+    public ConsoleInteractionManager(FileReaderService fileReaderService, PetController petController, UserMenus userMenus) {
         this.fileReaderService = fileReaderService;
         this.petController = petController;
         this.userMenus = userMenus;

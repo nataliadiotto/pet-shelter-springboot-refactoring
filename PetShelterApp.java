@@ -1,10 +1,9 @@
 import controller.PetController;
-import domain.utils.ConsoleVisuals;
 import domain.utils.UserMenus;
 import service.PetService;
 import service.FileReaderService;
 import service.FileWriterService;
-import service.UserInterfaceService;
+import service.ConsoleInteractionManager;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -22,7 +21,7 @@ public class PetShelterApp {
         FileReaderService fileReaderService = new FileReaderService();
 
         // Interface with dependencies injections creation
-        UserInterfaceService ui = new UserInterfaceService(fileReaderService, petController, userMenus);
+        ConsoleInteractionManager ui = new ConsoleInteractionManager(fileReaderService, petController, userMenus);
 
         // Register form path, with fallback to local file
         String filePath = args.length > 0 ? args[0] : Paths.get("register-form.txt").toAbsolutePath().toString();
