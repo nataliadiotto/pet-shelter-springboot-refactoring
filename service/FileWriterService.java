@@ -9,13 +9,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class FileWriterService {
-    private static final String BASE_DIR = "/Users/Natalia/pet-shelter/registeredPetsDir";
     private static final String FILE_EXTENSION = ".TXT";
 
 
     public static Path ensureDataDirectory() throws IOException {
-        Path registeredPetsDir = Paths.get(BASE_DIR);
-        return Files.createDirectories(registeredPetsDir);
+        String projectDir = System.getProperty("user.dir");
+        Path registeredPetsDir = Paths.get(projectDir, "registeredPetsDir");
+
+        if (!Files.exists(registeredPetsDir)) {
+            Files.createDirectories(registeredPetsDir);
+        }
+
+        return registeredPetsDir;
     }
 
 

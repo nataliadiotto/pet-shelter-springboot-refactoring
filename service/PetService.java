@@ -109,46 +109,35 @@ public class PetService {
         return filteredPets;
     }
 
-    public void updatePet(int targetIndex, List<Pet> pets, Map<String, Object> updatedData) throws IOException {
+    public void updatePet(int index, List<Pet> filteredPets, Map<String, Object> updatedData) throws IOException {
         if (updatedData == null || updatedData.isEmpty()) {
             throw new IllegalArgumentException("Not enough data to update pet.");
         }
 
-        if (targetIndex < 1 || targetIndex > pets.size()) {
-            throw new IndexOutOfBoundsException("Invalid index.");
-        }
+        Pet existingPet = filteredPets.get(index - 1);
+        Path originalFilePath = existingPet.getFilePath();
 
+        updateIfNotBlank(updatedData, "firstName", String.class, existingPet::setFirstName);
+        updateIfNotBlank(updatedData, "lastName", String.class, existingPet::setLastName);
 
-        Pet originalPet = pets.get(targetIndex - 1);
+        updateIfNotBlank(updatedData, "addressNumber", Integer.class, existingPet::setAddressNumber);
+        updateIfNotBlank(updatedData, "addressName", String.class, existingPet::setAddressName);
+        updateIfNotBlank(updatedData, "addressCity", String.class, existingPet::setAddressCity);
 
-        Path oldFilePath = originalPet.getFilePath();
+        updateIfNotBlank(updatedData, "age", Double.class, existingPet::setAge);
 
-        updateIfNotBlank(updatedData, "firstName", String.class, originalPet::setFirstName);
-        updateIfNotBlank(updatedData, "lastName", String.class, originalPet::setLastName);
+        updateIfNotBlank(updatedData, "weight", Double.class, existingPet::setWeight);
 
-        updateIfNotBlank(updatedData, "addressNumber", Integer.class, originalPet::setAddressNumber);
-        updateIfNotBlank(updatedData, "addressName", String.class, originalPet::setAddressName);
-        updateIfNotBlank(updatedData, "addressCity", String.class, originalPet::setAddressCity);
+        updateIfNotBlank(updatedData, "breed", String.class, existingPet::setBreed);
 
-        updateIfNotBlank(updatedData, "age", Double.class, originalPet::setAge);
-
-        updateIfNotBlank(updatedData, "weight", Double.class, originalPet::setWeight);
-
-        updateIfNotBlank(updatedData, "breed", String.class, originalPet::setBreed);
-
-        petRepository.updatePetByIndex(originalPet, oldFilePath);
+        petRepository.updatePetByPath(existingPet, originalFilePath);
     }
 
-    public void deletePetByIndex(int targetIndex, List<Pet> pets) throws IOException {
-
-        if (targetIndex < 1 || targetIndex > pets.size()) {
-            throw new IndexOutOfBoundsException("Invalid index.");
-        }
-
+    public void deletePet(int targetIndex, List<Pet> pets) throws IOException {
         Pet existingPet = pets.get(targetIndex - 1);
         Path oldFilePath = existingPet.getFilePath();
 
-        petRepository.deletePetByIndex(existingPet, oldFilePath, pets, targetIndex);
+        petRepository.deletePetByPath(existingPet, oldFilePath);
 
     }
 

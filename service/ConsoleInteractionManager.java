@@ -12,7 +12,7 @@ import java.util.*;
 import static domain.utils.ConsoleVisuals.*;
 
 
-public class UserInterfaceService {
+public class ConsoleInteractionManager {
      private final FileReaderService fileReaderService;
      private final PetController petController;
      private final Scanner sc;
@@ -20,7 +20,7 @@ public class UserInterfaceService {
      private final UserMenus userMenus;
 
 
-    public UserInterfaceService(FileReaderService fileReaderService, PetController petController, UserMenus userMenus) {
+    public ConsoleInteractionManager(FileReaderService fileReaderService, PetController petController, UserMenus userMenus) {
         this.fileReaderService = fileReaderService;
         this.petController = petController;
         this.userMenus = userMenus;
@@ -239,9 +239,9 @@ public class UserInterfaceService {
 
         private void handleUpdateMenu() throws IOException, InterruptedException {
 
-            List<Pet> pets = handleListPetMenu();
+            List<Pet> filteredPets = handleListPetMenu();
 
-            if (pets.isEmpty()) {
+            if (filteredPets.isEmpty()) {
                 return;
             }
 
@@ -254,11 +254,11 @@ public class UserInterfaceService {
                     return;
                 }
 
-                if (petIndex >= 1 && petIndex <= pets.size()) {
+                if (petIndex >= 1 && petIndex <= filteredPets.size()) {
                     break;
                 }
 
-                System.out.println("Invalid index. Please enter the numerical index of one of the pets in the list.");
+                System.out.println("Invalid index. Please enter the numerical index of one of the filteredPets in the list.");
                 System.out.println();
 
             }
@@ -279,7 +279,7 @@ public class UserInterfaceService {
             updatedData.put("weight", inputHelper.readLine("Weight: "));
             updatedData.put("breed", inputHelper.readLine("Breed: "));
 
-            petController.updatePetByIndex(petIndex, pets, updatedData);
+            petController.updatePetByIndex(petIndex, filteredPets, updatedData);
 
         }
 
