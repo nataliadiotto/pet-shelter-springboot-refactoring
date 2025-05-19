@@ -1,14 +1,13 @@
 package domain.entity;
 
-import domain.enums.PetType;
 import domain.enums.BiologicalSex;
+import domain.enums.PetType;
 import domain.utils.Constants;
+import domain.utils.InputHelper;
 
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Objects;
-
-import static domain.utils.InputHelper.*;
 
 public class Pet {
 
@@ -72,7 +71,7 @@ public class Pet {
         }
 
         public String formatAddressNumber() {
-                return (isNotBlank(String.valueOf(addressNumber)) && addressNumber != null && addressNumber != 0)
+                return (InputHelper.isNotBlank(String.valueOf(addressNumber)) && addressNumber != null && addressNumber != 0)
                         ? String.valueOf(addressNumber)
                         : Constants.NOT_INFORMED;
         }
@@ -126,7 +125,7 @@ public class Pet {
         }
 
         public String getBreed() {
-                return (isNotBlank(breed) && !breed.trim().isEmpty())
+                return (InputHelper.isNotBlank(breed) && !breed.trim().isEmpty())
                         ? capitalizeWords(breed)
                         : Constants.NOT_INFORMED;
         }
