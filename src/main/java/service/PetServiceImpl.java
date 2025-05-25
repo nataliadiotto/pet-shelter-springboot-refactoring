@@ -1,27 +1,20 @@
-package service;
+package src.main.java.service;
 
-import domain.DTO.PetDTO;
-import domain.entity.Pet;
-import domain.enums.PetType;
-import domain.enums.BiologicalSex;
-import domain.enums.FilterType;
-import domain.strategy.filters.*;
-import domain.strategy.PetFilterStrategy;
-import domain.utils.Constants;
-import domain.utils.InputHelper;
+import src.main.java.domain.DTO.PetDTO;
+import src.main.java.domain.entity.Pet;
+import src.main.java.domain.enums.FilterType;
+import src.main.java.domain.strategy.PetFilterStrategy;
+import src.main.java.domain.strategy.filters.*;
+import src.main.java.domain.utils.Constants;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.PetRepository;
+import src.main.java.repository.PetRepository;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
 
-import static domain.utils.InputHelper.*;
-
 @Service
-
 public class PetServiceImpl implements PetService {
 
     private final PetRepository petRepository;
@@ -43,44 +36,11 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet savePet(Pet Pet) throws IOException {
-        String firstName = normalizeText(userResponses.get("first name"), true);
-        String lastName = normalizeText(userResponses.get("last name"), true);
-
-        if (containsInvalidCharacters(firstName) || containsInvalidCharacters(lastName)) {
-            throw new IllegalArgumentException("First and last names must contain only letters A-Z.");
-        }
-
-        PetType petType = parseEnum(userResponses.get("2 - What type of pet is it (Cat = 1/Dog = 2)?"), PetType::fromValue, "Invalid pet type option.");
-        BiologicalSex biologicalSex = parseEnum(userResponses.get("3 - What is the pet's gender (Female = 1/Male = 2)?"), BiologicalSex::fromValue, "Invalid gender option.");
-
-        Integer addressNumber = InputHelper.parseIntegerOrDefault((userResponses.get("address number")));
-        String addressName = normalizeText(userResponses.get("address name"), false);
-        String addressCity = normalizeText(userResponses.get("address city"), false);
-
-        Double age = parseDouble(userResponses.get("5 - What is the approximate age of the pet?"));
-        if (age != null && age < 1) {
-            age = Double.parseDouble(String.format("%.1f", age)); // padroniza para 0.x
-        }
-        if (age != null && (age <= 0 || age > 20)) {
-            throw new IllegalArgumentException("Age must be between 0.1 and 20 years.");
-        }
-
-        Double weight = parseDouble(userResponses.get("6 - What is the approximate weight of the pet?"));
-        if (weight != null && (weight < 0.5 || weight > 60)) {
-            throw new IllegalArgumentException("Weight must be between 0.5 and 60 kg.");
-        }
-
-        String breed = normalizeText(userResponses.get("7 - What is the breed of the pet?"), false);
-        if (!breed.equals(Constants.NOT_INFORMED) && containsInvalidCharacters(breed)) {
-            throw new IllegalArgumentException("Breed must contain only letters A-Z.");
-        }
-
-        Pet pet = new Pet(firstName, lastName, petType, biologicalSex,
-                addressNumber, addressName, addressCity, age, weight, breed);
-        petRepository.save(pet);
-        return pet;
+    public Pet registerPet(PetDTO petDTO) throws IOException {
+        Pet pet = convertPetFromDTO(petDTO);
+        return petRepository.save(pet);
     }
+
 
     @Override
     public List<Pet> listAll() {
@@ -93,57 +53,55 @@ public class PetServiceImpl implements PetService {
        return allPets;
     }
 
-    public List<Pet> filterPets(PetType petType, Map<FilterType, String> filters) {
-        Map<Path, Pet> petMap = petRepository.findAll();
-
-        if (petMap.isEmpty()) {
-            System.out.println("No registered pets.");
-        }
-
-        List<Pet> pets = new ArrayList<>(petMap.values());
-
-        //Filter by PetType
-        List<Pet> filteredPets = pets.stream().filter(pet -> pet.getPetType()
-                        .equals(petType))
-                .toList();
-
-
-        //Apply each filter
-        for (Map.Entry<FilterType, String> entry : filters.entrySet()) {
-            PetFilterStrategy strategy = STRATEGY_MAP.get(entry.getKey());
-
-            if (strategy != null) {
-                filteredPets = strategy.filter(filteredPets, entry.getValue());
-            }
-        }
-
-        return filteredPets;
-    }
-
-    @Override
-    public void updatePet(int index, List<Pet> filteredPets, Map<String, Object> updatedData) throws IOException {
-        if (updatedData == null || updatedData.isEmpty()) {
-            throw new IllegalArgumentException("Not enough data to update pet.");
-        }
-
-        Pet existingPet = filteredPets.get(index - 1);
-        Path originalFilePath = existingPet.getFilePath();
-
-        updateIfNotBlank(updatedData, "firstName", String.class, existingPet::setFirstName);
-        updateIfNotBlank(updatedData, "lastName", String.class, existingPet::setLastName);
-
-        updateIfNotBlank(updatedData, "addressNumber", Integer.class, existingPet::setAddressNumber);
-        updateIfNotBlank(updatedData, "addressName", String.class, existingPet::setAddressName);
-        updateIfNotBlank(updatedData, "addressCity", String.class, existingPet::setAddressCity);
-
-        updateIfNotBlank(updatedData, "age", Double.class, existingPet::setAge);
-
-        updateIfNotBlank(updatedData, "weight", Double.class, existingPet::setWeight);
-
-        updateIfNotBlank(updatedData, "breed", String.class, existingPet::setBreed);
-
-        petRepository.updatePetByPath(existingPet, originalFilePath);
-    }
+//    public List<Pet> filterPets(PetType petType, Map<FilterType, String> filters) {
+//        List<Pet> pets = petRepository.findAll();
+//
+//        if (pets.isEmpty()) {
+//            System.out.println("No registered pets.");
+//        }
+//
+//        //Filter by PetType
+//        List<Pet> filteredPets = pets.stream().filter(pet -> pet.getPetType()
+//                        .equals(petType))
+//                .toList();
+//
+//
+//        //Apply each filter
+//        for (Map.Entry<FilterType, String> entry : filters.entrySet()) {
+//            PetFilterStrategy strategy = STRATEGY_MAP.get(entry.getKey());
+//
+//            if (strategy != null) {
+//                filteredPets = strategy.filter(filteredPets, entry.getValue());
+//            }
+//        }
+//
+//        return filteredPets;
+//    }
+//
+//    @Override
+//    public void updatePet(int index, List<Pet> filteredPets, Map<String, Object> updatedData) throws IOException {
+//        if (updatedData == null || updatedData.isEmpty()) {
+//            throw new IllegalArgumentException("Not enough data to update pet.");
+//        }
+//
+//        Pet existingPet = filteredPets.get(index - 1);
+//        Path originalFilePath = existingPet.getFilePath();
+//
+//        updateIfNotBlank(updatedData, "firstName", String.class, existingPet::setFirstName);
+//        updateIfNotBlank(updatedData, "lastName", String.class, existingPet::setLastName);
+//
+//        updateIfNotBlank(updatedData, "addressNumber", Integer.class, existingPet::setAddressNumber);
+//        updateIfNotBlank(updatedData, "addressName", String.class, existingPet::setAddressName);
+//        updateIfNotBlank(updatedData, "addressCity", String.class, existingPet::setAddressCity);
+//
+//        updateIfNotBlank(updatedData, "age", Double.class, existingPet::setAge);
+//
+//        updateIfNotBlank(updatedData, "weight", Double.class, existingPet::setWeight);
+//
+//        updateIfNotBlank(updatedData, "breed", String.class, existingPet::setBreed);
+//
+//        petRepository.updatePetByPath(existingPet, originalFilePath);
+//    }
 
     //TODO: refactor
     @Override
@@ -152,9 +110,8 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet savePetFromDTO(PetDTO petDTO) {
-        Pet pet = modelMapper.map(petDTO, Pet.class);
-        return petRepository.save(pet);
+    public Pet convertPetFromDTO(PetDTO petDTO) {
+        return modelMapper.map(petDTO, Pet.class);
     }
 
     private String normalizeText(String value, boolean mandatory) {

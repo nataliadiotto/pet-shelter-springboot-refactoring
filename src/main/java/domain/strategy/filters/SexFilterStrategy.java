@@ -1,8 +1,8 @@
-package domain.strategy.filters;
+package src.main.java.domain.strategy.filters;
 
-import domain.entity.Pet;
-import domain.enums.BiologicalSex;
-import domain.strategy.PetFilterStrategy;
+import src.main.java.domain.entity.Pet;
+import src.main.java.domain.enums.BiologicalSex;
+import src.main.java.domain.strategy.PetFilterStrategy;
 
 import java.util.List;
 

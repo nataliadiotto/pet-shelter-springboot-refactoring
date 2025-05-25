@@ -1,4 +1,4 @@
-package domain.enums;
+package src.main.java.domain.enums;
 
 public enum BiologicalSex {
 

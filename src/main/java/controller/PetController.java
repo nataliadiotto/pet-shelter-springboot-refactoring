@@ -1,20 +1,17 @@
-package controller;
+package src.main.java.controller;
 
-import domain.DTO.PetDTO;
-import domain.DTO.PetResponseDTO;
-import domain.entity.Pet;
-import domain.enums.PetType;
-import domain.enums.FilterType;
+import src.main.java.domain.DTO.PetDTO;
+import src.main.java.domain.DTO.PetResponseDTO;
+import src.main.java.domain.entity.Pet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import service.PetService;
+import src.main.java.service.PetService;
 
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 @RequestMapping("v1/pets")
 @RestController
@@ -29,7 +26,7 @@ public class PetController {
 
     @PostMapping
     public ResponseEntity<Pet> registerPet(@RequestBody @Valid PetDTO petDTO) throws IOException, InterruptedException {
-        Pet newPet = petService.savePetFromDTO(petDTO);
+        Pet newPet = petService.registerPet(petDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                         .body(newPet);
     }
@@ -44,21 +41,21 @@ public class PetController {
     }
 
     //TODO: refactor
-    @GetMapping
-    public List<Pet> filterByCriteria(PetType petType, Map<FilterType, String> filters) throws InterruptedException {
-
-        return petService.filterPets(petType, filters);
-    }
+    //@GetMapping
+//    public List<Pet> filterByCriteria(PetType petType, Map<FilterType, String> filters) throws InterruptedException {
+//
+//        return petService.filterPets(petType, filters);
+//    }
 
     //TODO: refactor
-    @PatchMapping("/{id}")
-    public void updatePetById(int index, List<Pet> filteredPets, Map<String, Object> updatedData) throws IOException, InterruptedException {
-        if (index < 1 || index > filteredPets.size()) {
-            throw new IndexOutOfBoundsException("Invalid index.");
-        }
-
-        petService.updatePet(index, filteredPets, updatedData);
-    }
+//    @PatchMapping("/{id}")
+//    public void updatePetById(int index, List<Pet> filteredPets, Map<String, Object> updatedData) throws IOException, InterruptedException {
+//        if (index < 1 || index > filteredPets.size()) {
+//            throw new IndexOutOfBoundsException("Invalid index.");
+//        }
+//
+//        petService.updatePet(index, filteredPets, updatedData);
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<PetResponseDTO> deletePetById(@PathVariable("id") Long id) throws IOException, InterruptedException {

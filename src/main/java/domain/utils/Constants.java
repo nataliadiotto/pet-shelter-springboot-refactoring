@@ -1,4 +1,4 @@
-package domain.utils;
+package src.main.java.domain.utils;
 
 public class Constants {
 

@@ -1,6 +1,6 @@
-package domain.strategy;
+package src.main.java.domain.strategy;
 
-import domain.entity.Pet;
+import src.main.java.domain.entity.Pet;
 
 import java.util.List;
 
