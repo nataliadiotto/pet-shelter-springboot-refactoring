@@ -3,7 +3,7 @@ package controller;
 import domain.entity.Pet;
 import domain.enums.PetType;
 import domain.enums.FilterType;
-import service.PetService;
+import service.PetServiceImpl;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,15 +13,15 @@ import static domain.utils.ConsoleVisuals.*;
 
 public class PetController {
 
-    private final PetService petService;
+    private final PetServiceImpl petServiceImpl;
 
-    public PetController(PetService petService) {
-        this.petService = petService;
+    public PetController(PetServiceImpl petServiceImpl) {
+        this.petServiceImpl = petServiceImpl;
     }
 
     public void registerPet(Map<String, String> userResponses) throws IOException, InterruptedException {
         try {
-            petService.savePet(userResponses);
+            petServiceImpl.savePet(userResponses);
             System.out.print(BOLD_YELLOW + "Saving pet");
             animatedTransition();
             System.out.println(BOLD_GREEN + " ✅ Pet successfully registered!" + RESET);
@@ -32,7 +32,7 @@ public class PetController {
 
 
     public void listAllPets() throws InterruptedException {
-        List<Pet> pets = petService.listAll();
+        List<Pet> pets = petServiceImpl.listAll();
 
         System.out.print(BOLD_YELLOW + "Listing pets");
         animatedTransition();
@@ -50,7 +50,7 @@ public class PetController {
     }
 
     public List<Pet> filterByCriteria(PetType petType, Map<FilterType, String> filters) throws InterruptedException {
-        List<Pet> filteredPets = petService.filterPets(petType, filters);
+        List<Pet> filteredPets = petServiceImpl.filterPets(petType, filters);
 
         System.out.printf(BOLD_YELLOW + "Searching %ss", petType.name().toLowerCase());
         animatedTransition();
@@ -75,7 +75,7 @@ public class PetController {
             throw new IndexOutOfBoundsException("Invalid index.");
         }
 
-        petService.updatePet(index, filteredPets, updatedData);
+        petServiceImpl.updatePet(index, filteredPets, updatedData);
 
         System.out.print(BOLD_YELLOW + "Updating pet");
         animatedTransition();
@@ -87,7 +87,7 @@ public class PetController {
             throw new IndexOutOfBoundsException("Invalid index.");
         }
 
-        petService.deletePet(index, filteredPets);
+        petServiceImpl.deletePet(index, filteredPets);
 
         System.out.print(BOLD_YELLOW + "Deleting pet");
         animatedTransition();

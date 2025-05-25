@@ -1,6 +1,6 @@
 import controller.PetController;
 import domain.utils.UserMenus;
-import service.PetService;
+import service.PetServiceImpl;
 import service.FileReaderService;
 import service.FileWriterService;
 import service.ConsoleInteractionManager;
@@ -33,7 +33,7 @@ public class PetShelterApp {
     private static PetController createPetController() {
         FileReaderService fileReader = new FileReaderService();
         FileWriterService fileWriter = new FileWriterService();
-        PetService petService = new PetService(fileWriter, fileReader);
-        return new PetController(petService);
+        PetServiceImpl petServiceImpl = new PetServiceImpl(fileWriter, fileReader);
+        return new PetController(petServiceImpl);
     }
 }
