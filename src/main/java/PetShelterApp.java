@@ -1,9 +1,5 @@
 import controller.PetController;
-import domain.utils.UserMenus;
 import service.PetServiceImpl;
-import service.FileReaderService;
-import service.FileWriterService;
-import service.ConsoleInteractionManager;
 
 import java.io.IOException;
 import java.nio.file.Paths;

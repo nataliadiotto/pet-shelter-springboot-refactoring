@@ -1,7 +1,0 @@
-1 - Lana Del Rey
-2 - Dog
-3 - Female
-4 - 601, Ocean Blvd, New York
-5 - Not informed
-6 - 13.0kg
-7 - Beagle

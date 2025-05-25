@@ -3,7 +3,6 @@ package domain.entity;
 import domain.enums.BiologicalSex;
 import domain.enums.PetType;
 import domain.utils.Constants;
-import domain.utils.InputHelper;
 import jakarta.persistence.*;
 import lombok.Data;
 
