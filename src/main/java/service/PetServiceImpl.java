@@ -10,7 +10,7 @@ import domain.utils.Constants;
 import domain.utils.InputHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.PetRepositoryImpl;
+import repository.PetRepository;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -22,7 +22,7 @@ import static domain.utils.InputHelper.*;
 
 public class PetServiceImpl implements PetService {
 
-    private final PetRepositoryImpl petRepository;
+    private final PetRepository petRepository;
 
     private static final Map<FilterType, PetFilterStrategy> STRATEGY_MAP = Map.of(
             FilterType.NAME, new NameFilterStrategy(),
@@ -34,12 +34,12 @@ public class PetServiceImpl implements PetService {
     );
 
     @Autowired
-    public PetServiceImpl(FileWriterService fileWriterService, FileReaderService fileReaderService) {
-        this.petRepository = PetRepositoryImpl.getInstance(fileReaderService, fileWriterService);
+    public PetServiceImpl(PetRepository petRepository) {
+        this.petRepository = petRepository;
     }
 
     @Override
-    public void savePet(Map<String, String> userResponses) throws IOException {
+    public Pet savePet(Pet Pet) throws IOException {
         String firstName = normalizeText(userResponses.get("first name"), true);
         String lastName = normalizeText(userResponses.get("last name"), true);
 
@@ -75,17 +75,18 @@ public class PetServiceImpl implements PetService {
         Pet pet = new Pet(firstName, lastName, petType, biologicalSex,
                 addressNumber, addressName, addressCity, age, weight, breed);
         petRepository.save(pet);
+        return pet;
     }
 
     @Override
     public List<Pet> listAll() {
-        Map<Path, Pet> petMap = petRepository.findAll();
+        List<Pet> allPets = petRepository.findAll();
 
-       if (petMap.isEmpty()) {
+       if (allPets.isEmpty()) {
            System.out.println("No registered pets.");
        }
 
-       return new ArrayList<>(petMap.values());
+       return allPets;
     }
 
     public List<Pet> filterPets(PetType petType, Map<FilterType, String> filters) {
