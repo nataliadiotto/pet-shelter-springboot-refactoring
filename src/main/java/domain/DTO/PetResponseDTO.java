@@ -1,7 +1,7 @@
-package domain.DTO;
+package src.main.java.domain.DTO;
 
-import domain.entity.Pet;
-import domain.utils.Constants;
+import src.main.java.domain.entity.Pet;
+import src.main.java.domain.utils.Constants;
 import lombok.Data;
 
 import java.util.Arrays;
@@ -19,7 +19,7 @@ public class PetResponseDTO {
 
     public PetResponseDTO(Pet pet) {
         this.fullName = capitalize(pet.getFirstName()) + " " + capitalize(pet.getLastName());
-        this.fullAddress = pet.getAddressNumber() + ", " + capitalize(pet.getAddressName()) + ", " + capitalize(pet.getAddressCity());
+        this.fullAddress = pet.getAddressNumber() + ", " + capitalize(pet.getStreetName()) + ", " + capitalize(pet.getAddressCity());
         this.formattedWeight = pet.getWeight() != null ? String.format("%.1fkg", pet.getWeight()) : Constants.NOT_INFORMED;
         this.formattedAge = pet.getAge() != null ? String.format("%.1f years old", pet.getAge()) : Constants.NOT_INFORMED;
         this.breed = pet.getBreed();

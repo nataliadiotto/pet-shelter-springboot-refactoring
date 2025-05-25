@@ -159,7 +159,7 @@ Update any field of a pet after performing a search as shown above. All validati
 
 2. Open the project in your favorite Java IDE (e.g., IntelliJ IDEA, Eclipse)
 
-3. Run the `PetShelterApp` class
+3. Run the `src.main.PetShelterApp` class
 
 ---
 

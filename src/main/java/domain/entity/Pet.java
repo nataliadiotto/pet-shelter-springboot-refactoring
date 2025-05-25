@@ -1,7 +1,8 @@
-package domain.entity;
+package src.main.java.domain.entity;
 
-import domain.enums.BiologicalSex;
-import domain.enums.PetType;
+import lombok.NoArgsConstructor;
+import src.main.java.domain.enums.BiologicalSex;
+import src.main.java.domain.enums.PetType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "pets")
 public class Pet {
 
@@ -28,10 +30,10 @@ public class Pet {
     @NotBlank
     private String lastName;
 
-    private final PetType petType;
-    private final BiologicalSex biologicalSex;
+    private PetType petType;
+    private BiologicalSex biologicalSex;
     private Integer addressNumber;
-    private String addressName;
+    private String streetName;
 
     @NotNull
     @NotBlank
@@ -39,5 +41,7 @@ public class Pet {
     private Double age;
     private Double weight;
     private String breed;
+
+
 
 }
