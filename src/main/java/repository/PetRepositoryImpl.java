@@ -1,8 +1,6 @@
 package repository;
 
 import domain.entity.Pet;
-import service.FileReaderService;
-import service.FileWriterService;
 
 import java.io.IOException;
 import java.nio.file.Files;
