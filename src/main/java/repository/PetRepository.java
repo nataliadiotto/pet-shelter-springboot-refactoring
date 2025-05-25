@@ -1,18 +1,10 @@
 package repository;
 
 import domain.entity.Pet;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.TreeMap;
-
-public interface PetRepository {
-
-    void save(Pet pet) throws IOException;
-    TreeMap<Path, Pet> findAll();
-
-    void updatePetByPath(Pet updatedPet, Path oldPath) throws IOException;
+public interface PetRepository extends JpaRepository<Pet, Long> {
 
 
-    void deletePetByPath(Pet existingPet, Path oldFilePath) throws IOException;
+
 }
