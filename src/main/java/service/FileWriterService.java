@@ -48,8 +48,8 @@ public class FileWriterService {
         String timestamp = LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmm"));
 
-        String lastName = sanitize(pet.getLastName());
-        String firstName = sanitize(pet.getFirstName());
+        String lastName = sanitize(pet.getFormatLastName());
+        String firstName = sanitize(pet.getFormatFirstName());
 
         // Fallbacks se estiverem vazios
         if (lastName.isEmpty()) lastName = "NO_LASTNAME";
