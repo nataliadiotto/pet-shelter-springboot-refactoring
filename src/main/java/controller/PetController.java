@@ -1,5 +1,7 @@
 package controller;
 
+import domain.DTO.PetDTO;
+import domain.DTO.PetResponseDTO;
 import domain.entity.Pet;
 import domain.enums.PetType;
 import domain.enums.FilterType;
@@ -26,16 +28,19 @@ public class PetController {
     }
 
     @PostMapping
-    public ResponseEntity<Pet> registerPet(@RequestBody @Valid Pet pet) throws IOException, InterruptedException {
-        Pet newPet = petService.savePet(pet);
+    public ResponseEntity<Pet> registerPet(@RequestBody @Valid PetDTO petDTO) throws IOException, InterruptedException {
+        Pet newPet = petService.savePetFromDTO(petDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                         .body(newPet);
     }
 
     @GetMapping
-    public ResponseEntity<List<Pet>> listAllPets() throws InterruptedException {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(petService.listAll());
+    public ResponseEntity<List<PetResponseDTO>> listAllPets() throws InterruptedException {
+        List<Pet> pets = petService.listAll();
+        List<PetResponseDTO> responseDTOS = pets.stream()
+                .map(PetResponseDTO::new)
+                .toList();
+        return ResponseEntity.ok(responseDTOS);
     }
 
     //TODO: refactor
@@ -56,12 +61,9 @@ public class PetController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Pet> deletePetById(@PathVariable("id") Long id) throws IOException, InterruptedException {
+    public ResponseEntity<PetResponseDTO> deletePetById(@PathVariable("id") Long id) throws IOException, InterruptedException {
         Pet deletedPet = petService.deletePet(id);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(deletedPet);
-
-
+        return ResponseEntity.ok(new PetResponseDTO(deletedPet));
     }
 
     private void showError(String message){

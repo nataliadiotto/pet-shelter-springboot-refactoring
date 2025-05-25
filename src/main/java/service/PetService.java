@@ -1,5 +1,6 @@
 package service;
 
+import domain.DTO.PetDTO;
 import domain.entity.Pet;
 import domain.enums.FilterType;
 import domain.enums.PetType;
@@ -16,4 +17,5 @@ public interface PetService {
     void updatePet(int index, List<Pet> filteredPets, Map<String, Object> updatedData) throws IOException;
     Pet deletePet(Long id) throws IOException;
 
+    Pet savePetFromDTO(PetDTO petDTO);
 }

@@ -1,5 +1,6 @@
 package service;
 
+import domain.DTO.PetDTO;
 import domain.entity.Pet;
 import domain.enums.PetType;
 import domain.enums.BiologicalSex;
@@ -8,6 +9,7 @@ import domain.strategy.filters.*;
 import domain.strategy.PetFilterStrategy;
 import domain.utils.Constants;
 import domain.utils.InputHelper;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.PetRepository;
@@ -23,6 +25,7 @@ import static domain.utils.InputHelper.*;
 public class PetServiceImpl implements PetService {
 
     private final PetRepository petRepository;
+    private final ModelMapper modelMapper;
 
     private static final Map<FilterType, PetFilterStrategy> STRATEGY_MAP = Map.of(
             FilterType.NAME, new NameFilterStrategy(),
@@ -34,8 +37,9 @@ public class PetServiceImpl implements PetService {
     );
 
     @Autowired
-    public PetServiceImpl(PetRepository petRepository) {
+    public PetServiceImpl(PetRepository petRepository, ModelMapper modelMapper) {
         this.petRepository = petRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -141,13 +145,16 @@ public class PetServiceImpl implements PetService {
         petRepository.updatePetByPath(existingPet, originalFilePath);
     }
 
+    //TODO: refactor
     @Override
-    public void deletePet(int targetIndex, List<Pet> pets) throws IOException {
-        Pet existingPet = pets.get(targetIndex - 1);
-        Path oldFilePath = existingPet.getFilePath();
+    public Pet deletePet(Long id) throws IOException {
+        return deletePet(id);
+    }
 
-        petRepository.deletePetByPath(existingPet, oldFilePath);
-
+    @Override
+    public Pet savePetFromDTO(PetDTO petDTO) {
+        Pet pet = modelMapper.map(petDTO, Pet.class);
+        return petRepository.save(pet);
     }
 
     private String normalizeText(String value, boolean mandatory) {
