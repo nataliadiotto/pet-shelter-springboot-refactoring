@@ -16,8 +16,8 @@ public class PetResponseDTO {
     private String petType;
     private String biologicalSex;
     private String fullAddress;
-    private String formattedWeight;
-    private String formattedAge;
+    private String weight;
+    private String age;
     private String breed;
 
     public PetResponseDTO(Pet pet) {
@@ -29,11 +29,11 @@ public class PetResponseDTO {
                 + capitalize(pet.getStreetName()) + ", "
                 + capitalize(pet.getAddressCity());
 
-        this.formattedWeight = pet.getWeight() == null
+        this.weight = pet.getWeight() == null
                 ? Constants.NOT_INFORMED
                 : String.format(Locale.ENGLISH, "%.1fkg", pet.getWeight());
 
-        this.formattedAge = pet.getAge() == null
+        this.age = pet.getAge() == null
                 ? Constants.NOT_INFORMED
                 : String.format(Locale.ENGLISH, "%.1f years old", pet.getAge());
 

@@ -25,10 +25,11 @@ public class PetController {
     }
 
     @PostMapping
-    public ResponseEntity<Pet> registerPet(@RequestBody @Valid PetDTO petDTO) throws IOException, InterruptedException {
+    public ResponseEntity<PetResponseDTO> registerPet(@RequestBody @Valid PetDTO petDTO) throws IOException, InterruptedException {
         Pet newPet = petService.registerPet(petDTO);
+        PetResponseDTO petResponseDTO = new PetResponseDTO(newPet);
         return ResponseEntity.status(HttpStatus.CREATED)
-                        .body(newPet);
+                        .body(petResponseDTO);
     }
 
     @GetMapping
