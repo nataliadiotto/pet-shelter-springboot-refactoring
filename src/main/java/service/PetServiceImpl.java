@@ -1,7 +1,6 @@
 package src.main.java.service;
 
 import src.main.java.domain.DTO.PetDTO;
-import src.main.java.domain.DTO.PetUpdtRequestDTO;
 import src.main.java.domain.entity.Pet;
 import src.main.java.domain.enums.FilterType;
 import src.main.java.domain.strategy.PetFilterStrategy;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import src.main.java.repository.PetRepository;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -36,7 +36,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet registerPet(PetDTO petDTO) {
+    public Pet registerPet(PetDTO petDTO) throws IOException {
         Pet pet = convertPetFromDTO(petDTO);
         return petRepository.save(pet);
     }
@@ -44,7 +44,13 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public List<Pet> listAll() {
-        return petRepository.findAll();
+        List<Pet> allPets = petRepository.findAll();
+
+       if (allPets.isEmpty()) {
+           System.out.println("No registered pets.");
+       }
+
+       return allPets;
     }
 
 //    public List<Pet> filterPets(PetType petType, Map<FilterType, String> filters) {
@@ -72,26 +78,34 @@ public class PetServiceImpl implements PetService {
 //        return filteredPets;
 //    }
 //
-    @Override
-    public Pet updatePet(Long id, PetUpdtRequestDTO dto) throws ResourceNotFoundException {
-        Pet existingPet = petRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Pet", "ID", id));
-
-        if (dto.firstName() != null) existingPet.setFirstName(dto.firstName());
-        if (dto.lastName() != null) existingPet.setLastName(dto.lastName());
-        if (dto.addressNumber() != null) existingPet.setAddressNumber(dto.addressNumber());
-        if (dto.streetName() != null) existingPet.setStreetName(dto.streetName());
-        if (dto.addressCity() != null) existingPet.setAddressCity(dto.addressCity());
-        if (dto.age() != null) existingPet.setAge(dto.age());
-        if (dto.weight() != null) existingPet.setWeight(dto.weight());
-        if (dto.breed() != null) existingPet.setBreed(dto.breed());
-
-        return petRepository.save(existingPet);
-    }
+//    @Override
+//    public void updatePet(int index, List<Pet> filteredPets, Map<String, Object> updatedData) throws IOException {
+//        if (updatedData == null || updatedData.isEmpty()) {
+//            throw new IllegalArgumentException("Not enough data to update pet.");
+//        }
+//
+//        Pet existingPet = filteredPets.get(index - 1);
+//        Path originalFilePath = existingPet.getFilePath();
+//
+//        updateIfNotBlank(updatedData, "firstName", String.class, existingPet::setFirstName);
+//        updateIfNotBlank(updatedData, "lastName", String.class, existingPet::setLastName);
+//
+//        updateIfNotBlank(updatedData, "addressNumber", Integer.class, existingPet::setAddressNumber);
+//        updateIfNotBlank(updatedData, "addressName", String.class, existingPet::setAddressName);
+//        updateIfNotBlank(updatedData, "addressCity", String.class, existingPet::setAddressCity);
+//
+//        updateIfNotBlank(updatedData, "age", Double.class, existingPet::setAge);
+//
+//        updateIfNotBlank(updatedData, "weight", Double.class, existingPet::setWeight);
+//
+//        updateIfNotBlank(updatedData, "breed", String.class, existingPet::setBreed);
+//
+//        petRepository.updatePetByPath(existingPet, originalFilePath);
+//    }
 
     //TODO: refactor
     @Override
-    public Pet deletePet(Long id) {
+    public Pet deletePet(Long id) throws IOException {
         return deletePet(id);
     }
 
