@@ -1,7 +1,7 @@
 package src.main.java.service;
 
 import src.main.java.domain.DTO.PetDTO;
-import src.main.java.domain.DTO.PetRequestDTO;
+import src.main.java.domain.DTO.PetUpdtRequestDTO;
 import src.main.java.domain.entity.Pet;
 import src.main.java.domain.enums.FilterType;
 import src.main.java.domain.strategy.PetFilterStrategy;
@@ -73,34 +73,20 @@ public class PetServiceImpl implements PetService {
 //    }
 //
     @Override
-    public Pet updatePet(Long id, PetRequestDTO petRequestDTO) throws ResourceNotFoundException {
-        Optional<Pet> optionalPet = petRepository.findById(id);
+    public Pet updatePet(Long id, PetUpdtRequestDTO dto) throws ResourceNotFoundException {
+        Pet existingPet = petRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Pet", "ID", id));
 
-        if (optionalPet.isEmpty()){
-            throw new ResourceNotFoundException("Pet", "ID", id);
-        }
+        if (dto.firstName() != null) existingPet.setFirstName(dto.firstName());
+        if (dto.lastName() != null) existingPet.setLastName(dto.lastName());
+        if (dto.addressNumber() != null) existingPet.setAddressNumber(dto.addressNumber());
+        if (dto.streetName() != null) existingPet.setStreetName(dto.streetName());
+        if (dto.addressCity() != null) existingPet.setAddressCity(dto.addressCity());
+        if (dto.age() != null) existingPet.setAge(dto.age());
+        if (dto.weight() != null) existingPet.setWeight(dto.weight());
+        if (dto.breed() != null) existingPet.setBreed(dto.breed());
 
-        Pet existingPet = optionalPet.get();
-
-        existingPet.set
-
-        Pet existingPet = filteredPets.get(index - 1);
-        Path originalFilePath = existingPet.getFilePath();
-
-        updateIfNotBlank(updatedData, "firstName", String.class, existingPet::setFirstName);
-        updateIfNotBlank(updatedData, "lastName", String.class, existingPet::setLastName);
-
-        updateIfNotBlank(updatedData, "addressNumber", Integer.class, existingPet::setAddressNumber);
-        updateIfNotBlank(updatedData, "addressName", String.class, existingPet::setAddressName);
-        updateIfNotBlank(updatedData, "addressCity", String.class, existingPet::setAddressCity);
-
-        updateIfNotBlank(updatedData, "age", Double.class, existingPet::setAge);
-
-        updateIfNotBlank(updatedData, "weight", Double.class, existingPet::setWeight);
-
-        updateIfNotBlank(updatedData, "breed", String.class, existingPet::setBreed);
-
-        petRepository.updatePetByPath(existingPet, originalFilePath);
+        return petRepository.save(existingPet);
     }
 
     //TODO: refactor

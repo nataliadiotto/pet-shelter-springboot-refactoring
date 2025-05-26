@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Data
 public class PetResponseDTO {
 
-
+    private Long id;
     private String fullName;
     private String petType;
     private String biologicalSex;
@@ -21,6 +21,7 @@ public class PetResponseDTO {
     private String breed;
 
     public PetResponseDTO(Pet pet) {
+        this.id = pet.getId();
         this.fullName = capitalize(pet.getFirstName()) + " " + capitalize(pet.getLastName());
         this.petType = capitalize(pet.getPetType().toString());
         this.biologicalSex = capitalize(pet.getBiologicalSex().toString());

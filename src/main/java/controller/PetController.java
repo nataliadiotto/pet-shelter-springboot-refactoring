@@ -1,7 +1,7 @@
 package src.main.java.controller;
 
 import src.main.java.domain.DTO.PetDTO;
-import src.main.java.domain.DTO.PetRequestDTO;
+import src.main.java.domain.DTO.PetUpdtRequestDTO;
 import src.main.java.domain.DTO.PetResponseDTO;
 import src.main.java.domain.entity.Pet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import src.main.java.service.PetService;
+import src.main.java.service.ResourceNotFoundException;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -52,8 +53,8 @@ public class PetController {
     //TODO: refactor
     @PatchMapping("/{id}")
     public ResponseEntity<PetResponseDTO> updateById(@PathVariable Long id,
-                                                     @RequestBody PetRequestDTO petRequestDTO) {
-       Pet updatedPetDTO = petService.updatePet(id, petRequestDTO);
+                                                     @RequestBody PetUpdtRequestDTO petUpdtRequestDTO) throws ResourceNotFoundException {
+       Pet updatedPetDTO = petService.updatePet(id, petUpdtRequestDTO);
        return ResponseEntity.ok(new PetResponseDTO(updatedPetDTO));
     }
 

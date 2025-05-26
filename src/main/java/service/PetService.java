@@ -1,10 +1,9 @@
 package src.main.java.service;
 
 import src.main.java.domain.DTO.PetDTO;
-import src.main.java.domain.DTO.PetRequestDTO;
+import src.main.java.domain.DTO.PetUpdtRequestDTO;
 import src.main.java.domain.entity.Pet;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface PetService {
@@ -37,7 +36,7 @@ public interface PetService {
     //        return filteredPets;
     //    }
     //
-    Pet updatePet(Long id, PetRequestDTO petRequestDTO) throws ResourceNotFoundException;
+    Pet updatePet(Long id, PetUpdtRequestDTO petUpdtRequestDTO) throws ResourceNotFoundException;
 
     //List<Pet> filterPets(PetType petType, Map<FilterType, String> filters);
     Pet deletePet(Long id);
