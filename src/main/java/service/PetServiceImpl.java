@@ -1,6 +1,7 @@
 package src.main.java.service;
 
 import src.main.java.domain.DTO.PetDTO;
+import src.main.java.domain.DTO.PetRequestDTO;
 import src.main.java.domain.entity.Pet;
 import src.main.java.domain.enums.FilterType;
 import src.main.java.domain.strategy.PetFilterStrategy;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import src.main.java.repository.PetRepository;
 
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -36,7 +36,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet registerPet(PetDTO petDTO) throws IOException {
+    public Pet registerPet(PetDTO petDTO) {
         Pet pet = convertPetFromDTO(petDTO);
         return petRepository.save(pet);
     }
@@ -44,13 +44,7 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public List<Pet> listAll() {
-        List<Pet> allPets = petRepository.findAll();
-
-       if (allPets.isEmpty()) {
-           System.out.println("No registered pets.");
-       }
-
-       return allPets;
+        return petRepository.findAll();
     }
 
 //    public List<Pet> filterPets(PetType petType, Map<FilterType, String> filters) {
@@ -78,34 +72,40 @@ public class PetServiceImpl implements PetService {
 //        return filteredPets;
 //    }
 //
-//    @Override
-//    public void updatePet(int index, List<Pet> filteredPets, Map<String, Object> updatedData) throws IOException {
-//        if (updatedData == null || updatedData.isEmpty()) {
-//            throw new IllegalArgumentException("Not enough data to update pet.");
-//        }
-//
-//        Pet existingPet = filteredPets.get(index - 1);
-//        Path originalFilePath = existingPet.getFilePath();
-//
-//        updateIfNotBlank(updatedData, "firstName", String.class, existingPet::setFirstName);
-//        updateIfNotBlank(updatedData, "lastName", String.class, existingPet::setLastName);
-//
-//        updateIfNotBlank(updatedData, "addressNumber", Integer.class, existingPet::setAddressNumber);
-//        updateIfNotBlank(updatedData, "addressName", String.class, existingPet::setAddressName);
-//        updateIfNotBlank(updatedData, "addressCity", String.class, existingPet::setAddressCity);
-//
-//        updateIfNotBlank(updatedData, "age", Double.class, existingPet::setAge);
-//
-//        updateIfNotBlank(updatedData, "weight", Double.class, existingPet::setWeight);
-//
-//        updateIfNotBlank(updatedData, "breed", String.class, existingPet::setBreed);
-//
-//        petRepository.updatePetByPath(existingPet, originalFilePath);
-//    }
+    @Override
+    public Pet updatePet(Long id, PetRequestDTO petRequestDTO) throws ResourceNotFoundException {
+        Optional<Pet> optionalPet = petRepository.findById(id);
+
+        if (optionalPet.isEmpty()){
+            throw new ResourceNotFoundException("Pet", "ID", id);
+        }
+
+        Pet existingPet = optionalPet.get();
+
+        existingPet.set
+
+        Pet existingPet = filteredPets.get(index - 1);
+        Path originalFilePath = existingPet.getFilePath();
+
+        updateIfNotBlank(updatedData, "firstName", String.class, existingPet::setFirstName);
+        updateIfNotBlank(updatedData, "lastName", String.class, existingPet::setLastName);
+
+        updateIfNotBlank(updatedData, "addressNumber", Integer.class, existingPet::setAddressNumber);
+        updateIfNotBlank(updatedData, "addressName", String.class, existingPet::setAddressName);
+        updateIfNotBlank(updatedData, "addressCity", String.class, existingPet::setAddressCity);
+
+        updateIfNotBlank(updatedData, "age", Double.class, existingPet::setAge);
+
+        updateIfNotBlank(updatedData, "weight", Double.class, existingPet::setWeight);
+
+        updateIfNotBlank(updatedData, "breed", String.class, existingPet::setBreed);
+
+        petRepository.updatePetByPath(existingPet, originalFilePath);
+    }
 
     //TODO: refactor
     @Override
-    public Pet deletePet(Long id) throws IOException {
+    public Pet deletePet(Long id) {
         return deletePet(id);
     }
 

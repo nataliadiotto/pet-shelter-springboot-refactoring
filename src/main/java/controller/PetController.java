@@ -1,6 +1,7 @@
 package src.main.java.controller;
 
 import src.main.java.domain.DTO.PetDTO;
+import src.main.java.domain.DTO.PetRequestDTO;
 import src.main.java.domain.DTO.PetResponseDTO;
 import src.main.java.domain.entity.Pet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class PetController {
     }
 
     @PostMapping
-    public ResponseEntity<PetResponseDTO> registerPet(@RequestBody @Valid PetDTO petDTO) throws IOException, InterruptedException {
+    public ResponseEntity<PetResponseDTO> registerPet(@RequestBody @Valid PetDTO petDTO) {
         Pet newPet = petService.registerPet(petDTO);
         PetResponseDTO petResponseDTO = new PetResponseDTO(newPet);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -49,25 +50,18 @@ public class PetController {
 //    }
 
     //TODO: refactor
-//    @PatchMapping("/{id}")
-//    public void updatePetById(int index, List<Pet> filteredPets, Map<String, Object> updatedData) throws IOException, InterruptedException {
-//        if (index < 1 || index > filteredPets.size()) {
-//            throw new IndexOutOfBoundsException("Invalid index.");
-//        }
-//
-//        petService.updatePet(index, filteredPets, updatedData);
-//    }
+    @PatchMapping("/{id}")
+    public ResponseEntity<PetResponseDTO> updateById(@PathVariable Long id,
+                                                     @RequestBody PetRequestDTO petRequestDTO) {
+       Pet updatedPetDTO = petService.updatePet(id, petRequestDTO);
+       return ResponseEntity.ok(new PetResponseDTO(updatedPetDTO));
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<PetResponseDTO> deletePetById(@PathVariable("id") Long id) throws IOException, InterruptedException {
         Pet deletedPet = petService.deletePet(id);
         return ResponseEntity.ok(new PetResponseDTO(deletedPet));
     }
-
-    private void showError(String message){
-            System.err.println("Error: " + message);
-        }
-
 
 }
 
