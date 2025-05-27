@@ -59,7 +59,7 @@ public class PetController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<PetResponseDTO> deletePetById(@PathVariable("id") Long id) throws IOException, InterruptedException {
+    public ResponseEntity<PetResponseDTO> deletePetById(@PathVariable("id") Long id) throws IOException, InterruptedException, ResourceNotFoundException {
         Pet deletedPet = petService.deletePet(id);
         return ResponseEntity.ok(new PetResponseDTO(deletedPet));
     }

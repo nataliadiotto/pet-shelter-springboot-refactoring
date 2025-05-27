@@ -37,6 +37,6 @@ public interface PetService {
     Pet updatePet(Long id, PetUpdtRequestDTO petUpdtRequestDTO) throws ResourceNotFoundException;
 
     //List<Pet> filterPets(PetType petType, Map<FilterType, String> filters);
-    Pet deletePet(Long id);
+    Pet deletePet(Long id) throws ResourceNotFoundException;
     Pet convertPetFromDTO(PetDTO petDTO);
 }
