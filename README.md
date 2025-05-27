@@ -1,6 +1,6 @@
 # 🐾  **Pet Shelter CLI**
 ![Java](https://img.shields.io/badge/Java-21-blue)
-![CLI App](https://img.shields.io/badge/CLI-Application-orange)
+![CLI app](https://img.shields.io/badge/CLI-Application-orange)
 ![OOP](https://img.shields.io/badge/Principles-OOP-success)
 ![Strategy Pattern](https://img.shields.io/badge/Pattern-Strategy-yellow)
 ![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen)
@@ -151,7 +151,7 @@ Update any field of a pet after performing a search as shown above. All validati
 
 ### ⚙️ How to Run
 
-1. **Clone the repository:**
+1. **Clone the com.diotto.petshelter.repository:**
 
    ```bash
    git clone https://github.com/nataliadiotto/pet-shelter.git
@@ -184,6 +184,6 @@ Update any field of a pet after performing a search as shown above. All validati
 
 ### ⭐ Show Your Support
 
-> If you find this project helpful, please ⭐ the repository!
+> If you find this project helpful, please ⭐ the com.diotto.petshelter.repository!
 
 
