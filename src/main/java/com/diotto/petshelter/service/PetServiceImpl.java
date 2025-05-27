@@ -15,6 +15,7 @@ import com.diotto.petshelter.repository.PetRepository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class PetServiceImpl implements PetService {
@@ -93,8 +94,13 @@ public class PetServiceImpl implements PetService {
 
     //TODO: refactor
     @Override
-    public Pet deletePet(Long id) {
-        return deletePet(id);
+    public Pet deletePet(Long id) throws ResourceNotFoundException {
+        Pet existingPet = petRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Pet", "ID", id));
+
+        petRepository.delete(existingPet);
+
+        return existingPet;
     }
 
     @Override
