@@ -1,5 +1,6 @@
-package com.diotto.petshelter.domain.entity;
+package com.diotto.petshelter.repository;
 
+import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
 import org.springframework.data.jpa.domain.Specification;

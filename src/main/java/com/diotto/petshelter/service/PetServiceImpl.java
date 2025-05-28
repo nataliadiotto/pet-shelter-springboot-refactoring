@@ -3,7 +3,7 @@ package com.diotto.petshelter.service;
 import com.diotto.petshelter.domain.DTO.PetDTO;
 import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
 import com.diotto.petshelter.domain.entity.Pet;
-import com.diotto.petshelter.domain.entity.PetSpecifications;
+import com.diotto.petshelter.repository.PetSpecifications;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.FilterType;
 import com.diotto.petshelter.domain.enums.PetType;

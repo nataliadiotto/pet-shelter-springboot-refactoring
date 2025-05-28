@@ -4,7 +4,6 @@ import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.domain.DTO.PetDTO;
 import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
 import com.diotto.petshelter.domain.DTO.PetResponseDTO;
-import com.diotto.petshelter.domain.entity.PetSpecifications;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
 import org.springframework.beans.factory.annotation.Autowired;
