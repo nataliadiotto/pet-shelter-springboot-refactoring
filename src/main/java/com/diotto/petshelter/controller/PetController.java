@@ -43,7 +43,7 @@ public class PetController {
         return ResponseEntity.ok(responseDTOS);
     }
 
-    //TODO: refactor
+    //TODO: refactor with Specification
     //@GetMapping
 //    public List<Pet> filterByCriteria(PetType petType, Map<FilterType, String> filters) throws InterruptedException {
 //
