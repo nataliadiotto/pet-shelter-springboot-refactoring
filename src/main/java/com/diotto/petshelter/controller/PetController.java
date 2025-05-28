@@ -4,6 +4,9 @@ import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.domain.DTO.PetDTO;
 import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
 import com.diotto.petshelter.domain.DTO.PetResponseDTO;
+import com.diotto.petshelter.domain.entity.PetSpecifications;
+import com.diotto.petshelter.domain.enums.BiologicalSex;
+import com.diotto.petshelter.domain.enums.PetType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,12 +46,23 @@ public class PetController {
         return ResponseEntity.ok(responseDTOS);
     }
 
-    //TODO: refactor with Specification
-    //@GetMapping
-//    public List<Pet> filterByCriteria(PetType petType, Map<FilterType, String> filters) throws InterruptedException {
-//
-//        return petService.filterPets(petType, filters);
-//    }
+    @GetMapping("/search/")
+    public ResponseEntity<List<PetResponseDTO>> filterPets(@RequestParam(required = true) PetType petType,
+                                                           @RequestParam(required = false) BiologicalSex sex,
+                                                           @RequestParam(required = false) String name,
+                                                           @RequestParam(required = false) String streetName,
+                                                           @RequestParam(required = false) String city,
+                                                           @RequestParam(required = false) Integer addressNumber,
+                                                           @RequestParam(required = false) Double age,
+                                                           @RequestParam(required = false) Double weight,
+                                                           @RequestParam(required = false) String breed) {
+
+        List<Pet> pets = petService.searchPets(petType, sex, name, streetName, city, addressNumber, age, weight, breed);
+        List<PetResponseDTO> responseDTOS = pets.stream()
+                .map(PetResponseDTO::new)
+                .toList();
+        return ResponseEntity.ok(responseDTOS);
+    }
 
     //TODO: refactor
     @PatchMapping("/{id}")

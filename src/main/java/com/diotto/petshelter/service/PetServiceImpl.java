@@ -54,6 +54,7 @@ public class PetServiceImpl implements PetService {
         return petRepository.findAll();
     }
 
+    @Override
     public List<Pet> searchPets(PetType type, BiologicalSex biologicalSex, String name, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) {
         Specification<Pet> spec = Specification.where(null);
 
@@ -96,31 +97,6 @@ public class PetServiceImpl implements PetService {
         return petRepository.findAll(spec);
     }
 
-//    public List<Pet> filterPets(PetType petType, Map<FilterType, String> filters) {
-//        List<Pet> pets = petRepository.findAll();
-//
-//        if (pets.isEmpty()) {
-//            System.out.println("No registered pets.");
-//        }
-//
-//        //Filter by PetType
-//        List<Pet> filteredPets = pets.stream().filter(pet -> pet.getPetType()
-//                        .equals(petType))
-//                .toList();
-//
-//
-//        //Apply each filter
-//        for (Map.Entry<FilterType, String> entry : filters.entrySet()) {
-//            PetFilterStrategy strategy = STRATEGY_MAP.get(entry.getKey());
-//
-//            if (strategy != null) {
-//                filteredPets = strategy.filter(filteredPets, entry.getValue());
-//            }
-//        }
-//
-//        return filteredPets;
-//    }
-//
     @Override
     public Pet updatePet(Long id, PetUpdtRequestDTO dto) throws ResourceNotFoundException {
         Pet existingPet = petRepository.findById(id)
