@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.diotto.petshelter.service.PetService;
-import com.diotto.petshelter.service.ResourceNotFoundException;
+import com.diotto.petshelter.errors.ResourceNotFoundException;
 
 import javax.validation.Valid;
 import java.io.IOException;

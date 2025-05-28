@@ -3,19 +3,23 @@ package com.diotto.petshelter.service;
 import com.diotto.petshelter.domain.DTO.PetDTO;
 import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
 import com.diotto.petshelter.domain.entity.Pet;
+import com.diotto.petshelter.domain.entity.PetSpecifications;
+import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.FilterType;
+import com.diotto.petshelter.domain.enums.PetType;
 import com.diotto.petshelter.domain.strategy.PetFilterStrategy;
 import com.diotto.petshelter.domain.strategy.filters.*;
 import com.diotto.petshelter.domain.utils.Constants;
+import com.diotto.petshelter.errors.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import com.diotto.petshelter.repository.PetRepository;
 
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class PetServiceImpl implements PetService {
@@ -48,6 +52,48 @@ public class PetServiceImpl implements PetService {
     @Override
     public List<Pet> listAll() {
         return petRepository.findAll();
+    }
+
+    public List<Pet> searchPets(PetType type, BiologicalSex biologicalSex, String name, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) {
+        Specification<Pet> spec = Specification.where(null);
+
+        if (type != null) {
+            spec = spec.and(PetSpecifications.hasType(type));
+        }
+
+        if (biologicalSex != null) {
+            spec = spec.and(PetSpecifications.hasGender(biologicalSex));
+        }
+
+        if (name != null && !name.isBlank()) {
+            spec = spec.and(PetSpecifications.hasName(name));
+        }
+
+        if (streetName != null && !streetName.isBlank()) {
+            spec = spec.and(PetSpecifications.hasStreet(streetName));
+        }
+
+        if (city != null && !city.isBlank()) {
+            spec = spec.and(PetSpecifications.hasCity(city));
+        }
+
+        if (addressNumber != null) {
+            spec = spec.and(PetSpecifications.hasAddressNumber(addressNumber));
+        }
+
+        if (age != null) {
+            spec = spec.and(PetSpecifications.hasAge(age));
+        }
+
+        if (weight != null) {
+            spec = spec.and(PetSpecifications.hasWeight(weight));
+        }
+
+        if (breed != null && !breed.isBlank()) {
+            spec = spec.and(PetSpecifications.hasBreed(breed));
+        }
+
+        return petRepository.findAll(spec);
     }
 
 //    public List<Pet> filterPets(PetType petType, Map<FilterType, String> filters) {

@@ -2,6 +2,8 @@ package com.diotto.petshelter.service;
 import com.diotto.petshelter.domain.DTO.PetDTO;
 import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
 import com.diotto.petshelter.domain.entity.Pet;
+import com.diotto.petshelter.errors.ResourceNotFoundException;
+
 import java.util.List;
 
 public interface PetService {
