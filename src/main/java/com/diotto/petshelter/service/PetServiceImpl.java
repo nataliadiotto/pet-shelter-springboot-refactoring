@@ -10,7 +10,7 @@ import com.diotto.petshelter.domain.enums.PetType;
 import com.diotto.petshelter.domain.strategy.PetFilterStrategy;
 import com.diotto.petshelter.domain.strategy.filters.*;
 import com.diotto.petshelter.domain.utils.Constants;
-import com.diotto.petshelter.errors.ResourceNotFoundException;
+import com.diotto.petshelter.errors.ResourceNotFound;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -98,9 +98,9 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet updatePet(Long id, PetUpdtRequestDTO dto) throws ResourceNotFoundException {
+    public Pet updatePet(Long id, PetUpdtRequestDTO dto) throws ResourceNotFound {
         Pet existingPet = petRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Pet", "ID", id));
+                .orElseThrow(() -> new ResourceNotFound("Pet", "ID", id));
 
         if (dto.firstName() != null) existingPet.setFirstName(dto.firstName());
         if (dto.lastName() != null) existingPet.setLastName(dto.lastName());
@@ -116,9 +116,9 @@ public class PetServiceImpl implements PetService {
 
     //TODO: refactor
     @Override
-    public Pet deletePet(Long id) throws ResourceNotFoundException {
+    public Pet deletePet(Long id) throws ResourceNotFound {
         Pet existingPet = petRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Pet", "ID", id));
+                .orElseThrow(() -> new ResourceNotFound("Pet", "ID", id));
 
         petRepository.delete(existingPet);
 

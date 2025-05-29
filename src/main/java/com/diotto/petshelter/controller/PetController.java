@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.diotto.petshelter.service.PetService;
-import com.diotto.petshelter.errors.ResourceNotFoundException;
+import com.diotto.petshelter.errors.ResourceNotFound;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -66,13 +66,13 @@ public class PetController {
     //TODO: refactor
     @PatchMapping("/{id}")
     public ResponseEntity<PetResponseDTO> updateById(@PathVariable Long id,
-                                                     @RequestBody PetUpdtRequestDTO petUpdtRequestDTO) throws ResourceNotFoundException {
+                                                     @RequestBody PetUpdtRequestDTO petUpdtRequestDTO) throws ResourceNotFound {
        Pet updatedPetDTO = petService.updatePet(id, petUpdtRequestDTO);
        return ResponseEntity.ok(new PetResponseDTO(updatedPetDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<PetResponseDTO> deletePetById(@PathVariable("id") Long id) throws IOException, InterruptedException, ResourceNotFoundException {
+    public ResponseEntity<PetResponseDTO> deletePetById(@PathVariable("id") Long id) throws IOException, InterruptedException, ResourceNotFound {
         Pet deletedPet = petService.deletePet(id);
         return ResponseEntity.ok(new PetResponseDTO(deletedPet));
     }
