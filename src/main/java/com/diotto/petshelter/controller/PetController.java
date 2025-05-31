@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.diotto.petshelter.service.PetService;
-import com.diotto.petshelter.errors.ResourceNotFoundException;
+import com.diotto.petshelter.errors.ResourceNotFound;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class PetController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PetResponseDTO>> listAllPets() throws InterruptedException {
+    public ResponseEntity<List<PetResponseDTO>> listAllPets() throws ResourceNotFound {
         List<Pet> pets = petService.listAll();
         List<PetResponseDTO> responseDTOS = pets.stream()
                 .map(PetResponseDTO::new)
@@ -54,7 +54,7 @@ public class PetController {
                                                            @RequestParam(required = false) Integer addressNumber,
                                                            @RequestParam(required = false) Double age,
                                                            @RequestParam(required = false) Double weight,
-                                                           @RequestParam(required = false) String breed) {
+                                                           @RequestParam(required = false) String breed) throws ResourceNotFound {
 
         List<Pet> pets = petService.searchPets(petType, sex, name, streetName, city, addressNumber, age, weight, breed);
         List<PetResponseDTO> responseDTOS = pets.stream()
@@ -66,15 +66,18 @@ public class PetController {
     //TODO: refactor
     @PatchMapping("/{id}")
     public ResponseEntity<PetResponseDTO> updateById(@PathVariable Long id,
-                                                     @RequestBody PetUpdtRequestDTO petUpdtRequestDTO) throws ResourceNotFoundException {
+                                                     @RequestBody PetUpdtRequestDTO petUpdtRequestDTO) throws ResourceNotFound {
        Pet updatedPetDTO = petService.updatePet(id, petUpdtRequestDTO);
        return ResponseEntity.ok(new PetResponseDTO(updatedPetDTO));
     }
 
+//    @ApiResponse(responseCode = "204", description = "Pet successfully deleted")
+//    @ApiResponse(responseCode = "404", description = "Pet not found")
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<PetResponseDTO> deletePetById(@PathVariable("id") Long id) throws IOException, InterruptedException, ResourceNotFoundException {
-        Pet deletedPet = petService.deletePet(id);
-        return ResponseEntity.ok(new PetResponseDTO(deletedPet));
+    public ResponseEntity<Void> deletePetById(@PathVariable("id") Long id) throws IOException, InterruptedException, ResourceNotFound {
+        petService.deletePet(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

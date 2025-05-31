@@ -8,41 +8,41 @@ import lombok.Data;
 @Data
 public class PetDTO {
 
-    @NotBlank(message = "First name is required.")
-    @Pattern(regexp = "^[A-Za-zÀ-ÿ ]+$", message = "First name must contain only letters and spaces.")
+    @NotBlank
+    @Pattern(regexp = "^[A-Za-zÀ-ÿ ]+$")
     private String firstName;
 
-    @NotBlank(message = "Last name is required.")
-    @Pattern(regexp = "^[A-Za-zÀ-ÿ ]+$", message = "Last name must contain only letters and spaces.")
+    @NotBlank
+    @Pattern(regexp = "^[A-Za-zÀ-ÿ ]+$")
     private String lastName;
 
-    @NotNull(message = "Pet type is required.")
+    @NotNull
     private PetType petType;
 
-    @NotNull(message = "Biological sex is required.")
+    @NotNull
     private BiologicalSex biologicalSex;
 
-    // Optional field — if needed, add @NotNull
-    @Min(value = 1, message = "Address number must be at least 1.")
+    //Optional field
+    @Min(value = 1)
     private Integer addressNumber;
 
-    @Size(max = 50, message = "Street name must be less than 50 characters.")
-    @Pattern(regexp = "^[A-Za-zÀ-ÿ0-9 ]+$", message = "Street name must contain only letters and numbers.")
+    @Size(max = 50)
+    @Pattern(regexp = "^[A-Za-zÀ-ÿ0-9 ]+$")
     private String streetName;
 
-    @Size(max = 50, message = "City name must be less than 50 characters.")
-    @Pattern(regexp = "^[A-Za-zÀ-ÿ ]+$", message = "City name must contain only letters.")
+    @Size(max = 50)
+    @Pattern(regexp = "^[A-Za-zÀ-ÿ ]+$")
     private String addressCity;
 
-    @DecimalMin(value = "0.1", message = "Age must be at least 0.1 year.")
-    @DecimalMax(value = "20.0", message = "Age must not exceed 20 years.")
+    @DecimalMin(value = "0.1")
+    @DecimalMax(value = "20.0")
     private Double age;
 
-    @DecimalMin(value = "0.5", message = "Weight must be at least 0.5 kg.")
-    @DecimalMax(value = "60.0", message = "Weight must not exceed 60 kg.")
+    @DecimalMin(value = "0.5")
+    @DecimalMax(value = "60.0")
     private Double weight;
 
-    @Pattern(regexp = "^[A-Za-zÀ-ÿ ]*$", message = "Breed must contain only letters and spaces.")
+    @Pattern(regexp = "^[A-Za-zÀ-ÿ ]+$")
     private String breed;
 
 }
