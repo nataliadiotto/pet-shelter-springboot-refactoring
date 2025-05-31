@@ -5,11 +5,7 @@ import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
 import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.repository.PetSpecifications;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
-import com.diotto.petshelter.domain.enums.FilterType;
 import com.diotto.petshelter.domain.enums.PetType;
-import com.diotto.petshelter.domain.strategy.PetFilterStrategy;
-import com.diotto.petshelter.domain.strategy.filters.*;
-import com.diotto.petshelter.domain.utils.Constants;
 import com.diotto.petshelter.errors.ResourceNotFound;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,22 +15,12 @@ import com.diotto.petshelter.repository.PetRepository;
 
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class PetServiceImpl implements PetService {
 
     private final PetRepository petRepository;
     private final ModelMapper modelMapper;
-
-    private static final Map<FilterType, PetFilterStrategy> STRATEGY_MAP = Map.of(
-            FilterType.NAME, new NameFilterStrategy(),
-            FilterType.SEX, new SexFilterStrategy(),
-            FilterType.AGE, new AgeFilterStrategy(),
-            FilterType.WEIGHT, new WeightFilterStrategy(),
-            FilterType.BREED, new BreedFilterStrategy(),
-            FilterType.ADDRESS, new AddressFilterStrategy()
-    );
 
     @Autowired
     public PetServiceImpl(PetRepository petRepository, ModelMapper modelMapper) {
@@ -55,7 +41,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public List<Pet> searchPets(PetType type, BiologicalSex biologicalSex, String name, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) {
+    public List<Pet> searchPets(PetType type, BiologicalSex biologicalSex, String name, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) throws ResourceNotFound{
         Specification<Pet> spec = Specification.where(null);
 
         if (type != null) {
@@ -94,7 +80,12 @@ public class PetServiceImpl implements PetService {
             spec = spec.and(PetSpecifications.hasBreed(breed));
         }
 
-        return petRepository.findAll(spec);
+        List<Pet> filteredPets = petRepository.findAll(spec);
+        if (filteredPets.isEmpty()) {
+            throw new ResourceNotFound("pets with the provided filters");
+        }
+
+        return filteredPets;
     }
 
     @Override
@@ -116,27 +107,16 @@ public class PetServiceImpl implements PetService {
 
     //TODO: refactor
     @Override
-    public Pet deletePet(Long id) throws ResourceNotFound {
+    public void deletePet(Long id) throws ResourceNotFound {
         Pet existingPet = petRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Pet", "ID", id));
 
         petRepository.delete(existingPet);
-
-        return existingPet;
     }
 
     @Override
     public Pet convertPetFromDTO(PetDTO petDTO) {
         return modelMapper.map(petDTO, Pet.class);
     }
-
-    private String normalizeText(String value, boolean mandatory) {
-        if (value == null || value.trim().isEmpty()) {
-            if (mandatory) throw new IllegalArgumentException("Mandatory field missing.");
-            return Constants.NOT_INFORMED;
-        }
-        return value.trim();
-    }
-
 
 }

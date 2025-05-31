@@ -11,11 +11,11 @@ import java.util.List;
 public interface PetService {
 
     Pet registerPet(PetDTO PetDTO);
-    List<Pet> listAll();
+    List<Pet> listAll() throws ResourceNotFound;
 
-    List<Pet> searchPets(PetType type, BiologicalSex biologicalSex, String name, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed);
+    List<Pet> searchPets(PetType type, BiologicalSex biologicalSex, String name, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) throws ResourceNotFound;
     Pet updatePet(Long id, PetUpdtRequestDTO petUpdtRequestDTO) throws ResourceNotFound;
 
-    Pet deletePet(Long id) throws ResourceNotFound;
+    void deletePet(Long id) throws ResourceNotFound;
     Pet convertPetFromDTO(PetDTO petDTO);
 }

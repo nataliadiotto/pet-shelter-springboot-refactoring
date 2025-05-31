@@ -18,7 +18,7 @@ public class RestControllerAdvice {
     }
 
     @ExceptionHandler(BadRequest.class)
-    public ResponseEntity<ErrorResponse> handlerResourceBadRequestException(BadRequest exception, WebRequest webRequest){
+    public ResponseEntity<ErrorResponse> handleNoHandlerFound(BadRequest exception, WebRequest webRequest){
         ErrorResponse errorResponse = new ErrorResponse(exception.getMessage(), webRequest.getDescription(false));
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -26,13 +26,14 @@ public class RestControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handlerException(Exception exception, WebRequest webRequest){
-        ErrorResponse errorResponse = new ErrorResponse(exception.getMessage(), webRequest.getDescription(false));
+        ErrorResponse errorResponse = new ErrorResponse("Internal server error. Please contact support.", webRequest.getDescription(false));
+        ;
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<ErrorResponse> handlerResourceBadRequestException(NoHandlerFoundException exception, WebRequest webRequest){
+    public ResponseEntity<ErrorResponse> handleNoHandlerFound(NoHandlerFoundException exception, WebRequest webRequest){
         ErrorResponse errorResponse = new ErrorResponse(exception.getMessage(), webRequest.getDescription(false));
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);

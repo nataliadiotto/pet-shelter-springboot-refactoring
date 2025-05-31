@@ -3,13 +3,13 @@ package com.diotto.petshelter.errors;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 public class ErrorResponse {
 
-    private Date date = new Date();
+    private LocalDateTime timeStamp = LocalDateTime.now();
     private String message;
     private String url;
 
