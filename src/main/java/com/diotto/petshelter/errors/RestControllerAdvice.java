@@ -2,6 +2,7 @@ package com.diotto.petshelter.errors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -38,6 +39,18 @@ public class RestControllerAdvice {
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex, WebRequest request) {
+        StringBuilder messages = new StringBuilder();
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            messages.append(error.getField()).append(": ").append(error.getDefaultMessage()).append("; ");
+        });
+
+        ErrorResponse errorResponse = new ErrorResponse(messages.toString().trim(), request.getDescription(false));
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 
 
 
