@@ -17,12 +17,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -131,17 +133,18 @@ class PetControllerTest {
     }
 
     @Test//listAllPets() failure
-    void shouldReturnResourceNotFoundExceptionWhenEmptyList() throws Exception {
+    void shouldThrowResourceNotFoundExceptionWhenEmptyList() throws Exception {
        when(petService.listAll()).thenThrow(new ResourceNotFound("pets"));
 
        mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets"))
-               .andExpect(status().isNotFound());
+               .andExpect(status().isNotFound())
+               .andExpect(jsonPath("$.message", is("There are no registers of pets in the system.")));
 
        verify(petService, times(1)).listAll();
 
     }
 
-    @Test
+    @Test//searchPets() success
     void shouldReturnPetsMatchingFilters() throws Exception {
        when(petService.searchPets(eq(PetType.CAT), any(), any(), any(), any(), any(), any(), eq(8.0), any()))
                .thenReturn(List.of(pet));
@@ -163,7 +166,51 @@ class PetControllerTest {
     }
 
     @Test
-    void updateById() {
+    //searchPets() failure
+    void shouldThrowResourceNotFoundExceptionWhenNoMatchesToFilters() throws Exception {
+        when(petService.searchPets(eq(PetType.CAT), any(), any(), any(), any(), any(), any(), eq(8.0), any()))
+                .thenThrow(new ResourceNotFound("pets with the provided filters"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search/")
+                        .param("petType", "CAT")
+                        .param("weight", "8.0"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("There are no registers of pets with the provided filters in the system.")));
+
+        verify(petService, times(1)).searchPets(
+                eq(PetType.CAT), any(), any(), any(), any(), any(), any(), eq(8.0), any()
+        );
+    }
+
+    @Test
+    //updateById() success
+    void shouldUpdatePetById() throws Exception {
+        when(petService.updatePet(anyLong(), any())).thenReturn(pet);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/v1/pets/{id}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(petDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.fullName", equalTo("Sweet Nothing")));
+
+        verify(petService, times(1)).updatePet(eq(1L), any());
+   }
+
+    @Test
+    //updateById() failure
+    void shouldThrowResourceNotFoundExceptionWhenNoMatchToId() throws Exception {
+        when(petService.updatePet(anyLong(), any()))
+                .thenThrow(new ResourceNotFound("Pet", "ID", 1L));
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/v1/pets/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(petDTO)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("Pet not found with: ID = '1'")));
+
+        verify(petService, times(1)).updatePet(eq(1L), any());
+
     }
 
     @Test
