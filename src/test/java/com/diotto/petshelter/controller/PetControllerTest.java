@@ -6,14 +6,10 @@ import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
 import com.diotto.petshelter.service.PetService;
-import com.diotto.petshelter.service.PetServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,12 +17,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,6 +38,7 @@ class PetControllerTest {
    private PetService petService;
 
    Pet pet;
+   Pet pet2;
    PetDTO petDTO;
    PetResponseDTO petResponseDTO;
 
@@ -72,6 +70,18 @@ class PetControllerTest {
        pet.setWeight(8.0);
        pet.setBreed("Scottish Fold");
 
+       pet2 = new Pet();
+       pet2.setFirstName("Blank");
+       pet2.setLastName("Space");
+       pet2.setPetType(PetType.CAT);
+       pet2.setBiologicalSex(BiologicalSex.MALE);
+       pet2.setAddressNumber(1313);
+       pet2.setStreetName("Folklore Avenue");
+       pet2.setAddressCity("New York");
+       pet2.setAge(3.0);
+       pet2.setWeight(8.0);
+       pet2.setBreed("Scottish Fold");
+
        //mockMvc = MockMvcBuilders.standaloneSetup(petController).build();
    }
 
@@ -84,7 +94,7 @@ class PetControllerTest {
     }
 
     @Test
-    //registerPet
+    //registerPet()
     void shouldCreateNewPetWhenValidData() throws Exception {
         when(petService.registerPet(any())).thenReturn(pet);
 
@@ -98,7 +108,25 @@ class PetControllerTest {
     }
 
     @Test
-    void listAllPets() {
+    void shouldReturnBadRequestWhenInvalidData(){}
+
+    @Test
+    //listAllPets()
+    void shouldListAllPets() throws Exception {
+       when(petService.listAll()).thenReturn(List.of(pet, pet2));
+
+       mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.length()", equalTo(2)))
+               .andExpect(jsonPath("$.[0].fullName", equalTo("Sweet Nothing")))
+               .andExpect(jsonPath("$.[0].age", equalTo("3.0 years old")))
+               .andExpect(jsonPath("$.[0].breed", equalTo("Scottish Fold")))
+               .andExpect(jsonPath("$.[1].fullName", equalTo("Blank Space")))
+               .andExpect(jsonPath("$.[1].biologicalSex", equalTo("Male")));
+
+       verify(petService, times(1)).listAll();
+
+
     }
 
     @Test
