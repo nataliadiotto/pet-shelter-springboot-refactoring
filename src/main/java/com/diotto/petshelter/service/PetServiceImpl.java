@@ -37,6 +37,11 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public List<Pet> listAll() {
+        List<Pet> pets = petRepository.findAll();
+        if (pets.isEmpty()) {
+            throw new ResourceNotFound("pets");
+        }
+
         return petRepository.findAll();
     }
 

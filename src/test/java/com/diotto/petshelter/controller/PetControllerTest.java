@@ -5,6 +5,7 @@ import com.diotto.petshelter.domain.DTO.PetResponseDTO;
 import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
+import com.diotto.petshelter.errors.ResourceNotFound;
 import com.diotto.petshelter.service.PetService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -126,6 +128,16 @@ class PetControllerTest {
 
        verify(petService, times(1)).listAll();
 
+    }
+
+    @Test
+    void shouldReturnResourceNotFoundExceptionWhenEmptyList() throws Exception {
+       when(petService.listAll()).thenThrow(new ResourceNotFound("pets"));
+
+       mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets"))
+               .andExpect(status().isNotFound());
+
+       verify(petService, times(1)).listAll();
 
     }
 
