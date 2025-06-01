@@ -1,12 +1,16 @@
 package com.diotto.petshelter.domain.DTO;
 
+import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.modelmapper.ModelMapper;
 
 @Data
+@AllArgsConstructor
 public class PetDTO {
 
     @Schema(example = "Clara")
