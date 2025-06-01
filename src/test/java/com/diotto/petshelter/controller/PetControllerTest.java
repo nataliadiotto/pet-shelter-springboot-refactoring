@@ -113,7 +113,7 @@ class PetControllerTest {
     void shouldReturnBadRequestWhenInvalidData(){}
 
     @Test
-    //listAllPets()
+    //listAllPets() success
     void shouldListAllPets() throws Exception {
        when(petService.listAll()).thenReturn(List.of(pet, pet2));
 
@@ -130,7 +130,7 @@ class PetControllerTest {
 
     }
 
-    @Test
+    @Test//listAllPets() failure
     void shouldReturnResourceNotFoundExceptionWhenEmptyList() throws Exception {
        when(petService.listAll()).thenThrow(new ResourceNotFound("pets"));
 
@@ -142,7 +142,24 @@ class PetControllerTest {
     }
 
     @Test
-    void filterPets() {
+    void shouldReturnPetsMatchingFilters() throws Exception {
+       when(petService.searchPets(eq(PetType.CAT), any(), any(), any(), any(), any(), any(), eq(8.0), any()))
+               .thenReturn(List.of(pet));
+
+       mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search/")
+               .param("petType", "CAT")
+               .param("weight", "8.0"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.length()", equalTo(1)))
+               .andExpect(jsonPath("$[0].petType", equalTo("Cat")))
+               .andExpect(jsonPath("$[0].weight", equalTo("8.0kg")));
+
+       verify(petService, times(1)).searchPets(
+               eq(PetType.CAT),
+               any(), any(), any(), any(), any(), any(),
+               eq(8.0),
+               any());
+
     }
 
     @Test
