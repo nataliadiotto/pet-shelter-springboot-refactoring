@@ -9,6 +9,7 @@ import com.diotto.petshelter.errors.ResourceNotFound;
 import com.diotto.petshelter.service.PetService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,9 +46,6 @@ class PetControllerTest {
    Pet pet2;
    PetDTO petDTO;
    PetResponseDTO petResponseDTO;
-
-   @InjectMocks
-   private PetController petController;
 
    @BeforeEach
    public void setup(){
@@ -196,6 +194,7 @@ class PetControllerTest {
         verify(petService, times(1)).updatePet(eq(1L), any());
    }
 
+    @DisplayName("Should return 404 when pet with given ID does not exist")
     @Test
     //updateById() failure
     void shouldThrowResourceNotFoundExceptionWhenNoMatchToId() throws Exception {
@@ -214,6 +213,27 @@ class PetControllerTest {
     }
 
     @Test
-    void deletePetById() {
+    //deleteById() success
+    void shouldDeletePetById() throws Exception {
+       mockMvc.perform(delete("/v1/pets/{id}", 1L))
+                        .andExpect(status().isNoContent());
+
+       verify(petService, times(1)).deletePet(eq(1L));
     }
+
+    @DisplayName("Should return 404 when pet with given ID does not exist")
+    @Test
+    ////deleteById() failure
+    void shouldThrowResourceNotFoundExceptionWhenDeletingNonExistentPet() throws Exception {
+        doThrow(new ResourceNotFound("Pet", "ID", 1L))
+                .when(petService).deletePet(anyLong());
+
+        mockMvc.perform(delete("/v1/pets/{id}", 1L))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("Pet not found with: ID = '1'")));
+
+        verify(petService, times(1)).deletePet(eq(1L));
+
+    }
+
 }
