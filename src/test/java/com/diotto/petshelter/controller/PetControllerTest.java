@@ -26,6 +26,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -107,7 +108,18 @@ class PetControllerTest {
 
     @Test //registerPet() failure
     @DisplayName("Should return 400 Bad Request when pet data is invalid")
-    void shouldReturnBadRequestForInvalidData(){}
+    void shouldReturnBadRequestForInvalidData() throws Exception {
+       petDTO.setFirstName("");
+       petDTO.setAge(-1.0);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/v1/pets")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(petDTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("firstName")))
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("age")));
+
+    }
 
     @Test //listAllPets() success
     @DisplayName("Should list all pets successfully")
