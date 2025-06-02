@@ -5,6 +5,7 @@ import com.diotto.petshelter.domain.DTO.PetResponseDTO;
 import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
+import com.diotto.petshelter.errors.ResourceNotFound;
 import com.diotto.petshelter.repository.PetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,9 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.jpa.domain.Specification;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -71,12 +75,48 @@ class PetServiceImplTest {
         verifyNoMoreInteractions(petRepository);
     }
 
-    @Test
-    void listAll() {
+
+    @Test //listAll() success
+    @DisplayName("Should list all pets successfully")
+    void shouldListAllPetsSuccessfully() {
+        when(petRepository.findAll()).thenReturn(List.of(pet));
+
+        List<Pet> petList = service.listAll();
+
+        assertNotNull(petList);
+        assertEquals(1, petList.size());
+        assertEquals(Pet.class, petList.get(0).getClass());
+        assertEquals(firstName, petList.get(0).getFirstName());
+        assertEquals(city, petList.get(0).getAddressCity());
+
+
+        verify(petRepository).findAll();
+        verifyNoMoreInteractions(petRepository);
     }
 
-    @Test
-    void searchPets() {
+    @Test //listAll() failure
+    @DisplayName("Should throw 404 Not Found when no pets are registered")
+    void shouldThrowNotFoundWhenNoPetsExist() {
+        when(petRepository.findAll()).thenReturn(Collections.emptyList());
+
+        ResourceNotFound exception = assertThrows(ResourceNotFound.class, () -> service.listAll());
+
+        assertEquals("There are no registers of pets in the system.", exception.getMessage());
+    }
+
+    @Test //searchPets() success
+    @DisplayName("Should return pets matching the given filters")
+    void shouldReturnFilteredPets(){
+        when(petRepository.findAll(any(Specification.class)))
+                .thenReturn(List.of(pet));
+
+        List<Pet> petList = service.searchPets(PetType.CAT, null, null, null, null, null, null, 8.0, null);
+
+        assertNotNull(petList);
+        assertEquals(1, petList.size());
+        assertEquals(pet, petList.get(0));
+
+        verify(petRepository).findAll(any(Specification.class));
     }
 
     @Test
