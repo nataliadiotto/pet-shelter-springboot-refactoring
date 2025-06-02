@@ -7,6 +7,7 @@ import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
 import com.diotto.petshelter.repository.PetRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,7 +15,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PetServiceImplTest {
@@ -49,8 +53,22 @@ class PetServiceImplTest {
         petResponseDTO = new PetResponseDTO(pet);
     }
 
-    @Test
-    void registerPet() {
+    @Test //registerPet() success
+    @DisplayName("Should register pet successfully")
+    void shouldRegisterPetSuccessfully() {
+        when(modelMapper.map(petDTO, Pet.class)).thenReturn(pet);
+        when(petRepository.save(pet)).thenReturn(pet);
+
+        Pet savedPet = service.registerPet(petDTO);
+
+        assertNotNull(savedPet);
+        assertEquals(firstName, savedPet.getFirstName());
+        assertEquals(gender, savedPet.getBiologicalSex());
+        assertEquals(city, savedPet.getAddressCity());
+
+        verify(modelMapper).map(petDTO, Pet.class);
+        verify(petRepository).save(pet);
+        verifyNoMoreInteractions(petRepository);
     }
 
     @Test
