@@ -119,8 +119,22 @@ class PetServiceImplTest {
         verify(petRepository).findAll(any(Specification.class));
     }
 
+    @Test //searchPets() failure
+    @DisplayName("Should throw 404 Not Found when no pets match the search filters")
+    void shouldThrowNotFoundWhenNoPetsNoPetsMatchFilters() {
+        when(petRepository.findAll(any(Specification.class)))
+                .thenReturn(Collections.emptyList());
+
+        ResourceNotFound exception = assertThrows(ResourceNotFound.class, ()
+                -> service.searchPets(PetType.CAT, null, null, null, null, null, null, null, null));
+
+        assertEquals("There are no registers of pets with the provided filters in the system.", exception.getMessage());
+
+    }
+
     @Test
-    void updatePet() {
+    @DisplayName("Should return pets matching the given filters")
+    void shouldUpdatePetById() {
     }
 
     @Test
