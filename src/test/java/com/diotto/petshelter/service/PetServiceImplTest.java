@@ -2,6 +2,7 @@ package com.diotto.petshelter.service;
 
 import com.diotto.petshelter.domain.DTO.PetDTO;
 import com.diotto.petshelter.domain.DTO.PetResponseDTO;
+import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
 import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
@@ -19,6 +20,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,12 +51,14 @@ class PetServiceImplTest {
     Pet pet;
     PetDTO petDTO;
     PetResponseDTO petResponseDTO;
+    PetUpdtRequestDTO petUpdtRequestDTO;
 
     @BeforeEach
     public void setup(){
         pet = new Pet(1L, firstName, lastName, petType, gender, addressNumber, streetName, city, age, weight, breed);
         petDTO = new PetDTO(firstName, lastName, petType, gender, addressNumber, streetName, city, age, weight, breed);
         petResponseDTO = new PetResponseDTO(pet);
+        petUpdtRequestDTO = new PetUpdtRequestDTO( firstName, lastName, addressNumber, streetName, city, age, weight, breed);
     }
 
     @Test //registerPet() success
@@ -133,8 +137,27 @@ class PetServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should return pets matching the given filters")
-    void shouldUpdatePetById() {
+    @DisplayName("Should update a pet by ID with valid data")
+    void shouldUpdatePetByIdWhenValid() {
+        when(petRepository.findById(anyLong())).thenReturn(Optional.of(pet));
+        when(petRepository.save(any())).thenReturn(pet);
+
+        Pet updatedPet = service.updatePet(1L, petUpdtRequestDTO);
+
+        assertNotNull(updatedPet);
+        assertEquals(firstName, updatedPet.getFirstName());
+        assertEquals(age, updatedPet.getAge());
+        assertEquals(breed, updatedPet.getBreed());
+
+        verify(petRepository, times(1)).findById(anyLong());
+        verify(petRepository, times(1)).save(any());
+        verifyNoMoreInteractions(petRepository);
+
+    }
+
+    @Test
+    @DisplayName("Should return 404 Not Found when updating non-existent pet by ID")
+    void shouldThrowNotFoundWhenUpdatingNonExistentPet() {
     }
 
     @Test
