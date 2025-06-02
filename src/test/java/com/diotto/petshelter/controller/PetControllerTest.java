@@ -11,19 +11,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -84,7 +81,6 @@ class PetControllerTest {
        pet2.setWeight(8.0);
        pet2.setBreed("Scottish Fold");
 
-       //mockMvc = MockMvcBuilders.standaloneSetup(petController).build();
    }
 
     public static String asJsonString(final Object obj) {
@@ -95,9 +91,9 @@ class PetControllerTest {
         }
     }
 
-    @Test
-    //registerPet()
-    void shouldCreateNewPetWhenValidData() throws Exception {
+    @Test //registerPet() success
+    @DisplayName("Should create a new pet when valid data is provided")
+    void shouldCreatePetWhenValidData() throws Exception {
         when(petService.registerPet(any())).thenReturn(pet);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/v1/pets")
@@ -109,12 +105,13 @@ class PetControllerTest {
         verify(petService, times(1)).registerPet(any());
     }
 
-    @Test
-    void shouldReturnBadRequestWhenInvalidData(){}
+    @Test //registerPet() failure
+    @DisplayName("Should return 400 Bad Request when pet data is invalid")
+    void shouldReturnBadRequestForInvalidData(){}
 
-    @Test
-    //listAllPets() success
-    void shouldListAllPets() throws Exception {
+    @Test //listAllPets() success
+    @DisplayName("Should list all pets successfully")
+    void shouldReturnListOfAllPets() throws Exception {
        when(petService.listAll()).thenReturn(List.of(pet, pet2));
 
        mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets"))
@@ -131,7 +128,8 @@ class PetControllerTest {
     }
 
     @Test//listAllPets() failure
-    void shouldThrowResourceNotFoundExceptionWhenEmptyList() throws Exception {
+    @DisplayName("Should return 404 Not Found when no pets are registered")
+    void shouldReturnNotFoundWhenNoPetsExist() throws Exception {
        when(petService.listAll()).thenThrow(new ResourceNotFound("pets"));
 
        mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets"))
@@ -142,8 +140,9 @@ class PetControllerTest {
 
     }
 
-    @Test//searchPets() success
-    void shouldReturnPetsMatchingFilters() throws Exception {
+    @Test //searchPets() success
+    @DisplayName("Should return pets matching the given filters")
+    void shouldReturnFilteredPets() throws Exception {
        when(petService.searchPets(eq(PetType.CAT), any(), any(), any(), any(), any(), any(), eq(8.0), any()))
                .thenReturn(List.of(pet));
 
@@ -163,9 +162,9 @@ class PetControllerTest {
 
     }
 
-    @Test
-    //searchPets() failure
-    void shouldThrowResourceNotFoundExceptionWhenNoMatchesToFilters() throws Exception {
+    @Test //searchPets() failure
+    @DisplayName("Should return 404 Not Found when no pets match the search filters")
+    void shouldReturnNotFoundWhenNoPetsMatchFilters() throws Exception {
         when(petService.searchPets(eq(PetType.CAT), any(), any(), any(), any(), any(), any(), eq(8.0), any()))
                 .thenThrow(new ResourceNotFound("pets with the provided filters"));
 
@@ -180,9 +179,9 @@ class PetControllerTest {
         );
     }
 
-    @Test
-    //updateById() success
-    void shouldUpdatePetById() throws Exception {
+    @Test //updateById() success
+    @DisplayName("Should update a pet by ID with valid data")
+    void shouldUpdatePetByIdWhenValid() throws Exception {
         when(petService.updatePet(anyLong(), any())).thenReturn(pet);
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/v1/pets/{id}", 1L)
@@ -194,10 +193,9 @@ class PetControllerTest {
         verify(petService, times(1)).updatePet(eq(1L), any());
    }
 
-    @DisplayName("Should return 404 when pet with given ID does not exist")
-    @Test
-    //updateById() failure
-    void shouldThrowResourceNotFoundExceptionWhenNoMatchToId() throws Exception {
+    @Test //updateById() failure
+    @DisplayName("Should return 404 Not Found when updating non-existent pet by ID")
+    void shouldReturnNotFoundWhenUpdatingNonExistentPet() throws Exception {
         when(petService.updatePet(anyLong(), any()))
                 .thenThrow(new ResourceNotFound("Pet", "ID", 1L));
 
@@ -212,19 +210,19 @@ class PetControllerTest {
 
     }
 
-    @Test
-    //deleteById() success
-    void shouldDeletePetById() throws Exception {
+
+    @Test //deleteById() success
+    @DisplayName("Should delete a pet by ID successfully")
+    void shouldDeletePetByIdSuccessfully() throws Exception {
        mockMvc.perform(delete("/v1/pets/{id}", 1L))
                         .andExpect(status().isNoContent());
 
        verify(petService, times(1)).deletePet(eq(1L));
     }
 
-    @DisplayName("Should return 404 when pet with given ID does not exist")
-    @Test
-    ////deleteById() failure
-    void shouldThrowResourceNotFoundExceptionWhenDeletingNonExistentPet() throws Exception {
+    @Test //deleteById() failure
+    @DisplayName("Should return 404 Not Found when deleting non-existent pet by ID")
+    void shouldReturnNotFoundWhenDeletingNonExistentPet() throws Exception {
         doThrow(new ResourceNotFound("Pet", "ID", 1L))
                 .when(petService).deletePet(anyLong());
 
