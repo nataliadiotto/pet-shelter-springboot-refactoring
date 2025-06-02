@@ -42,7 +42,7 @@ public class PetServiceImpl implements PetService {
             throw new ResourceNotFound("pets");
         }
 
-        return petRepository.findAll();
+        return pets;
     }
 
     @Override

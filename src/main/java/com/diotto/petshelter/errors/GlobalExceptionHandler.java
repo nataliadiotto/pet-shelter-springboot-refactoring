@@ -9,7 +9,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 @ControllerAdvice
-public class RestControllerAdvice {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFound.class)
     public ResponseEntity<ErrorResponse> handlerResourceNotFoundException(ResourceNotFound exception, WebRequest webRequest){
