@@ -170,9 +170,15 @@ class PetServiceImplTest {
 
     @Test
     @DisplayName("Should delete a pet by ID when it is valid")
-    void shouldDeletePetByIdWhenValid() {
+    void shouldDeleteByIdWhenIdExists() {
+        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        doNothing().when(petRepository).delete(any(Pet.class));
 
+        service.deletePet(1L);
 
+        verify(petRepository).findById(1L);
+        verify(petRepository).delete(pet);
+        verifyNoMoreInteractions(petRepository);
     }
 
     @Test
