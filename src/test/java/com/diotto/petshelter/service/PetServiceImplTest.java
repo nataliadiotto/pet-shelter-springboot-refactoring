@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -101,7 +102,7 @@ class PetServiceImplTest {
     @Test //listAll() failure
     @DisplayName("Should throw 404 Not Found when no pets are registered")
     void shouldThrowNotFoundWhenNoPetsExist() {
-        when(petRepository.findAll()).thenReturn(Collections.emptyList());
+        when(petRepository.findAll()).thenReturn(emptyList());
 
         ResourceNotFound exception = assertThrows(ResourceNotFound.class, () -> service.listAll());
 
@@ -127,7 +128,7 @@ class PetServiceImplTest {
     @DisplayName("Should throw 404 Not Found when no pets match the search filters")
     void shouldThrowNotFoundWhenNoPetsNoPetsMatchFilters() {
         when(petRepository.findAll(any(Specification.class)))
-                .thenReturn(Collections.emptyList());
+                .thenReturn(emptyList());
 
         ResourceNotFound exception = assertThrows(ResourceNotFound.class, ()
                 -> service.searchPets(PetType.CAT, null, null, null, null, null, null, null, null));
@@ -158,13 +159,32 @@ class PetServiceImplTest {
     @Test
     @DisplayName("Should return 404 Not Found when updating non-existent pet by ID")
     void shouldThrowNotFoundWhenUpdatingNonExistentPet() {
+        when(petRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        ResourceNotFound exception = assertThrows(ResourceNotFound.class, ()
+                -> service.updatePet(1L, petUpdtRequestDTO));
+
+        assertEquals("Pet not found with: ID = '1'", exception.getMessage());
+
     }
 
     @Test
-    void deletePet() {
+    @DisplayName("Should delete a pet by ID when it is valid")
+    void shouldDeletePetByIdWhenValid() {
+
+
     }
 
     @Test
-    void convertPetFromDTO() {
+    @DisplayName("Should return 404 Not Found when deleting non-existent pet by ID")
+    void shouldThrowNotFoundWhenDeletingNonExistentPet() {
+        when(petRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        ResourceNotFound exception = assertThrows(ResourceNotFound.class, ()
+                -> service.updatePet(1L, petUpdtRequestDTO));
+
+        assertEquals("Pet not found with: ID = '1'", exception.getMessage());
     }
+
+
 }
