@@ -7,6 +7,7 @@ import com.diotto.petshelter.repository.PetSpecifications;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
 import com.diotto.petshelter.errors.ResourceNotFound;
+import org.apache.coyote.BadRequestException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -120,8 +121,12 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet convertPetFromDTO(PetDTO petDTO) {
-        return modelMapper.map(petDTO, Pet.class);
+    public Pet convertPetFromDTO(PetDTO petDTO) throws BadRequestException {
+        try {
+            return modelMapper.map(petDTO, Pet.class);
+        } catch (Exception ex) {
+            throw new BadRequestException("Failed to convert PetDTO to Pet", ex);
+        }
     }
 
 }
