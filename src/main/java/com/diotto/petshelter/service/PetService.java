@@ -5,6 +5,7 @@ import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
 import com.diotto.petshelter.errors.ResourceNotFound;
+import org.apache.coyote.BadRequestException;
 
 import java.util.List;
 
@@ -17,5 +18,5 @@ public interface PetService {
     Pet updatePet(Long id, PetUpdtRequestDTO petUpdtRequestDTO) throws ResourceNotFound;
 
     void deletePet(Long id) throws ResourceNotFound;
-    Pet convertPetFromDTO(PetDTO petDTO);
+    Pet convertPetFromDTO(PetDTO petDTO) throws BadRequestException;
 }
