@@ -15,29 +15,35 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handlerResourceNotFoundException(ResourceNotFound exception, WebRequest webRequest){
         ErrorResponse errorResponse = new ErrorResponse(exception.getMessage(), webRequest.getDescription(false));
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
     }
 
     @ExceptionHandler(BadRequest.class)
     public ResponseEntity<ErrorResponse> handleNoHandlerFound(BadRequest exception, WebRequest webRequest){
         ErrorResponse errorResponse = new ErrorResponse(exception.getMessage(), webRequest.getDescription(false));
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handlerException(Exception exception, WebRequest webRequest){
         ErrorResponse errorResponse = new ErrorResponse("Internal server error. Please contact support.", webRequest.getDescription(false));
-        ;
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorResponse);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<ErrorResponse> handleNoHandlerFound(NoHandlerFoundException exception, WebRequest webRequest){
         ErrorResponse errorResponse = new ErrorResponse(exception.getMessage(), webRequest.getDescription(false));
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -48,7 +54,18 @@ public class GlobalExceptionHandler {
         });
 
         ErrorResponse errorResponse = new ErrorResponse(messages.toString().trim(), request.getDescription(false));
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+    }
+
+    @ExceptionHandler(BusinessRuleException.class)
+    public ResponseEntity<ErrorResponse> handleBusinessRuleException(BusinessRuleException ex, WebRequest webRequest) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), webRequest.getDescription(false));
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorResponse);
+
     }
 
 

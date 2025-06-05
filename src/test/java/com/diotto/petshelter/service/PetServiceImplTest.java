@@ -8,6 +8,7 @@ import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
 import com.diotto.petshelter.errors.ResourceNotFound;
 import com.diotto.petshelter.repository.PetRepository;
+import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,7 +65,7 @@ class PetServiceImplTest {
 
     @Test //registerPet() success
     @DisplayName("Should register pet successfully")
-    void shouldRegisterPetSuccessfully() {
+    void shouldRegisterPetSuccessfully() throws BadRequestException {
         when(modelMapper.map(petDTO, Pet.class)).thenReturn(pet);
         when(petRepository.save(pet)).thenReturn(pet);
 
