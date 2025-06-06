@@ -122,6 +122,7 @@ class PetServiceImplTest {
         assertNotNull(petList);
         assertEquals(1, petList.size());
         assertEquals(pet, petList.get(0));
+        assertEquals(pet.getWeight(), petList.get(0).getWeight());
 
         verify(petRepository).findAll(any(Specification.class));
     }
