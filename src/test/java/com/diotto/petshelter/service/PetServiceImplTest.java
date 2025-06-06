@@ -6,6 +6,7 @@ import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
 import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
+import com.diotto.petshelter.errors.BusinessRuleException;
 import com.diotto.petshelter.errors.ResourceNotFound;
 import com.diotto.petshelter.repository.PetRepository;
 import org.apache.coyote.BadRequestException;
@@ -116,7 +117,7 @@ class PetServiceImplTest {
         when(petRepository.findAll(any(Specification.class)))
                 .thenReturn(List.of(pet));
 
-        List<Pet> petList = service.searchPets(PetType.CAT, null, null, null, null, null, null, 8.0, null);
+        List<Pet> petList = service.searchPets(PetType.CAT.toString(), null, null, null, null, null, null, 8.0, null);
 
         assertNotNull(petList);
         assertEquals(1, petList.size());
@@ -127,14 +128,34 @@ class PetServiceImplTest {
 
     @Test //searchPets() failure
     @DisplayName("Should throw 404 Not Found when no pets match the search filters")
-    void shouldThrowNotFoundWhenNoPetsNoPetsMatchFilters() {
+    void shouldThrowNotFoundWhenNoPetsMatchFilters() {
         when(petRepository.findAll(any(Specification.class)))
                 .thenReturn(emptyList());
 
         ResourceNotFound exception = assertThrows(ResourceNotFound.class, ()
-                -> service.searchPets(PetType.CAT, null, null, null, null, null, null, null, null));
+                -> service.searchPets(PetType.CAT.toString(), null, "Test", null, null, null, null, null, null));
 
         assertEquals("There are no registers of pets with the provided filters in the system.", exception.getMessage());
+
+    }
+
+    @Test //searchPets() failure - no PetType selected
+    @DisplayName("Should throw 400 Business Rule Exception when PetType filter is not selected")
+    void shouldThrowBusinessRuleWhenNoPetTypeFilter() {
+        BusinessRuleException exception = assertThrows(BusinessRuleException.class, ()
+                -> service.searchPets(null, null, "Test", null, "Test", null, null, null, null));
+
+        assertEquals("Pet type filter is mandatory.", exception.getMessage());
+
+    }
+
+    @Test //searchPets() failure - more than two filters
+    @DisplayName("Should throw 400 Business Rule Exception when quantity of filters exceed")
+    void shouldThrowBusinessRuleWhenMoreFiltersSelected() {
+        BusinessRuleException exception = assertThrows(BusinessRuleException.class, ()
+                -> service.searchPets(PetType.CAT.toString(), BiologicalSex.FEMALE, "Test", null, "Test", null, null, null, null));
+
+        assertEquals("You must apply at least 1 and at most 2 additional filters (besides pet type).", exception.getMessage());
 
     }
 
