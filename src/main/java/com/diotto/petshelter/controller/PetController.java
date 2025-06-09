@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public class PetController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<PetResponseDTO> registerPet(@RequestBody @Valid PetDTO petDTO) {
+    public ResponseEntity<PetResponseDTO> registerPet(@RequestBody @Valid PetDTO petDTO) throws BadRequestException {
         Pet newPet = petService.registerPet(petDTO);
         PetResponseDTO petResponseDTO = new PetResponseDTO(newPet);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -73,7 +74,7 @@ public class PetController {
             @ApiResponse(responseCode = "404", description = "No pets match the filters", content = @Content)
     })
     @GetMapping("/search/")
-    public ResponseEntity<List<PetResponseDTO>> filterPets(@RequestParam(required = true) PetType petType,
+    public ResponseEntity<List<PetResponseDTO>> filterPets(@RequestParam(required = false) PetType petType,
                                                            @RequestParam(required = false) BiologicalSex sex,
                                                            @RequestParam(required = false) String name,
                                                            @RequestParam(required = false) String streetName,
@@ -83,7 +84,10 @@ public class PetController {
                                                            @RequestParam(required = false) Double weight,
                                                            @RequestParam(required = false) String breed) throws ResourceNotFound {
 
-        List<Pet> pets = petService.searchPets(petType, sex, name, streetName, city, addressNumber, age, weight, breed);
+        List<Pet> pets = petService.searchPets(
+                petType != null ? petType.toString() : null,
+                sex, name, streetName, city, addressNumber, age, weight, breed);
+
         List<PetResponseDTO> responseDTOS = pets.stream()
                 .map(PetResponseDTO::new)
                 .toList();

@@ -3,9 +3,10 @@ package com.diotto.petshelter.service;
 import com.diotto.petshelter.domain.DTO.PetDTO;
 import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
 import com.diotto.petshelter.domain.entity.Pet;
+import com.diotto.petshelter.domain.enums.PetType;
+import com.diotto.petshelter.errors.BusinessRuleException;
 import com.diotto.petshelter.repository.PetSpecifications;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
-import com.diotto.petshelter.domain.enums.PetType;
 import com.diotto.petshelter.errors.ResourceNotFound;
 import org.apache.coyote.BadRequestException;
 import org.modelmapper.ModelMapper;
@@ -30,7 +31,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public Pet registerPet(PetDTO petDTO) {
+    public Pet registerPet(PetDTO petDTO) throws BadRequestException {
         Pet pet = convertPetFromDTO(petDTO);
         return petRepository.save(pet);
     }
@@ -47,12 +48,25 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public List<Pet> searchPets(PetType type, BiologicalSex biologicalSex, String name, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) throws ResourceNotFound{
-        Specification<Pet> spec = Specification.where(null);
+    public List<Pet> searchPets(String type, BiologicalSex biologicalSex, String name, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) throws ResourceNotFound, BusinessRuleException {
+        int filterCount = countFilters(biologicalSex, name, streetName, city, addressNumber, age, weight, breed);
 
-        if (type != null) {
-            spec = spec.and(PetSpecifications.hasType(type));
+        if (filterCount > 2 || filterCount == 0){
+            throw new BusinessRuleException("You must apply at least 1 and at most 2 additional filters (besides pet type).");
         }
+
+        if (type == null || type.isBlank()) {
+            throw new BusinessRuleException("Pet type filter is mandatory.");
+        }
+        PetType petTypeEnum;
+        try {
+            petTypeEnum = PetType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new BusinessRuleException("Invalid pet type value.");
+        }
+
+        Specification<Pet> spec = Specification.where(null);
+        spec = spec.and(PetSpecifications.hasType(petTypeEnum));
 
         if (biologicalSex != null) {
             spec = spec.and(PetSpecifications.hasGender(biologicalSex));
@@ -127,6 +141,20 @@ public class PetServiceImpl implements PetService {
         } catch (Exception ex) {
             throw new BadRequestException("Failed to convert PetDTO to Pet", ex);
         }
+    }
+
+    private int countFilters(BiologicalSex biologicalSex, String name, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) {
+        int count = 0;
+        if (biologicalSex != null) count++;
+        if (name != null) count++;
+        if (streetName != null) count++;
+        if (city != null) count++;
+        if (addressNumber != null) count++;
+        if (age != null) count++;
+        if (weight != null) count++;
+        if (breed != null) count++;
+
+        return count;
     }
 
 }
