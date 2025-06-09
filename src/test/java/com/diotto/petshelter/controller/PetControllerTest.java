@@ -5,6 +5,8 @@ import com.diotto.petshelter.domain.DTO.PetResponseDTO;
 import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
+import com.diotto.petshelter.errors.BusinessRuleException;
+import com.diotto.petshelter.errors.GlobalExceptionHandler;
 import com.diotto.petshelter.errors.ResourceNotFound;
 import com.diotto.petshelter.service.PetService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -31,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(PetController.class)
 @AutoConfigureMockMvc
+@Import(GlobalExceptionHandler.class)
 class PetControllerTest {
 
    @Autowired
@@ -189,6 +193,22 @@ class PetControllerTest {
                 eq(PetType.CAT.toString()), any(), any(), any(), any(), any(), any(), eq(8.0), any()
         );
     }
+
+    @Test //searchPets() filters failure
+    @DisplayName("Should return 400 Bad Request when petType is missing")
+    void shouldReturnBusinessRuleExceptionWhenPetTypeMissing() throws Exception {
+        when(petService.searchPets(isNull(), any(), any(), any(), any(), any(), any(), any(), any()))
+                .thenThrow(new BusinessRuleException("Pet type filter is mandatory."));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search/")
+                        .param("weight", "8.0"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Pet type filter is mandatory.")));
+
+        verify(petService, times(1)).searchPets(
+                isNull(), any(), any(), any(), any(), any(), any(), any(), any()
+        );
+   }
 
     @Test //updateById() success
     @DisplayName("Should update a pet by ID with valid data")
