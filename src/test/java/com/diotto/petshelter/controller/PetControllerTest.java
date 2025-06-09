@@ -194,7 +194,7 @@ class PetControllerTest {
         );
     }
 
-    @Test //searchPets() filters failure
+    @Test //searchPets() missing PetType failure
     @DisplayName("Should return 400 Bad Request when petType is missing")
     void shouldReturnBusinessRuleExceptionWhenPetTypeMissing() throws Exception {
         when(petService.searchPets(isNull(), any(), any(), any(), any(), any(), any(), any(), any()))
@@ -209,6 +209,26 @@ class PetControllerTest {
                 isNull(), any(), any(), any(), any(), any(), any(), any(), any()
         );
    }
+
+    @Test //searchPets() filters failure
+    @DisplayName("Should return 400 Bad Request when filters exceed limit")
+    void shouldReturnBusinessRuleExceptionWhenMoreThanTwoFilters() throws Exception {
+        when(petService.searchPets(anyString(), any(), any(), any(), any(), any(), any(), any(), any()))
+                .thenThrow(new BusinessRuleException("You must apply at least 1 and at most 2 additional filters (besides pet type)."));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search/")
+                        .param("petType", "DOG")
+                        .param("weight", "8.0")
+                        .param("age", "3.0")
+                        .param("breed", "Scottish"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("You must apply at least 1 and at most 2 additional filters (besides pet type).")));
+
+
+        verify(petService, times(1)).searchPets(
+                anyString(), any(), any(), any(), any(), any(), any(), any(), any()
+        );
+    }
 
     @Test //updateById() success
     @DisplayName("Should update a pet by ID with valid data")
