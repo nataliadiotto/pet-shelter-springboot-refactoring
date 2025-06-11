@@ -34,12 +34,21 @@ public class Pet {
 
     private PetType petType;
     private BiologicalSex biologicalSex;
+    private String zipCode;
     private Integer addressNumber;
+
+    @NotNull
+    @NotBlank
     private String streetName;
 
     @NotNull
     @NotBlank
     private String addressCity;
+
+    @NotNull
+    @NotBlank
+    private String state;
+
     private Double age;
     private Double weight;
     private String breed;

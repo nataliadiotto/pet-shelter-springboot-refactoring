@@ -4,7 +4,10 @@ import com.diotto.petshelter.domain.DTO.PetDTO;
 import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
 import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.domain.enums.PetType;
+import com.diotto.petshelter.domain.utils.Constants;
 import com.diotto.petshelter.errors.BusinessRuleException;
+import com.diotto.petshelter.external.viacep.client.CepService;
+import com.diotto.petshelter.external.viacep.dto.ViaCepResponse;
 import com.diotto.petshelter.repository.PetSpecifications;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.errors.ResourceNotFound;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.diotto.petshelter.repository.PetRepository;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,15 +27,23 @@ public class PetServiceImpl implements PetService {
 
     private final PetRepository petRepository;
     private final ModelMapper modelMapper;
+    private final CepService cepService;
 
     @Autowired
-    public PetServiceImpl(PetRepository petRepository, ModelMapper modelMapper) {
+    public PetServiceImpl(PetRepository petRepository, ModelMapper modelMapper, CepService cepService) {
         this.petRepository = petRepository;
         this.modelMapper = modelMapper;
+        this.cepService = cepService;
     }
 
     @Override
     public Pet registerPet(PetDTO petDTO) throws BadRequestException {
+        if (petDTO.getZipCode().isBlank() || petDTO.getZipCode().isEmpty()) {
+            String zipCode = getValidZipCode(petDTO);
+
+            petDTO.setZipCode(zipCode);
+        }
+
         Pet pet = convertPetFromDTO(petDTO);
         return petRepository.save(pet);
     }
@@ -155,6 +167,16 @@ public class PetServiceImpl implements PetService {
         if (breed != null) count++;
 
         return count;
+    }
+
+    private String getValidZipCode(PetDTO petDTO){
+        List<ViaCepResponse> results = cepService.getCepByAddress(petDTO.getState(), petDTO.getAddressCity(), petDTO.getStreetName());
+
+        if (!results.isEmpty()) {
+            return results.get(0).cep();
+        }
+
+        return Constants.NOT_FOUND;
     }
 
 }

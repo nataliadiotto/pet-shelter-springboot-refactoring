@@ -31,6 +31,10 @@ public class PetDTO {
     @NotNull
     private BiologicalSex biologicalSex;
 
+    @Schema(example = "13480100")
+    @Pattern(regexp = "^[0-9]{8}$")
+    private String zipCode;
+
     //Optional field
     @Schema(example = "1313")
     @Min(value = 1)
@@ -45,6 +49,11 @@ public class PetDTO {
     @Size(max = 50)
     @Pattern(regexp = "^[A-Za-zÀ-ÿ ]+$")
     private String addressCity;
+
+    @Schema(example = "SP")
+    @Size(max = 2)
+    @Pattern(regexp = "^[A-Za-zÀ-ÿ ]+$")
+    private String state;
 
     @Schema(example = "13.0")
     @DecimalMin(value = "0.1")
