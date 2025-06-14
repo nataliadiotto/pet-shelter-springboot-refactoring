@@ -130,6 +130,7 @@ public class PetServiceImpl implements PetService {
 
         if (dto.firstName() != null) existingPet.setFirstName(dto.firstName());
         if (dto.lastName() != null) existingPet.setLastName(dto.lastName());
+        if (dto.zipCode() != null) existingPet.setZipCode(dto.zipCode());
         if (dto.addressNumber() != null) existingPet.setAddressNumber(dto.addressNumber());
         if (dto.streetName() != null) existingPet.setStreetName(dto.streetName());
         if (dto.addressCity() != null) existingPet.setAddressCity(dto.addressCity());
