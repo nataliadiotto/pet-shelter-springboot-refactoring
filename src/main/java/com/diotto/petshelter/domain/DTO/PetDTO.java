@@ -32,7 +32,6 @@ public class PetDTO {
     private BiologicalSex biologicalSex;
 
     @Schema(example = "13480100")
-    @Pattern(regexp = "^[0-9]{8}$")
     private String zipCode;
 
     //Optional field

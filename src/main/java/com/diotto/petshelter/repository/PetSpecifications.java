@@ -27,6 +27,9 @@ public class PetSpecifications {
         });
     }
 
+    public static Specification<Pet> hasZipCode(String zipCode) {
+        return (root, query, cb) -> cb.like(cb.lower(root.get("zipCode")), "%" + zipCode + "%");
+    }
     public static Specification<Pet> hasStreet(String streetName) {
         return (root, query, cb) -> cb.like(cb.lower(root.get("streetName")), "%" + streetName.toLowerCase() + "%");
     }

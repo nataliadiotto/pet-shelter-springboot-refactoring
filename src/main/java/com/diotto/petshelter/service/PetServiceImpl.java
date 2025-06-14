@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import com.diotto.petshelter.repository.PetRepository;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -60,8 +59,8 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public List<Pet> searchPets(String type, BiologicalSex biologicalSex, String name, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) throws ResourceNotFound, BusinessRuleException {
-        int filterCount = countFilters(biologicalSex, name, streetName, city, addressNumber, age, weight, breed);
+    public List<Pet> searchPets(String type, BiologicalSex biologicalSex, String name, String zipCode, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) throws ResourceNotFound, BusinessRuleException {
+        int filterCount = countFilters(biologicalSex, name, zipCode, streetName, city, addressNumber, age, weight, breed);
 
         if (filterCount > 2 || filterCount == 0){
             throw new BusinessRuleException("You must apply at least 1 and at most 2 additional filters (besides pet type).");
@@ -86,6 +85,10 @@ public class PetServiceImpl implements PetService {
 
         if (name != null && !name.isBlank()) {
             spec = spec.and(PetSpecifications.hasName(name));
+        }
+
+        if (zipCode != null && !zipCode.isBlank()) {
+            spec = spec.and(PetSpecifications.hasZipCode(zipCode));
         }
 
         if (streetName != null && !streetName.isBlank()) {
@@ -155,10 +158,11 @@ public class PetServiceImpl implements PetService {
         }
     }
 
-    private int countFilters(BiologicalSex biologicalSex, String name, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) {
+    private int countFilters(BiologicalSex biologicalSex, String name, String zipCode, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) {
         int count = 0;
         if (biologicalSex != null) count++;
         if (name != null) count++;
+        if (zipCode != null) count++;
         if (streetName != null) count++;
         if (city != null) count++;
         if (addressNumber != null) count++;

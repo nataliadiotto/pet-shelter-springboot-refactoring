@@ -73,10 +73,11 @@ public class PetController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = PetResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "No pets match the filters", content = @Content)
     })
-    @GetMapping("/search/")
+    @GetMapping("/search")
     public ResponseEntity<List<PetResponseDTO>> filterPets(@RequestParam(required = false) PetType petType,
                                                            @RequestParam(required = false) BiologicalSex sex,
                                                            @RequestParam(required = false) String name,
+                                                           @RequestParam(required = false) String zipCode,
                                                            @RequestParam(required = false) String streetName,
                                                            @RequestParam(required = false) String city,
                                                            @RequestParam(required = false) Integer addressNumber,
@@ -86,7 +87,7 @@ public class PetController {
 
         List<Pet> pets = petService.searchPets(
                 petType != null ? petType.toString() : null,
-                sex, name, streetName, city, addressNumber, age, weight, breed);
+                sex, name, zipCode, streetName, city, addressNumber, age, weight, breed);
 
         List<PetResponseDTO> responseDTOS = pets.stream()
                 .map(PetResponseDTO::new)
