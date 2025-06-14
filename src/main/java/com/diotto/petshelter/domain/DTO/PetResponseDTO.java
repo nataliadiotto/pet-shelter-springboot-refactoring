@@ -16,7 +16,8 @@ public class PetResponseDTO {
     private String fullName;
     private String petType;
     private String biologicalSex;
-    private String fullAddress;
+    private String zipCode;
+    private String address;
     private String weight;
     private String age;
     private String breed;
@@ -27,7 +28,11 @@ public class PetResponseDTO {
         this.petType = capitalize(pet.getPetType().toString());
         this.biologicalSex = capitalize(pet.getBiologicalSex().toString());
 
-        this.fullAddress = getAddressNumberStr(pet.getAddressNumber()) + ", "
+        this.zipCode = pet.getZipCode() == null
+                ? Constants.NOT_FOUND
+                : pet.getZipCode();
+
+        this.address = getAddressNumberStr(pet.getAddressNumber()) + ", "
                 + capitalize(pet.getStreetName()) + ", "
                 + capitalize(pet.getAddressCity());
 

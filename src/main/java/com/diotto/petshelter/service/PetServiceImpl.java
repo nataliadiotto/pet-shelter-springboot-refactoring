@@ -4,7 +4,10 @@ import com.diotto.petshelter.domain.DTO.PetDTO;
 import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
 import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.domain.enums.PetType;
+import com.diotto.petshelter.domain.utils.Constants;
 import com.diotto.petshelter.errors.BusinessRuleException;
+import com.diotto.petshelter.external.viacep.client.CepService;
+import com.diotto.petshelter.external.viacep.dto.ViaCepResponse;
 import com.diotto.petshelter.repository.PetSpecifications;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.errors.ResourceNotFound;
@@ -23,15 +26,23 @@ public class PetServiceImpl implements PetService {
 
     private final PetRepository petRepository;
     private final ModelMapper modelMapper;
+    private final CepService cepService;
 
     @Autowired
-    public PetServiceImpl(PetRepository petRepository, ModelMapper modelMapper) {
+    public PetServiceImpl(PetRepository petRepository, ModelMapper modelMapper, CepService cepService) {
         this.petRepository = petRepository;
         this.modelMapper = modelMapper;
+        this.cepService = cepService;
     }
 
     @Override
     public Pet registerPet(PetDTO petDTO) throws BadRequestException {
+        if (petDTO.getZipCode().isBlank() || petDTO.getZipCode().isEmpty()) {
+            String zipCode = getValidZipCode(petDTO);
+
+            petDTO.setZipCode(zipCode);
+        }
+
         Pet pet = convertPetFromDTO(petDTO);
         return petRepository.save(pet);
     }
@@ -48,8 +59,8 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public List<Pet> searchPets(String type, BiologicalSex biologicalSex, String name, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) throws ResourceNotFound, BusinessRuleException {
-        int filterCount = countFilters(biologicalSex, name, streetName, city, addressNumber, age, weight, breed);
+    public List<Pet> searchPets(String type, BiologicalSex biologicalSex, String name, String zipCode, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) throws ResourceNotFound, BusinessRuleException {
+        int filterCount = countFilters(biologicalSex, name, zipCode, streetName, city, addressNumber, age, weight, breed);
 
         if (filterCount > 2 || filterCount == 0){
             throw new BusinessRuleException("You must apply at least 1 and at most 2 additional filters (besides pet type).");
@@ -74,6 +85,10 @@ public class PetServiceImpl implements PetService {
 
         if (name != null && !name.isBlank()) {
             spec = spec.and(PetSpecifications.hasName(name));
+        }
+
+        if (zipCode != null && !zipCode.isBlank()) {
+            spec = spec.and(PetSpecifications.hasZipCode(zipCode));
         }
 
         if (streetName != null && !streetName.isBlank()) {
@@ -115,6 +130,7 @@ public class PetServiceImpl implements PetService {
 
         if (dto.firstName() != null) existingPet.setFirstName(dto.firstName());
         if (dto.lastName() != null) existingPet.setLastName(dto.lastName());
+        if (dto.zipCode() != null) existingPet.setZipCode(dto.zipCode());
         if (dto.addressNumber() != null) existingPet.setAddressNumber(dto.addressNumber());
         if (dto.streetName() != null) existingPet.setStreetName(dto.streetName());
         if (dto.addressCity() != null) existingPet.setAddressCity(dto.addressCity());
@@ -143,10 +159,11 @@ public class PetServiceImpl implements PetService {
         }
     }
 
-    private int countFilters(BiologicalSex biologicalSex, String name, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) {
+    private int countFilters(BiologicalSex biologicalSex, String name, String zipCode, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) {
         int count = 0;
         if (biologicalSex != null) count++;
         if (name != null) count++;
+        if (zipCode != null) count++;
         if (streetName != null) count++;
         if (city != null) count++;
         if (addressNumber != null) count++;
@@ -155,6 +172,16 @@ public class PetServiceImpl implements PetService {
         if (breed != null) count++;
 
         return count;
+    }
+
+    private String getValidZipCode(PetDTO petDTO){
+        List<ViaCepResponse> results = cepService.getCepByAddress(petDTO.getState(), petDTO.getAddressCity(), petDTO.getStreetName());
+
+        if (!results.isEmpty()) {
+            return results.get(0).cep();
+        }
+
+        return Constants.NOT_FOUND;
     }
 
 }

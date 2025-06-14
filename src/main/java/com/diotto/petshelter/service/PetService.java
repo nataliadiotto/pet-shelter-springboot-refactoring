@@ -15,7 +15,7 @@ public interface PetService {
     Pet registerPet(PetDTO PetDTO) throws BadRequestException;
     List<Pet> listAll() throws ResourceNotFound;
 
-    List<Pet> searchPets(String type, BiologicalSex biologicalSex, String name, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) throws ResourceNotFound, BusinessRuleException;
+    List<Pet> searchPets(String type, BiologicalSex biologicalSex, String name, String zipCode, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) throws ResourceNotFound, BusinessRuleException;
 
     Pet updatePet(Long id, PetUpdtRequestDTO petUpdtRequestDTO) throws ResourceNotFound;
 
