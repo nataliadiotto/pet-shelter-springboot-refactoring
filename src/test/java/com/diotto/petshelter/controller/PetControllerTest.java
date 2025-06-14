@@ -54,9 +54,11 @@ class PetControllerTest {
                "Nothing",
                PetType.CAT,
                BiologicalSex.FEMALE,
+               "13484339",
                1313,
                "Folklore Avenue",
                "New York",
+               "NY",
                3.0,
                8.0,
                "Scottish Fold");
@@ -66,9 +68,11 @@ class PetControllerTest {
        pet.setLastName("Nothing");
        pet.setPetType(PetType.CAT);
        pet.setBiologicalSex(BiologicalSex.FEMALE);
+       pet.setZipCode("13484339");
        pet.setAddressNumber(1313);
        pet.setStreetName("Folklore Avenue");
        pet.setAddressCity("New York");
+       pet.setState("NY");
        pet.setAge(3.0);
        pet.setWeight(8.0);
        pet.setBreed("Scottish Fold");
@@ -78,9 +82,11 @@ class PetControllerTest {
        pet2.setLastName("Space");
        pet2.setPetType(PetType.CAT);
        pet2.setBiologicalSex(BiologicalSex.MALE);
+       pet2.setZipCode("13484339");
        pet2.setAddressNumber(1313);
        pet2.setStreetName("Folklore Avenue");
        pet2.setAddressCity("New York");
+       pet2.setState("NY");
        pet2.setAge(3.0);
        pet2.setWeight(8.0);
        pet2.setBreed("Scottish Fold");
@@ -158,10 +164,10 @@ class PetControllerTest {
     @Test //searchPets() success
     @DisplayName("Should return pets matching the given filters")
     void shouldReturnFilteredPets() throws Exception {
-       when(petService.searchPets(eq(PetType.CAT.toString()), any(), any(), any(), any(), any(), any(), eq(8.0), any()))
+       when(petService.searchPets(eq(PetType.CAT.toString()), any(), any(), any(), any(), any(), any(), any(), eq(8.0), any()))
                .thenReturn(List.of(pet));
 
-       mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search/")
+       mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search")
                .param("petType", "CAT")
                .param("weight", "8.0"))
                .andExpect(status().isOk())
@@ -171,7 +177,7 @@ class PetControllerTest {
 
        verify(petService, times(1)).searchPets(
                eq(PetType.CAT.toString()),
-               any(), any(), any(), any(), any(), any(),
+               any(), any(), any(), any(), any(), any(), any(),
                eq(8.0),
                any());
 
@@ -180,43 +186,43 @@ class PetControllerTest {
     @Test //searchPets() failure
     @DisplayName("Should return 404 Not Found when no pets match the search filters")
     void shouldReturnNotFoundWhenNoPetsMatchFilters() throws Exception {
-        when(petService.searchPets(eq(PetType.CAT.toString()), any(), any(), any(), any(), any(), any(), eq(8.0), any()))
+        when(petService.searchPets(eq(PetType.CAT.toString()), any(), any(), any(), any(), any(), any(), any(), eq(8.0), any()))
                 .thenThrow(new ResourceNotFound("pets with the provided filters"));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search/")
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search")
                         .param("petType", "CAT")
                         .param("weight", "8.0"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", is("There are no registers of pets with the provided filters in the system.")));
 
         verify(petService, times(1)).searchPets(
-                eq(PetType.CAT.toString()), any(), any(), any(), any(), any(), any(), eq(8.0), any()
+                eq(PetType.CAT.toString()), any(), any(), any(), any(), any(), any(), any(), eq(8.0), any()
         );
     }
 
     @Test //searchPets() missing PetType failure
     @DisplayName("Should return 400 Bad Request when petType is missing")
     void shouldReturnBusinessRuleExceptionWhenPetTypeMissing() throws Exception {
-        when(petService.searchPets(isNull(), any(), any(), any(), any(), any(), any(), any(), any()))
+        when(petService.searchPets(isNull(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
                 .thenThrow(new BusinessRuleException("Pet type filter is mandatory."));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search/")
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search")
                         .param("weight", "8.0"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Pet type filter is mandatory.")));
 
         verify(petService, times(1)).searchPets(
-                isNull(), any(), any(), any(), any(), any(), any(), any(), any()
+                isNull(), any(), any(), any(), any(), any(), any(), any(), any(), any()
         );
    }
 
     @Test //searchPets() filters failure
     @DisplayName("Should return 400 Bad Request when filters exceed limit")
     void shouldReturnBusinessRuleExceptionWhenMoreThanTwoFilters() throws Exception {
-        when(petService.searchPets(anyString(), any(), any(), any(), any(), any(), any(), any(), any()))
+        when(petService.searchPets(anyString(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
                 .thenThrow(new BusinessRuleException("You must apply at least 1 and at most 2 additional filters (besides pet type)."));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search/")
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search")
                         .param("petType", "DOG")
                         .param("weight", "8.0")
                         .param("age", "3.0")
@@ -226,7 +232,7 @@ class PetControllerTest {
 
 
         verify(petService, times(1)).searchPets(
-                anyString(), any(), any(), any(), any(), any(), any(), any(), any()
+                anyString(), any(), any(), any(), any(), any(), any(), any(), any(), any()
         );
     }
 
