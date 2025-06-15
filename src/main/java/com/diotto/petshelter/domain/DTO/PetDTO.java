@@ -41,16 +41,16 @@ public class PetDTO {
 
     @Schema(example = "Folklore Street")
     @Size(max = 50)
-    @Pattern(regexp = "^[A-Za-zÀ-ÿ0-9 ]+$")
+    @Pattern(regexp = "^[A-Za-zÀ-ÿ0-9 ,.-]+$")
     private String streetName;
 
     @Schema(example = "Pennsylvania")
     @Size(max = 50)
-    @Pattern(regexp = "^[A-Za-zÀ-ÿ ]+$")
+    @Pattern(regexp = "^[A-Za-zÀ-ÿ\\s'-]+$")
     private String addressCity;
 
     @Schema(example = "SP")
-    @Size(max = 2)
+    @Size(min = 2, max = 2)
     @Pattern(regexp = "^[A-Za-zÀ-ÿ ]+$")
     private String state;
 
@@ -65,7 +65,7 @@ public class PetDTO {
     private Double weight;
 
     @Schema(example = "British Shorthair")
-    @Pattern(regexp = "^[A-Za-zÀ-ÿ ]+$")
+    @Pattern(regexp = "^[A-Za-zÀ-ÿ\\s'-]+$")
     private String breed;
 
 }
