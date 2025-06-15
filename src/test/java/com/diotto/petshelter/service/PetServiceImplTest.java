@@ -93,7 +93,6 @@ class PetServiceImplTest {
     @Test
     @DisplayName("Should fetch zip code from CepService when PetDTO has no zip code")
     void shouldFetchZipCodeWhenPetDTOHasNoZipCode() throws BadRequestException {
-        // DTO sem zipCode preenchido
         PetDTO dtoWithoutZip = new PetDTO(firstName, lastName, petType, gender, "", addressNumber, streetName, city, state, age, weight, breed);
 
         ViaCepResponse mockedResponse = new ViaCepResponse("12345678", streetName, "", "", city, state, "", "", "", "");

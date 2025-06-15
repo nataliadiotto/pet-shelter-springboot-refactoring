@@ -59,8 +59,8 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public List<Pet> searchPets(String type, BiologicalSex biologicalSex, String name, String zipCode, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) throws ResourceNotFound, BusinessRuleException {
-        int filterCount = countFilters(biologicalSex, name, zipCode, streetName, city, addressNumber, age, weight, breed);
+    public List<Pet> searchPets(String type, BiologicalSex biologicalSex, String name, String zipCode, String streetName, String city, Integer addressNumber, String state, Double age, Double weight, String breed) throws ResourceNotFound, BusinessRuleException {
+        int filterCount = countFilters(biologicalSex, name, zipCode, streetName, city, addressNumber, state, age, weight, breed);
 
         if (filterCount > 2 || filterCount == 0){
             throw new BusinessRuleException("You must apply at least 1 and at most 2 additional filters (besides pet type).");
@@ -103,6 +103,10 @@ public class PetServiceImpl implements PetService {
             spec = spec.and(PetSpecifications.hasAddressNumber(addressNumber));
         }
 
+        if (state != null && !state.isBlank()) {
+            spec = spec.and(PetSpecifications.hasState(state));
+        }
+
         if (age != null) {
             spec = spec.and(PetSpecifications.hasAge(age));
         }
@@ -134,6 +138,7 @@ public class PetServiceImpl implements PetService {
         if (dto.addressNumber() != null) existingPet.setAddressNumber(dto.addressNumber());
         if (dto.streetName() != null) existingPet.setStreetName(dto.streetName());
         if (dto.addressCity() != null) existingPet.setAddressCity(dto.addressCity());
+        if (dto.state() != null) existingPet.setState(dto.state());
         if (dto.age() != null) existingPet.setAge(dto.age());
         if (dto.weight() != null) existingPet.setWeight(dto.weight());
         if (dto.breed() != null) existingPet.setBreed(dto.breed());
@@ -159,7 +164,7 @@ public class PetServiceImpl implements PetService {
         }
     }
 
-    private int countFilters(BiologicalSex biologicalSex, String name, String zipCode, String streetName, String city, Integer addressNumber, Double age, Double weight, String breed) {
+    private int countFilters(BiologicalSex biologicalSex, String name, String zipCode, String streetName, String city, Integer addressNumber, String state, Double age, Double weight, String breed) {
         int count = 0;
         if (biologicalSex != null) count++;
         if (name != null) count++;
@@ -167,6 +172,7 @@ public class PetServiceImpl implements PetService {
         if (streetName != null) count++;
         if (city != null) count++;
         if (addressNumber != null) count++;
+        if (state != null) count++;
         if (age != null) count++;
         if (weight != null) count++;
         if (breed != null) count++;

@@ -36,6 +36,10 @@ public class PetResponseDTO {
                 + capitalize(pet.getStreetName()) + ", "
                 + capitalize(pet.getAddressCity());
 
+            if (pet.getState() != null && !pet.getState().isBlank()) {
+                this.address += " - " + pet.getState().toUpperCase();
+        }
+
         this.weight = pet.getWeight() == null
                 ? Constants.NOT_INFORMED
                 : String.format(Locale.ENGLISH, "%.1fkg", pet.getWeight());
