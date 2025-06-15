@@ -164,7 +164,7 @@ class PetControllerTest {
     @Test //searchPets() success
     @DisplayName("Should return pets matching the given filters")
     void shouldReturnFilteredPets() throws Exception {
-       when(petService.searchPets(eq(PetType.CAT.toString()), any(), any(), any(), any(), any(), any(), any(), eq(8.0), any()))
+       when(petService.searchPets(eq(PetType.CAT.toString()), any(), any(), any(), any(), any(), any(), any(), any(), eq(8.0), any()))
                .thenReturn(List.of(pet));
 
        mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search")
@@ -177,7 +177,7 @@ class PetControllerTest {
 
        verify(petService, times(1)).searchPets(
                eq(PetType.CAT.toString()),
-               any(), any(), any(), any(), any(), any(), any(),
+               any(), any(), any(), any(), any(), any(), any(), any(),
                eq(8.0),
                any());
 
@@ -186,7 +186,7 @@ class PetControllerTest {
     @Test //searchPets() failure
     @DisplayName("Should return 404 Not Found when no pets match the search filters")
     void shouldReturnNotFoundWhenNoPetsMatchFilters() throws Exception {
-        when(petService.searchPets(eq(PetType.CAT.toString()), any(), any(), any(), any(), any(), any(), any(), eq(8.0), any()))
+        when(petService.searchPets(eq(PetType.CAT.toString()), any(), any(), any(), any(), any(), any(), any(), any(), eq(8.0), any()))
                 .thenThrow(new ResourceNotFound("pets with the provided filters"));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search")
@@ -196,14 +196,14 @@ class PetControllerTest {
                 .andExpect(jsonPath("$.message", is("There are no registers of pets with the provided filters in the system.")));
 
         verify(petService, times(1)).searchPets(
-                eq(PetType.CAT.toString()), any(), any(), any(), any(), any(), any(), any(), eq(8.0), any()
+                eq(PetType.CAT.toString()), any(), any(), any(), any(), any(), any(), any(), any(), eq(8.0), any()
         );
     }
 
     @Test //searchPets() missing PetType failure
     @DisplayName("Should return 400 Bad Request when petType is missing")
     void shouldReturnBusinessRuleExceptionWhenPetTypeMissing() throws Exception {
-        when(petService.searchPets(isNull(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
+        when(petService.searchPets(isNull(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
                 .thenThrow(new BusinessRuleException("Pet type filter is mandatory."));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search")
@@ -212,14 +212,14 @@ class PetControllerTest {
                 .andExpect(jsonPath("$.message", is("Pet type filter is mandatory.")));
 
         verify(petService, times(1)).searchPets(
-                isNull(), any(), any(), any(), any(), any(), any(), any(), any(), any()
+                isNull(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
         );
    }
 
     @Test //searchPets() filters failure
     @DisplayName("Should return 400 Bad Request when filters exceed limit")
     void shouldReturnBusinessRuleExceptionWhenMoreThanTwoFilters() throws Exception {
-        when(petService.searchPets(anyString(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
+        when(petService.searchPets(anyString(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
                 .thenThrow(new BusinessRuleException("You must apply at least 1 and at most 2 additional filters (besides pet type)."));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/pets/search")
@@ -232,7 +232,7 @@ class PetControllerTest {
 
 
         verify(petService, times(1)).searchPets(
-                anyString(), any(), any(), any(), any(), any(), any(), any(), any(), any()
+                anyString(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
         );
     }
 

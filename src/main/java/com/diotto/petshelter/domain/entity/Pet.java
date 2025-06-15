@@ -26,27 +26,36 @@ public class Pet {
 
     @NotNull
     @NotBlank
+    @Column(nullable = false)
     private String firstName;
 
     @NotNull
     @NotBlank
+    @Column(nullable = false)
     private String lastName;
 
+    @Column(nullable = false)
     private PetType petType;
+
+    @Column(nullable = false)
     private BiologicalSex biologicalSex;
+
     private String zipCode;
     private Integer addressNumber;
 
     @NotNull
     @NotBlank
+    @Column(nullable = false)
     private String streetName;
 
     @NotNull
     @NotBlank
+    @Column(nullable = false)
     private String addressCity;
 
     @NotNull
     @NotBlank
+    @Column(nullable = false)
     private String state;
 
     private Double age;

@@ -69,7 +69,7 @@ class PetServiceImplTest {
         pet = new Pet(1L, firstName, lastName, petType, gender, zipCode, addressNumber, streetName, city, state, age, weight, breed);
         petDTO = new PetDTO(firstName, lastName, petType, gender, zipCode, addressNumber, streetName, city, state, age, weight, breed);
         petResponseDTO = new PetResponseDTO(pet);
-        petUpdtRequestDTO = new PetUpdtRequestDTO( firstName, lastName, zipCode, addressNumber, streetName, city, age, weight, breed);
+        petUpdtRequestDTO = new PetUpdtRequestDTO( firstName, lastName, zipCode, addressNumber, streetName, city, state, age, weight, breed);
     }
 
     @Test //registerPet() success
@@ -93,7 +93,6 @@ class PetServiceImplTest {
     @Test
     @DisplayName("Should fetch zip code from CepService when PetDTO has no zip code")
     void shouldFetchZipCodeWhenPetDTOHasNoZipCode() throws BadRequestException {
-        // DTO sem zipCode preenchido
         PetDTO dtoWithoutZip = new PetDTO(firstName, lastName, petType, gender, "", addressNumber, streetName, city, state, age, weight, breed);
 
         ViaCepResponse mockedResponse = new ViaCepResponse("12345678", streetName, "", "", city, state, "", "", "", "");
@@ -161,7 +160,7 @@ class PetServiceImplTest {
         when(petRepository.findAll(any(Specification.class)))
                 .thenReturn(List.of(pet));
 
-        List<Pet> petList = service.searchPets(PetType.CAT.toString(), null, null, null, null, null, null, null, 8.0, null);
+        List<Pet> petList = service.searchPets(PetType.CAT.toString(), null, null, null, null, null, null, null, null, 8.0, null);
 
         assertNotNull(petList);
         assertEquals(1, petList.size());
@@ -178,7 +177,7 @@ class PetServiceImplTest {
                 .thenReturn(emptyList());
 
         ResourceNotFound exception = assertThrows(ResourceNotFound.class, ()
-                -> service.searchPets(PetType.CAT.toString(), null, "Test", null,null,  null, null, null, null, null));
+                -> service.searchPets(PetType.CAT.toString(), null, "Test", null,null,  null, null, null, null, null, null));
 
         assertEquals("There are no registers of pets with the provided filters in the system.", exception.getMessage());
 
@@ -188,7 +187,7 @@ class PetServiceImplTest {
     @DisplayName("Should throw 400 Business Rule Exception when PetType filter is not selected")
     void shouldThrowBusinessRuleWhenNoPetTypeFilter() {
         BusinessRuleException exception = assertThrows(BusinessRuleException.class, ()
-                -> service.searchPets(null, null, "Test", null, "Test", null, null, null, null, null));
+                -> service.searchPets(null, null, "Test", null, "Test", null, null,null, null, null, null));
 
         assertEquals("Pet type filter is mandatory.", exception.getMessage());
 
@@ -198,7 +197,7 @@ class PetServiceImplTest {
     @DisplayName("Should throw 400 Business Rule Exception when quantity of filters exceed")
     void shouldThrowBusinessRuleWhenMoreFiltersSelected() {
         BusinessRuleException exception = assertThrows(BusinessRuleException.class, ()
-                -> service.searchPets(PetType.CAT.toString(), BiologicalSex.FEMALE, "Test", null, null, "Test", null, null, null, null));
+                -> service.searchPets(PetType.CAT.toString(), BiologicalSex.FEMALE, "Test", null, null, "Test", null, null, null, null, null));
 
         assertEquals("You must apply at least 1 and at most 2 additional filters (besides pet type).", exception.getMessage());
 

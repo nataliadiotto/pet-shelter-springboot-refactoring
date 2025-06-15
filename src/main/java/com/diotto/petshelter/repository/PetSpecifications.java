@@ -43,6 +43,10 @@ public class PetSpecifications {
                 equal(root.get("addressNumber"), number);
     }
 
+    public static Specification<Pet> hasState(String state) {
+        return (root, query, cb) -> cb.like(cb.lower(root.get("state")), "%" + state.toUpperCase() + "%");
+    }
+
     public static Specification<Pet> hasAge(Double age) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.
                 between(root.get("age"), age - 1, age + 1);

@@ -7,6 +7,7 @@ public record PetUpdtRequestDTO(
             Integer addressNumber,
             String streetName,
             String addressCity,
+            String state,
             Double age,
             Double weight,
             String breed

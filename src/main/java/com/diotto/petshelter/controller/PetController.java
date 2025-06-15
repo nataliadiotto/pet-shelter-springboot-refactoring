@@ -81,13 +81,14 @@ public class PetController {
                                                            @RequestParam(required = false) String streetName,
                                                            @RequestParam(required = false) String city,
                                                            @RequestParam(required = false) Integer addressNumber,
+                                                           @RequestParam(required = false) String state,
                                                            @RequestParam(required = false) Double age,
                                                            @RequestParam(required = false) Double weight,
                                                            @RequestParam(required = false) String breed) throws ResourceNotFound {
 
         List<Pet> pets = petService.searchPets(
                 petType != null ? petType.toString() : null,
-                sex, name, zipCode, streetName, city, addressNumber, age, weight, breed);
+                sex, name, zipCode, streetName, city, addressNumber, state, age, weight, breed);
 
         List<PetResponseDTO> responseDTOS = pets.stream()
                 .map(PetResponseDTO::new)
