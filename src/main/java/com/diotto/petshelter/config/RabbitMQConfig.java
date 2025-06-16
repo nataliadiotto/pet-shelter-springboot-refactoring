@@ -8,10 +8,10 @@ import org.springframework.amqp.core.Queue;
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String QUEUE = "pet.created.queue";
+    public static final String QUEUE_NAME = "pet.created.queue";
 
     @Bean
-    public Queue queue() {
-        return new Queue(QUEUE, true);
+    public Queue petCreatedQueue() {
+        return new Queue(QUEUE_NAME, false);
     }
 }

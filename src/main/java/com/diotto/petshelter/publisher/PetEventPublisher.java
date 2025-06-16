@@ -1,0 +1,29 @@
+package com.diotto.petshelter.publisher;
+
+import com.diotto.petshelter.config.RabbitMQConfig;
+import com.diotto.petshelter.domain.DTO.PetResponseDTO;
+import com.diotto.petshelter.domain.enums.PetType;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PetEventPublisher {
+
+    private final AmqpTemplate amqpTemplate;
+    @Value("${spring.rabbitmq.template.default-receive-queue}")
+    private String queueName;
+
+    public PetEventPublisher(AmqpTemplate amqpTemplate) {
+        this.amqpTemplate = amqpTemplate;
+    }
+
+    public void publishPetCreatedEvent(PetResponseDTO dto) {
+        String message = String.format("New %s registered: %s\n" +
+                "Address: %s", dto.getPetType(), dto.getFullName(), dto.getAddress());
+
+        amqpTemplate.convertAndSend(RabbitMQConfig.QUEUE_NAME, message);
+        System.out.println("Message sent to queue: " + message);
+    }
+
+}
