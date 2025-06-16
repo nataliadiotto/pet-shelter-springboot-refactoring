@@ -6,6 +6,7 @@ import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
 import com.diotto.petshelter.domain.DTO.PetResponseDTO;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
+import com.diotto.petshelter.producer.PetEventProducer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,11 +31,14 @@ import java.util.List;
 public class PetController {
 
     private final PetService petService;
+    private PetEventProducer producer;
 
     @Autowired
-    public PetController(PetService petService) {
+    public PetController(PetService petService, PetEventProducer producer) {
         this.petService = petService;
+        this.producer = producer;
     }
+
 
     @Operation(summary = "Register a new pet", description = "Saves a new pet in the system")
     @ApiResponses(value = {
@@ -46,6 +50,8 @@ public class PetController {
     @PostMapping
     public ResponseEntity<PetResponseDTO> registerPet(@RequestBody @Valid PetDTO petDTO) throws BadRequestException {
         Pet newPet = petService.registerPet(petDTO);
+        producer.publishCreatedEvent(newPet);
+
         PetResponseDTO petResponseDTO = new PetResponseDTO(newPet);
         return ResponseEntity.status(HttpStatus.CREATED)
                         .body(petResponseDTO);

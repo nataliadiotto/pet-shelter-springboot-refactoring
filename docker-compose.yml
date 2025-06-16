@@ -12,5 +12,14 @@ services:
     volumes:
       - petShelter_data:/var/lib/postgresql/data
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"   #Porta de comunicação AMQP (Spring usa essa)
+      - "15672:15672" #Painel web de administração
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
 volumes:
   petShelter_data:
