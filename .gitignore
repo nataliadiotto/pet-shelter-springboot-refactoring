@@ -10,3 +10,6 @@ Thumbs.db
 # Java build
 *.class
 target/
+
+#Properties
+application-dev.properties
