@@ -1,7 +1,0 @@
-1 - Daniel Radcliffe
-2 - Dog
-3 - Male
-4 - 55, Park Ave, New York
-5 - 10.0 years old
-6 - 16.0kg
-7 - American Bulldog
