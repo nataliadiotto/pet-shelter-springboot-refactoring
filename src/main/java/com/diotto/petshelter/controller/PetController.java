@@ -8,6 +8,7 @@ import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
 import com.diotto.petshelter.publisher.PetEventPublisher;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -60,8 +61,8 @@ public class PetController {
 
     @Operation(summary = "List all pets", description = "Retrieves a list of all pets in the system")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List of pets returned",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = PetResponseDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Filtered list of pets returned",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PetResponseDTO.class)))),
             @ApiResponse(responseCode = "404", description = "No pets found", content = @Content)
     })
     @GetMapping
@@ -76,7 +77,7 @@ public class PetController {
     @Operation(summary = "Search pets", description = "Search and filter pets by provided parameters")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Filtered list of pets returned",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = PetResponseDTO.class))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PetResponseDTO.class)))),
             @ApiResponse(responseCode = "404", description = "No pets match the filters", content = @Content)
     })
     @GetMapping("/search")
