@@ -14,7 +14,7 @@ public class PetEventConsumer {
         this.emailService = emailService;
     }
 
-    @RabbitListener(queues = RabbitMQConfig.QUEUE_NAME)
+    @RabbitListener(queues = "${rabbitmq.queue.name}")
     public void handlePetRegisteredEvent(String message) {
         System.out.println("Message received from queue: " + message);
         emailService.sendNewPetCreatedEmail("diottodev.test@gmail.com", message);

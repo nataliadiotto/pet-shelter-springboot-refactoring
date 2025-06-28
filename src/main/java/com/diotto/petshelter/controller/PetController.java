@@ -8,6 +8,7 @@ import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.domain.enums.PetType;
 import com.diotto.petshelter.publisher.PetEventPublisher;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,12 +32,10 @@ import java.util.List;
 public class PetController {
 
     private final PetService petService;
-    private final PetEventPublisher publisher;
 
     @Autowired
-    public PetController(PetService petService, PetEventPublisher publisher) {
+    public PetController(PetService petService) {
         this.petService = petService;
-        this.publisher = publisher;
     }
 
 
@@ -50,8 +49,8 @@ public class PetController {
     @PostMapping
     public ResponseEntity<PetResponseDTO> registerPet(@RequestBody @Valid PetDTO petDTO) throws BadRequestException {
         Pet newPet = petService.registerPet(petDTO);
+
         PetResponseDTO petResponseDTO = new PetResponseDTO(newPet);
-        publisher.publishPetCreatedEvent(petResponseDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                         .body(petResponseDTO);
@@ -60,8 +59,8 @@ public class PetController {
 
     @Operation(summary = "List all pets", description = "Retrieves a list of all pets in the system")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List of pets returned",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = PetResponseDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Filtered list of pets returned",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PetResponseDTO.class)))),
             @ApiResponse(responseCode = "404", description = "No pets found", content = @Content)
     })
     @GetMapping
@@ -76,7 +75,7 @@ public class PetController {
     @Operation(summary = "Search pets", description = "Search and filter pets by provided parameters")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Filtered list of pets returned",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = PetResponseDTO.class))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PetResponseDTO.class)))),
             @ApiResponse(responseCode = "404", description = "No pets match the filters", content = @Content)
     })
     @GetMapping("/search")
