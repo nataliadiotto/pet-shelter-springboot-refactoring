@@ -1,6 +1,7 @@
 package com.diotto.petshelter.service;
 
 import com.diotto.petshelter.domain.DTO.PetDTO;
+import com.diotto.petshelter.domain.DTO.PetResponseDTO;
 import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
 import com.diotto.petshelter.domain.entity.Pet;
 import com.diotto.petshelter.domain.enums.PetType;
@@ -8,6 +9,7 @@ import com.diotto.petshelter.domain.utils.Constants;
 import com.diotto.petshelter.errors.BusinessRuleException;
 import com.diotto.petshelter.external.viacep.client.CepService;
 import com.diotto.petshelter.external.viacep.dto.ViaCepResponse;
+import com.diotto.petshelter.publisher.PetEventPublisher;
 import com.diotto.petshelter.repository.PetSpecifications;
 import com.diotto.petshelter.domain.enums.BiologicalSex;
 import com.diotto.petshelter.errors.ResourceNotFound;
@@ -27,12 +29,15 @@ public class PetServiceImpl implements PetService {
     private final PetRepository petRepository;
     private final ModelMapper modelMapper;
     private final CepService cepService;
+    private final PetEventPublisher publisher;
+
 
     @Autowired
-    public PetServiceImpl(PetRepository petRepository, ModelMapper modelMapper, CepService cepService) {
+    public PetServiceImpl(PetRepository petRepository, ModelMapper modelMapper, CepService cepService, PetEventPublisher publisher) {
         this.petRepository = petRepository;
         this.modelMapper = modelMapper;
         this.cepService = cepService;
+        this.publisher = publisher;
     }
 
     @Override
@@ -44,7 +49,12 @@ public class PetServiceImpl implements PetService {
         }
 
         Pet pet = convertPetFromDTO(petDTO);
-        return petRepository.save(pet);
+        Pet savedPet = petRepository.save(pet);
+
+        PetResponseDTO petResponseDTO = new PetResponseDTO(savedPet);
+        publisher.publishPetCreatedEvent(petResponseDTO);
+
+        return savedPet;
     }
 
 

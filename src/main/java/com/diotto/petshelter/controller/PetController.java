@@ -32,12 +32,10 @@ import java.util.List;
 public class PetController {
 
     private final PetService petService;
-    private final PetEventPublisher publisher;
 
     @Autowired
-    public PetController(PetService petService, PetEventPublisher publisher) {
+    public PetController(PetService petService) {
         this.petService = petService;
-        this.publisher = publisher;
     }
 
 
@@ -51,8 +49,8 @@ public class PetController {
     @PostMapping
     public ResponseEntity<PetResponseDTO> registerPet(@RequestBody @Valid PetDTO petDTO) throws BadRequestException {
         Pet newPet = petService.registerPet(petDTO);
+
         PetResponseDTO petResponseDTO = new PetResponseDTO(newPet);
-        publisher.publishPetCreatedEvent(petResponseDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                         .body(petResponseDTO);
