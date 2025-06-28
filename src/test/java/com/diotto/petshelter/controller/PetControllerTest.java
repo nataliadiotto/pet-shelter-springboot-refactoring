@@ -8,6 +8,7 @@ import com.diotto.petshelter.domain.enums.PetType;
 import com.diotto.petshelter.errors.BusinessRuleException;
 import com.diotto.petshelter.errors.GlobalExceptionHandler;
 import com.diotto.petshelter.errors.ResourceNotFound;
+import com.diotto.petshelter.publisher.PetEventPublisher;
 import com.diotto.petshelter.service.PetService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +43,9 @@ class PetControllerTest {
 
    @MockBean
    private PetService petService;
+
+   @MockBean
+   private PetEventPublisher publisher;
 
    Pet pet;
    Pet pet2;
