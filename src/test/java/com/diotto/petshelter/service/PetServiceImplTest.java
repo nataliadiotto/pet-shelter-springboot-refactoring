@@ -11,19 +11,20 @@ import com.diotto.petshelter.errors.BusinessRuleException;
 import com.diotto.petshelter.errors.ResourceNotFound;
 import com.diotto.petshelter.external.viacep.client.CepService;
 import com.diotto.petshelter.external.viacep.dto.ViaCepResponse;
+import com.diotto.petshelter.publisher.PetEventPublisher;
 import com.diotto.petshelter.repository.PetRepository;
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +32,7 @@ import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class PetServiceImplTest {
@@ -38,13 +40,10 @@ class PetServiceImplTest {
     @InjectMocks
     PetServiceImpl service;
 
-    @Mock
-    private CepService cepService;
-
-    @Mock
-    PetRepository petRepository;
-    @Mock
-    ModelMapper modelMapper;
+    @Mock private CepService cepService;
+    @Mock private PetEventPublisher petEventPublisher;
+    @Mock private PetRepository petRepository;
+    @Mock private ModelMapper modelMapper;
 
     String firstName = "Sweet";
     String lastName = "Nothing";
@@ -88,6 +87,28 @@ class PetServiceImplTest {
         verify(modelMapper).map(petDTO, Pet.class);
         verify(petRepository).save(pet);
         verifyNoMoreInteractions(petRepository);
+    }
+
+    @Test
+    @DisplayName("Should publish message when new pet is saved")
+    void whenCreatePet_shouldCallEventPublisherWithCorrectData() throws BadRequestException {
+        when(modelMapper.map(any(PetDTO.class), eq(Pet.class))).thenReturn(pet);
+        when(petRepository.save(any(Pet.class))).thenReturn(pet);
+
+        ArgumentCaptor<PetResponseDTO> responseDtoCaptor = ArgumentCaptor.forClass(PetResponseDTO.class);
+
+        service.registerPet(petDTO);
+
+        verify(petEventPublisher).publishPetCreatedEvent(responseDtoCaptor.capture());
+
+        PetResponseDTO capturedDto = responseDtoCaptor.getValue();
+
+        assertThat(capturedDto).isNotNull();
+        assertThat(capturedDto.getId()).isEqualTo(pet.getId());
+        assertThat(capturedDto.getFullName()).isEqualTo(firstName + " " + lastName);
+        assertThat(capturedDto.getPetType()).isEqualTo(pet.getPetType().toString());
+
+        assertThat(capturedDto).isEqualTo(petResponseDTO);
     }
 
     @Test
