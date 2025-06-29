@@ -1,0 +1,138 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > PetDTO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.diotto.petshelter.domain.DTO</a>
+</div>
+
+<h1>Coverage Summary for Class: PetDTO (com.diotto.petshelter.domain.DTO)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">PetDTO</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.diotto.petshelter.domain.DTO;
+&nbsp;
+&nbsp;import com.diotto.petshelter.domain.entity.Pet;
+&nbsp;import com.diotto.petshelter.domain.enums.BiologicalSex;
+&nbsp;import com.diotto.petshelter.domain.enums.PetType;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import jakarta.validation.constraints.*;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.Data;
+&nbsp;import org.modelmapper.ModelMapper;
+&nbsp;
+&nbsp;@Data
+&nbsp;@AllArgsConstructor
+&nbsp;public class PetDTO {
+&nbsp;
+&nbsp;    @Schema(example = &quot;Clara&quot;)
+&nbsp;    @NotBlank
+&nbsp;    @Pattern(regexp = &quot;^[A-Za-zÀ-ÿ ]+$&quot;)
+&nbsp;    private String firstName;
+&nbsp;
+&nbsp;    @Schema(example = &quot;Bow&quot;)
+&nbsp;    @NotBlank
+&nbsp;    @Pattern(regexp = &quot;^[A-Za-zÀ-ÿ ]+$&quot;)
+&nbsp;    private String lastName;
+&nbsp;
+&nbsp;    @Schema(example = &quot;CAT&quot;)
+&nbsp;    @NotNull
+&nbsp;    private PetType petType;
+&nbsp;
+&nbsp;    @Schema(example = &quot;FEMALE&quot;)
+&nbsp;    @NotNull
+&nbsp;    private BiologicalSex biologicalSex;
+&nbsp;
+&nbsp;    @Schema(example = &quot;13480100&quot;)
+&nbsp;    private String zipCode;
+&nbsp;
+&nbsp;    //Optional field
+&nbsp;    @Schema(example = &quot;1313&quot;)
+&nbsp;    @Min(value = 1)
+&nbsp;    private Integer addressNumber;
+&nbsp;
+&nbsp;    @Schema(example = &quot;Folklore Street&quot;)
+&nbsp;    @Size(max = 50)
+&nbsp;    @Pattern(regexp = &quot;^[A-Za-zÀ-ÿ0-9 ,.-]+$&quot;)
+&nbsp;    private String streetName;
+&nbsp;
+&nbsp;    @Schema(example = &quot;Pennsylvania&quot;)
+&nbsp;    @Size(max = 50)
+&nbsp;    @Pattern(regexp = &quot;^[A-Za-zÀ-ÿ\\s&#39;-]+$&quot;)
+&nbsp;    private String addressCity;
+&nbsp;
+&nbsp;    @Schema(example = &quot;SP&quot;)
+&nbsp;    @Size(min = 2, max = 2)
+&nbsp;    @Pattern(regexp = &quot;^[A-Za-zÀ-ÿ ]+$&quot;)
+&nbsp;    private String state;
+&nbsp;
+&nbsp;    @Schema(example = &quot;13.0&quot;)
+&nbsp;    @DecimalMin(value = &quot;0.1&quot;)
+&nbsp;    @DecimalMax(value = &quot;20.0&quot;)
+&nbsp;    private Double age;
+&nbsp;
+&nbsp;    @Schema(example = &quot;4.2&quot;)
+&nbsp;    @DecimalMin(value = &quot;0.5&quot;)
+&nbsp;    @DecimalMax(value = &quot;60.0&quot;)
+&nbsp;    private Double weight;
+&nbsp;
+&nbsp;    @Schema(example = &quot;British Shorthair&quot;)
+&nbsp;    @Pattern(regexp = &quot;^[A-Za-zÀ-ÿ\\s&#39;-]+$&quot;)
+&nbsp;    private String breed;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-29 12:19</div>
+</div>
+</body>
+</html>
