@@ -1,11 +1,11 @@
 # 🐾 Pet Shelter Management API
 
-[](https://www.oracle.com/java/technologies/downloads/)
-[](https://spring.io/projects/spring-boot)
-[](https://www.postgresql.org/)
-[](https://www.rabbitmq.com/)
-[](https://junit.org/junit5/)
-[](https://www.docker.com/)
+[![Java](https://img.shields.io/badge/Java-21-blue?style=for-the-badge&logo=openjdk)](https://www.oracle.com/java/technologies/downloads/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.x-brightgreen?style=for-the-badge&logo=spring-boot)](https://spring.io/projects/spring-boot)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-FFFFFF?style=for-the-badge&logo=postgresql&logoColor=blue)](https://www.postgresql.org/)
+[![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com/)
+[![JUnit 5](https://img.shields.io/badge/JUnit%205-25A162?style=for-the-badge&logo=junit5&logoColor=white)](https://junit.org/junit5/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
 A RESTful API built with Java 21 and Spring Boot for managing pet records in a shelter environment.
 
@@ -81,7 +81,7 @@ public interface ViaCepClient {
 }
 ```
 
-### Event-Driven Notifications with RabbitMQ
+### Event-Driven Notifications with RabbitMQ 
 
 To ensure the system is responsive and resilient, an event-driven approach is used for post-registration actions. When a new pet is successfully saved to the database, the `PetService` delegates to a `PetEventPublisher`.
 
@@ -89,17 +89,21 @@ This publisher sends a message to a RabbitMQ exchange, completely decoupling the
 
 ```mermaid
 graph TD
-    A[Client sends POST /api/v1/pets] --> B{Pet Service};
-    B --> C[1. Save Pet to PostgreSQL];
-    B --> D[2. Publish Event];
-    D -- to 'pets_exchange' --> E[RabbitMQ];
-    F[Email Consumer] -- listens to 'pet_created_queue' --> E;
-    F --> G{Email Service};
-    G --> H[📧 Sends Notification Email];
-    B -- returns HTTP 201 Created --> A;
+    Client -->|Sends POST /api/v1/pets| PetService
+    
+    PetService -->|Saves data to| Database
+    PetService -->|Publishes event to| RabbitMQ_Exchange
+    PetService -->|Returns HTTP 201 Created| Client
+    
+    RabbitMQ_Exchange -- "via Binding" --> Queue
+    Queue -->|Message is delivered| EmailConsumer
+    EmailConsumer -->|Invokes| EmailService
+    EmailService -->|Sends Notification| Email[📧 Notification Email]
 ```
 
------
+#### **📧 Example notification:**
+
+![img.png](img.png)
 
 ## 📚 Tech Stack
 
@@ -125,7 +129,7 @@ graph TD
 
 The API is fully documented using OpenAPI 3.0, providing an interactive UI to explore and test the endpoints. The documentation is enriched with detailed descriptions, examples, and schema information using Springdoc annotations (`@Operation`, `@ApiResponse`, `@Schema`, etc.) for maximum clarity.
 
-**Access the Swagger UI here:** [http://localhost:8080/swagger-ui/index.html](https://www.google.com/search?q=http://localhost:8080/swagger-ui/index.html)
+**Access the Swagger UI here:** [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
 A key focus was to provide clear request and response examples, including detailed schemas and multiple response codes for both success and error scenarios.
 
