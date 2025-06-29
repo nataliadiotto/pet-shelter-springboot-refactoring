@@ -9,7 +9,10 @@ Thumbs.db
 
 # Java build
 *.class
-target/
+/target/
 
 #Properties
 application-dev.properties
+
+# HTML test reports
+/htmlReport/
