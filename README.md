@@ -103,7 +103,7 @@ graph TD
 
 #### **📧 Example notification:**
 
-![img.png](img.png)
+![img.png](assets/img.png)
 
 ## 📚 Tech Stack
 
