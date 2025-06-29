@@ -1,0 +1,235 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > PetController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.diotto.petshelter.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: PetController (com.diotto.petshelter.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PetController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16,7%
+  </span>
+  <span class="absValue">
+    (1/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    9,5%
+  </span>
+  <span class="absValue">
+    (2/21)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.diotto.petshelter.controller;
+&nbsp;
+&nbsp;import com.diotto.petshelter.domain.entity.Pet;
+&nbsp;import com.diotto.petshelter.domain.DTO.PetDTO;
+&nbsp;import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
+&nbsp;import com.diotto.petshelter.domain.DTO.PetResponseDTO;
+&nbsp;import com.diotto.petshelter.domain.enums.BiologicalSex;
+&nbsp;import com.diotto.petshelter.domain.enums.PetType;
+&nbsp;import com.diotto.petshelter.publisher.PetEventPublisher;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.media.ArraySchema;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
+&nbsp;import io.swagger.v3.oas.annotations.tags.Tag;
+&nbsp;import org.apache.coyote.BadRequestException;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import com.diotto.petshelter.service.PetService;
+&nbsp;import com.diotto.petshelter.errors.ResourceNotFound;
+&nbsp;
+&nbsp;import javax.validation.Valid;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Tag(name = &quot;Pet Controller&quot;, description = &quot;Endpoints for managing pets&quot;)
+&nbsp;@RequestMapping(&quot;v1/pets&quot;)
+&nbsp;@RestController
+&nbsp;public class PetController {
+&nbsp;
+&nbsp;    private final PetService petService;
+&nbsp;
+&nbsp;    @Autowired
+<b class="fc">&nbsp;    public PetController(PetService petService) {</b>
+<b class="fc">&nbsp;        this.petService = petService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Register a new pet&quot;, description = &quot;Saves a new pet in the system&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Pet successfully registered&quot;,
+&nbsp;                    content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PetResponseDTO.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid input&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;, content = @Content)
+&nbsp;    })
+&nbsp;    @PostMapping
+&nbsp;    public ResponseEntity&lt;PetResponseDTO&gt; registerPet(@RequestBody @Valid PetDTO petDTO) throws BadRequestException {
+<b class="nc">&nbsp;        Pet newPet = petService.registerPet(petDTO);</b>
+&nbsp;
+<b class="nc">&nbsp;        PetResponseDTO petResponseDTO = new PetResponseDTO(newPet);</b>
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.CREATED)</b>
+<b class="nc">&nbsp;                        .body(petResponseDTO);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;List all pets&quot;, description = &quot;Retrieves a list of all pets in the system&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Filtered list of pets returned&quot;,
+&nbsp;                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PetResponseDTO.class)))),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;No pets found&quot;, content = @Content)
+&nbsp;    })
+&nbsp;    @GetMapping
+&nbsp;    public ResponseEntity&lt;List&lt;PetResponseDTO&gt;&gt; listAllPets() throws ResourceNotFound {
+<b class="nc">&nbsp;        List&lt;Pet&gt; pets = petService.listAll();</b>
+<b class="nc">&nbsp;        List&lt;PetResponseDTO&gt; responseDTOS = pets.stream()</b>
+<b class="nc">&nbsp;                .map(PetResponseDTO::new)</b>
+<b class="nc">&nbsp;                .toList();</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(responseDTOS);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Search pets&quot;, description = &quot;Search and filter pets by provided parameters&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Filtered list of pets returned&quot;,
+&nbsp;                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PetResponseDTO.class)))),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;No pets match the filters&quot;, content = @Content)
+&nbsp;    })
+&nbsp;    @GetMapping(&quot;/search&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;PetResponseDTO&gt;&gt; filterPets(@RequestParam(required = false) PetType petType,
+&nbsp;                                                           @RequestParam(required = false) BiologicalSex sex,
+&nbsp;                                                           @RequestParam(required = false) String name,
+&nbsp;                                                           @RequestParam(required = false) String zipCode,
+&nbsp;                                                           @RequestParam(required = false) String streetName,
+&nbsp;                                                           @RequestParam(required = false) String city,
+&nbsp;                                                           @RequestParam(required = false) Integer addressNumber,
+&nbsp;                                                           @RequestParam(required = false) String state,
+&nbsp;                                                           @RequestParam(required = false) Double age,
+&nbsp;                                                           @RequestParam(required = false) Double weight,
+&nbsp;                                                           @RequestParam(required = false) String breed) throws ResourceNotFound {
+&nbsp;
+<b class="nc">&nbsp;        List&lt;Pet&gt; pets = petService.searchPets(</b>
+<b class="nc">&nbsp;                petType != null ? petType.toString() : null,</b>
+&nbsp;                sex, name, zipCode, streetName, city, addressNumber, state, age, weight, breed);
+&nbsp;
+<b class="nc">&nbsp;        List&lt;PetResponseDTO&gt; responseDTOS = pets.stream()</b>
+<b class="nc">&nbsp;                .map(PetResponseDTO::new)</b>
+<b class="nc">&nbsp;                .toList();</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(responseDTOS);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Update pet&quot;, description = &quot;Update fields of a pet by ID&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Pet successfully updated&quot;,
+&nbsp;                    content = @Content(mediaType = &quot;application/json&quot;, schema = @Schema(implementation = PetResponseDTO.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Pet not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Invalid request body&quot;, content = @Content)
+&nbsp;    })
+&nbsp;    @PatchMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;PetResponseDTO&gt; updateById(@PathVariable Long id,
+&nbsp;                                                     @RequestBody PetUpdtRequestDTO petUpdtRequestDTO) throws ResourceNotFound {
+<b class="nc">&nbsp;       Pet updatedPetDTO = petService.updatePet(id, petUpdtRequestDTO);</b>
+<b class="nc">&nbsp;       return ResponseEntity.ok(new PetResponseDTO(updatedPetDTO));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Delete pet&quot;, description = &quot;Delete a pet by its ID&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Pet successfully deleted&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Pet not found&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal error&quot;, content = @Content)
+&nbsp;    })
+&nbsp;    @DeleteMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Void&gt; deletePetById(@PathVariable(&quot;id&quot;) Long id) throws IOException, InterruptedException, ResourceNotFound {
+<b class="nc">&nbsp;        petService.deletePet(id);</b>
+<b class="nc">&nbsp;        return ResponseEntity.noContent().build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-29 12:19</div>
+</div>
+</body>
+</html>

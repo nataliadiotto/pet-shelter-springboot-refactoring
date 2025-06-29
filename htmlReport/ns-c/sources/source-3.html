@@ -1,0 +1,91 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > PetService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.diotto.petshelter.service</a>
+</div>
+
+<h1>Coverage Summary for Class: PetService (com.diotto.petshelter.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">PetService</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.diotto.petshelter.service;
+&nbsp;import com.diotto.petshelter.domain.DTO.PetDTO;
+&nbsp;import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
+&nbsp;import com.diotto.petshelter.domain.entity.Pet;
+&nbsp;import com.diotto.petshelter.domain.enums.BiologicalSex;
+&nbsp;import com.diotto.petshelter.domain.enums.PetType;
+&nbsp;import com.diotto.petshelter.errors.BusinessRuleException;
+&nbsp;import com.diotto.petshelter.errors.ResourceNotFound;
+&nbsp;import org.apache.coyote.BadRequestException;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public interface PetService {
+&nbsp;
+&nbsp;    Pet registerPet(PetDTO PetDTO) throws BadRequestException;
+&nbsp;    List&lt;Pet&gt; listAll() throws ResourceNotFound;
+&nbsp;
+&nbsp;    List&lt;Pet&gt; searchPets(String type, BiologicalSex biologicalSex, String name, String zipCode, String streetName, String city, Integer addressNumber, String state, Double age, Double weight, String breed) throws ResourceNotFound, BusinessRuleException;
+&nbsp;
+&nbsp;    Pet updatePet(Long id, PetUpdtRequestDTO petUpdtRequestDTO) throws ResourceNotFound;
+&nbsp;
+&nbsp;    void deletePet(Long id) throws ResourceNotFound;
+&nbsp;    Pet convertPetFromDTO(PetDTO petDTO) throws BadRequestException;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-29 12:19</div>
+</div>
+</body>
+</html>

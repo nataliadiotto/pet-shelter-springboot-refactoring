@@ -1,0 +1,306 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > PetServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.diotto.petshelter.service</a>
+</div>
+
+<h1>Coverage Summary for Class: PetServiceImpl (com.diotto.petshelter.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PetServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    11,1%
+  </span>
+  <span class="absValue">
+    (1/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5,7%
+  </span>
+  <span class="absValue">
+    (5/87)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.diotto.petshelter.service;
+&nbsp;
+&nbsp;import com.diotto.petshelter.domain.DTO.PetDTO;
+&nbsp;import com.diotto.petshelter.domain.DTO.PetResponseDTO;
+&nbsp;import com.diotto.petshelter.domain.DTO.PetUpdtRequestDTO;
+&nbsp;import com.diotto.petshelter.domain.entity.Pet;
+&nbsp;import com.diotto.petshelter.domain.enums.PetType;
+&nbsp;import com.diotto.petshelter.domain.utils.Constants;
+&nbsp;import com.diotto.petshelter.errors.BusinessRuleException;
+&nbsp;import com.diotto.petshelter.external.viacep.client.CepService;
+&nbsp;import com.diotto.petshelter.external.viacep.dto.ViaCepResponse;
+&nbsp;import com.diotto.petshelter.publisher.PetEventPublisher;
+&nbsp;import com.diotto.petshelter.repository.PetSpecifications;
+&nbsp;import com.diotto.petshelter.domain.enums.BiologicalSex;
+&nbsp;import com.diotto.petshelter.errors.ResourceNotFound;
+&nbsp;import org.apache.coyote.BadRequestException;
+&nbsp;import org.modelmapper.ModelMapper;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.data.jpa.domain.Specification;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import com.diotto.petshelter.repository.PetRepository;
+&nbsp;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class PetServiceImpl implements PetService {
+&nbsp;
+&nbsp;    private final PetRepository petRepository;
+&nbsp;    private final ModelMapper modelMapper;
+&nbsp;    private final CepService cepService;
+&nbsp;    private final PetEventPublisher publisher;
+&nbsp;
+&nbsp;
+&nbsp;    @Autowired
+<b class="fc">&nbsp;    public PetServiceImpl(PetRepository petRepository, ModelMapper modelMapper, CepService cepService, PetEventPublisher publisher) {</b>
+<b class="fc">&nbsp;        this.petRepository = petRepository;</b>
+<b class="fc">&nbsp;        this.modelMapper = modelMapper;</b>
+<b class="fc">&nbsp;        this.cepService = cepService;</b>
+<b class="fc">&nbsp;        this.publisher = publisher;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Pet registerPet(PetDTO petDTO) throws BadRequestException {
+<b class="nc">&nbsp;        if (petDTO.getZipCode().isBlank() || petDTO.getZipCode().isEmpty()) {</b>
+<b class="nc">&nbsp;            String zipCode = getValidZipCode(petDTO);</b>
+&nbsp;
+<b class="nc">&nbsp;            petDTO.setZipCode(zipCode);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Pet pet = convertPetFromDTO(petDTO);</b>
+<b class="nc">&nbsp;        Pet savedPet = petRepository.save(pet);</b>
+&nbsp;
+<b class="nc">&nbsp;        PetResponseDTO petResponseDTO = new PetResponseDTO(savedPet);</b>
+<b class="nc">&nbsp;        publisher.publishPetCreatedEvent(petResponseDTO);</b>
+&nbsp;
+<b class="nc">&nbsp;        return savedPet;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Pet&gt; listAll() {
+<b class="nc">&nbsp;        List&lt;Pet&gt; pets = petRepository.findAll();</b>
+<b class="nc">&nbsp;        if (pets.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new ResourceNotFound(&quot;pets&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return pets;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Pet&gt; searchPets(String type, BiologicalSex biologicalSex, String name, String zipCode, String streetName, String city, Integer addressNumber, String state, Double age, Double weight, String breed) throws ResourceNotFound, BusinessRuleException {
+<b class="nc">&nbsp;        int filterCount = countFilters(biologicalSex, name, zipCode, streetName, city, addressNumber, state, age, weight, breed);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (filterCount &gt; 2 || filterCount == 0){</b>
+<b class="nc">&nbsp;            throw new BusinessRuleException(&quot;You must apply at least 1 and at most 2 additional filters (besides pet type).&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (type == null || type.isBlank()) {</b>
+<b class="nc">&nbsp;            throw new BusinessRuleException(&quot;Pet type filter is mandatory.&quot;);</b>
+&nbsp;        }
+&nbsp;        PetType petTypeEnum;
+&nbsp;        try {
+<b class="nc">&nbsp;            petTypeEnum = PetType.fromString(type);</b>
+<b class="nc">&nbsp;        } catch (IllegalArgumentException e) {</b>
+<b class="nc">&nbsp;            throw new BusinessRuleException(&quot;Invalid pet type value.&quot;);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        Specification&lt;Pet&gt; spec = Specification.where(null);</b>
+<b class="nc">&nbsp;        spec = spec.and(PetSpecifications.hasType(petTypeEnum));</b>
+&nbsp;
+<b class="nc">&nbsp;        if (biologicalSex != null) {</b>
+<b class="nc">&nbsp;            spec = spec.and(PetSpecifications.hasGender(biologicalSex));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (name != null &amp;&amp; !name.isBlank()) {</b>
+<b class="nc">&nbsp;            spec = spec.and(PetSpecifications.hasName(name));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (zipCode != null &amp;&amp; !zipCode.isBlank()) {</b>
+<b class="nc">&nbsp;            spec = spec.and(PetSpecifications.hasZipCode(zipCode));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (streetName != null &amp;&amp; !streetName.isBlank()) {</b>
+<b class="nc">&nbsp;            spec = spec.and(PetSpecifications.hasStreet(streetName));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (city != null &amp;&amp; !city.isBlank()) {</b>
+<b class="nc">&nbsp;            spec = spec.and(PetSpecifications.hasCity(city));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (addressNumber != null) {</b>
+<b class="nc">&nbsp;            spec = spec.and(PetSpecifications.hasAddressNumber(addressNumber));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (state != null &amp;&amp; !state.isBlank()) {</b>
+<b class="nc">&nbsp;            spec = spec.and(PetSpecifications.hasState(state));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (age != null) {</b>
+<b class="nc">&nbsp;            spec = spec.and(PetSpecifications.hasAge(age));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (weight != null) {</b>
+<b class="nc">&nbsp;            spec = spec.and(PetSpecifications.hasWeight(weight));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (breed != null &amp;&amp; !breed.isBlank()) {</b>
+<b class="nc">&nbsp;            spec = spec.and(PetSpecifications.hasBreed(breed));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        List&lt;Pet&gt; filteredPets = petRepository.findAll(spec);</b>
+<b class="nc">&nbsp;        if (filteredPets.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new ResourceNotFound(&quot;pets with the provided filters&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return filteredPets;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Pet updatePet(Long id, PetUpdtRequestDTO dto) throws ResourceNotFound {
+<b class="nc">&nbsp;        Pet existingPet = petRepository.findById(id)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new ResourceNotFound(&quot;Pet&quot;, &quot;ID&quot;, id));</b>
+&nbsp;
+<b class="nc">&nbsp;        if (dto.firstName() != null) existingPet.setFirstName(dto.firstName());</b>
+<b class="nc">&nbsp;        if (dto.lastName() != null) existingPet.setLastName(dto.lastName());</b>
+<b class="nc">&nbsp;        if (dto.zipCode() != null) existingPet.setZipCode(dto.zipCode());</b>
+<b class="nc">&nbsp;        if (dto.addressNumber() != null) existingPet.setAddressNumber(dto.addressNumber());</b>
+<b class="nc">&nbsp;        if (dto.streetName() != null) existingPet.setStreetName(dto.streetName());</b>
+<b class="nc">&nbsp;        if (dto.addressCity() != null) existingPet.setAddressCity(dto.addressCity());</b>
+<b class="nc">&nbsp;        if (dto.state() != null) existingPet.setState(dto.state());</b>
+<b class="nc">&nbsp;        if (dto.age() != null) existingPet.setAge(dto.age());</b>
+<b class="nc">&nbsp;        if (dto.weight() != null) existingPet.setWeight(dto.weight());</b>
+<b class="nc">&nbsp;        if (dto.breed() != null) existingPet.setBreed(dto.breed());</b>
+&nbsp;
+<b class="nc">&nbsp;        return petRepository.save(existingPet);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    //TODO: refactor
+&nbsp;    @Override
+&nbsp;    public void deletePet(Long id) throws ResourceNotFound {
+<b class="nc">&nbsp;        Pet existingPet = petRepository.findById(id)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new ResourceNotFound(&quot;Pet&quot;, &quot;ID&quot;, id));</b>
+&nbsp;
+<b class="nc">&nbsp;        petRepository.delete(existingPet);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Pet convertPetFromDTO(PetDTO petDTO) throws BadRequestException {
+&nbsp;        try {
+<b class="nc">&nbsp;            return modelMapper.map(petDTO, Pet.class);</b>
+<b class="nc">&nbsp;        } catch (Exception ex) {</b>
+<b class="nc">&nbsp;            throw new BadRequestException(&quot;Failed to convert PetDTO to Pet&quot;, ex);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private int countFilters(BiologicalSex biologicalSex, String name, String zipCode, String streetName, String city, Integer addressNumber, String state, Double age, Double weight, String breed) {
+<b class="nc">&nbsp;        int count = 0;</b>
+<b class="nc">&nbsp;        if (biologicalSex != null) count++;</b>
+<b class="nc">&nbsp;        if (name != null) count++;</b>
+<b class="nc">&nbsp;        if (zipCode != null) count++;</b>
+<b class="nc">&nbsp;        if (streetName != null) count++;</b>
+<b class="nc">&nbsp;        if (city != null) count++;</b>
+<b class="nc">&nbsp;        if (addressNumber != null) count++;</b>
+<b class="nc">&nbsp;        if (state != null) count++;</b>
+<b class="nc">&nbsp;        if (age != null) count++;</b>
+<b class="nc">&nbsp;        if (weight != null) count++;</b>
+<b class="nc">&nbsp;        if (breed != null) count++;</b>
+&nbsp;
+<b class="nc">&nbsp;        return count;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private String getValidZipCode(PetDTO petDTO){
+<b class="nc">&nbsp;        List&lt;ViaCepResponse&gt; results = cepService.getCepByAddress(petDTO.getState(), petDTO.getAddressCity(), petDTO.getStreetName());</b>
+&nbsp;
+<b class="nc">&nbsp;        if (!results.isEmpty()) {</b>
+<b class="nc">&nbsp;            return results.get(0).cep();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return Constants.NOT_FOUND;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-29 12:19</div>
+</div>
+</body>
+</html>
