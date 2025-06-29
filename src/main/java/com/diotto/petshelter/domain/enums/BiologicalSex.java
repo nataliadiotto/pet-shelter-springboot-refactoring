@@ -1,5 +1,8 @@
 package com.diotto.petshelter.domain.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum BiologicalSex {
 
     FEMALE(1), MALE(2);
@@ -17,7 +20,7 @@ public enum BiologicalSex {
         }
         throw new IllegalArgumentException("Invalid value: " + value);
     }
-
+    @JsonCreator
     public static BiologicalSex fromString(String value) {
         if (value == null) return null;
         try {
@@ -25,6 +28,11 @@ public enum BiologicalSex {
         } catch (IllegalArgumentException e) {
             return null;
         }
+    }
+
+    @JsonValue //guarantees returned value as "FEMALE" or "MALE"
+    public String getApiValue(){
+        return this.name();
     }
 
     @Override

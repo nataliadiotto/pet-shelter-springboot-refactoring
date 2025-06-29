@@ -81,7 +81,7 @@ public class PetServiceImpl implements PetService {
         }
         PetType petTypeEnum;
         try {
-            petTypeEnum = PetType.valueOf(type.toUpperCase());
+            petTypeEnum = PetType.fromString(type);
         } catch (IllegalArgumentException e) {
             throw new BusinessRuleException("Invalid pet type value.");
         }

@@ -1,5 +1,8 @@
 package com.diotto.petshelter.domain.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum PetType {
 
     CAT(1), DOG(2);
@@ -19,6 +22,7 @@ public enum PetType {
         throw new IllegalArgumentException("Invalid value: " + value);
     }
 
+    @JsonCreator
     public static PetType fromString(String value) {
         if (value == null) return null;
         try {
@@ -26,6 +30,11 @@ public enum PetType {
         } catch (IllegalArgumentException e) {
             return null;
         }
+    }
+
+    @JsonValue //guarantees returned value as "DOG" or "CAT"
+    public String getApiValue(){
+        return this.name();
     }
 
     @Override
