@@ -83,7 +83,7 @@ public interface ViaCepClient {
 
 ### Event-Driven Notifications with RabbitMQ 
 
-To ensure the system is responsive and resilient, an event-driven approach is used for post-registration actions. When a new pet is successfully saved to the database, the `PetService` delegates to a `PetEventPublisher`.
+To ensure the system is responsive, an event-driven approach is used for post-registration actions. When a new pet is successfully saved to the database, the `PetService` delegates to a `PetEventPublisher`.
 
 This publisher sends a message to a RabbitMQ exchange, completely decoupling the core registration process from the notification logic. A separate consumer listens to the queue, processes the message, and invokes the `EmailService` to send a confirmation email.
 
