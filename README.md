@@ -1,7 +1,7 @@
 # 🐾 Pet Shelter Management API
 
 [![Java](https://img.shields.io/badge/Java-21-blue?style=for-the-badge&logo=openjdk)](https://www.oracle.com/java/technologies/downloads/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.x-brightgreen?style=for-the-badge&logo=spring-boot)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.3-brightgreen?style=for-the-badge&logo=spring-boot)](https://spring.io/projects/spring-boot)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-FFFFFF?style=for-the-badge&logo=postgresql&logoColor=blue)](https://www.postgresql.org/)
 [![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?style=for-the-badge&logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com/)
 [![JUnit 5](https://img.shields.io/badge/JUnit%205-25A162?style=for-the-badge&logo=junit5&logoColor=white)](https://junit.org/junit5/)
@@ -110,7 +110,7 @@ graph TD
 | Tool/Library | Purpose |
 | :--- | :--- |
 | **Java 21** | Core programming language |
-| **Spring Boot 3.3.x** | Application framework |
+| **Spring Boot 3.4.3** | Application framework |
 | **Spring Data JPA** | ORM for persistence layer |
 | **PostgreSQL** | Relational database |
 | **RabbitMQ** | Asynchronous messaging queue |
