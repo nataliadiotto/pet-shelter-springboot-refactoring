@@ -69,7 +69,7 @@ public List<Pet> findPetsByCriteria(PetFilterDTO filter) {
 
 To enrich the pet's location data, the application integrates with the external **ViaCep API**. Instead of using a manual `RestTemplate` or `WebClient`, this project leverages **OpenFeign**, a declarative REST client.
 
-This approach dramatically simplifies external API consumption. By simply defining a Java interface with annotations, OpenFeign automatically generates the implementation required to make HTTP requests, handle parameters, and deserialize JSON responses. This results in cleaner, more readable, and less error-prone service-layer code.
+This approach simplifies external API consumption. By simply defining a Java interface with annotations, OpenFeign automatically generates the implementation required to make HTTP requests, handle parameters, and deserialize JSON responses. This results in cleaner, more readable, and less error-prone service-layer code.
 
 ```java
 // Feign Client interface makes consuming the API as simple as calling a method.
